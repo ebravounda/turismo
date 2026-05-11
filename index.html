@@ -61,7 +61,7 @@ Author: PixelNx
 			.bw_wide { grid-column: 1 / -1; }
 		}
 
-		.bw_field { display: flex; flex-direction: column; gap: 5px; }
+		.bw_field { display: flex; flex-direction: column; gap: 5px; min-width: 0; overflow: hidden; }
 		.bw_field label {
 			font-size: 10px;
 			font-weight: 800;
@@ -94,7 +94,9 @@ Author: PixelNx
 		}
 		.bw_field input[type="date"] {
 			cursor: pointer;
-			min-height: 44px;  /* iOS tap target mínimo */
+			min-height: 44px;
+			max-width: 100%;
+			box-sizing: border-box;
 		}
 		.bw_field select:focus,
 		.bw_field input[type="date"]:focus {
