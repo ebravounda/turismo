@@ -98,13 +98,45 @@ Author: PixelNx
 			padding-right: 32px;
 			cursor: pointer;
 		}
-		/* Date input: misma altura y bordes que el select */
-		.bw_field input[type="date"] {
+		/* Wrapper del date input: aspecto idéntico al select */
+		.bw_date_box {
+			height: 46px;
+			box-sizing: border-box;
+			width: 100%;
+			border: 1.5px solid #ebebeb;
+			border-radius: 9px;
+			background: #fafafa;
+			display: flex;
+			align-items: center;
+			padding: 0 12px;
+			position: relative;
+			overflow: hidden;
 			cursor: pointer;
-			line-height: normal;
-			border: 1.5px solid #ebebeb !important;
-			border-radius: 9px !important;
-			background: #fafafa !important;
+			transition: border-color .18s, box-shadow .18s;
+		}
+		.bw_date_box:focus-within {
+			border-color: #f0a500;
+			background: #fff;
+			box-shadow: 0 0 0 3px rgba(240,165,0,.12);
+		}
+		.bw_date_box span {
+			font-size: 14px;
+			color: #aaa;
+			pointer-events: none;
+			white-space: nowrap;
+		}
+		.bw_date_box span.filled { color: #2b2d42; }
+		/* El input flota encima invisible, captura el toque nativo */
+		.bw_date_box input[type="date"] {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			cursor: pointer;
+			border: none;
+			background: transparent;
+			z-index: 2;
 		}
 		.bw_field select:focus,
 		.bw_field input[type="date"]:focus {
@@ -283,7 +315,10 @@ Author: PixelNx
 						<!-- Fecha -->
 						<div class="bw_field">
 							<label>Fecha</label>
-							<input type="date" id="banner_fecha" name="fecha">
+							<div class="bw_date_box">
+								<span id="banner_fecha_display">Selecciona fecha</span>
+								<input type="date" id="banner_fecha" name="fecha" tabindex="-1">
+							</div>
 						</div>
 
 						<!-- Hora -->
@@ -2234,11 +2269,20 @@ Author: PixelNx
 	<script src="assets/js/custom.js"></script>
 	<script>
 		// Fecha mínima = hoy
-		var fechaInput = document.getElementById('banner_fecha');
+		var fechaInput   = document.getElementById('banner_fecha');
+		var fechaDisplay = document.getElementById('banner_fecha_display');
 		fechaInput.setAttribute('min', new Date().toISOString().split('T')[0]);
-		// iOS Safari: forzar apertura del picker al tocar el campo
-		fechaInput.addEventListener('click', function() {
-			try { this.showPicker(); } catch(e) {}
+
+		// Actualizar el span visible cuando el usuario elige fecha
+		fechaInput.addEventListener('change', function() {
+			if (this.value) {
+				var d = new Date(this.value + 'T00:00:00');
+				fechaDisplay.textContent = d.toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' });
+				fechaDisplay.classList.add('filled');
+			} else {
+				fechaDisplay.textContent = 'Selecciona fecha';
+				fechaDisplay.classList.remove('filled');
+			}
 		});
 		// Copyright year
 		var cy = document.getElementById('current-year');
