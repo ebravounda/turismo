@@ -70,18 +70,23 @@ Author: PixelNx
 			color: #aaa;
 			padding-left: 2px;
 		}
+		/* Todos los campos: altura y estilo uniforme */
 		.bw_field select,
 		.bw_field input[type="date"] {
+			height: 46px;
+			box-sizing: border-box;
+			width: 100%;
+			max-width: 100%;
 			border: 1.5px solid #ebebeb;
 			border-radius: 9px;
-			padding: 11px 12px;
+			padding: 0 12px;
 			font-size: 14px;
 			color: #2b2d42;
 			background: #fafafa;
 			outline: none;
-			width: 100%;
 			transition: border-color .18s, box-shadow .18s;
 			font-family: inherit;
+			vertical-align: middle;
 		}
 		/* Flecha personalizada solo para selects */
 		.bw_field select {
@@ -91,12 +96,14 @@ Author: PixelNx
 			background-repeat: no-repeat;
 			background-position: right 12px center;
 			padding-right: 32px;
+			cursor: pointer;
 		}
+		/* Date input: apariencia nativa, misma altura */
 		.bw_field input[type="date"] {
 			cursor: pointer;
-			min-height: 44px;
-			max-width: 100%;
-			box-sizing: border-box;
+			padding-left: 12px;
+			padding-right: 12px;
+			line-height: 46px;
 		}
 		.bw_field select:focus,
 		.bw_field input[type="date"]:focus {
@@ -113,7 +120,7 @@ Author: PixelNx
 			border-radius: 9px;
 			overflow: hidden;
 			background: #fafafa;
-			height: 44px;
+			height: 46px;
 			transition: border-color .18s;
 		}
 		.bw_qty:focus-within {
