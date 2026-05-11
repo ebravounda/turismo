@@ -446,7 +446,7 @@
 			const formData = new FormData(this);
 			formData.set('tipo_tour', tour.value);
 
-			fetch('reservar.php', {
+			fetch('reservas/reservar.php', {
 				method: 'POST',
 				body: formData
 			})
