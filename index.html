@@ -80,14 +80,21 @@ Author: PixelNx
 			background: #fafafa;
 			outline: none;
 			width: 100%;
+			transition: border-color .18s, box-shadow .18s;
+			font-family: inherit;
+		}
+		/* Flecha personalizada solo para selects */
+		.bw_field select {
 			-webkit-appearance: none;
 			appearance: none;
 			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23aaa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
 			background-repeat: no-repeat;
 			background-position: right 12px center;
 			padding-right: 32px;
-			transition: border-color .18s, box-shadow .18s;
-			font-family: inherit;
+		}
+		/* El date input conserva su apariencia nativa (el selector de fecha del browser) */
+		.bw_field input[type="date"] {
+			cursor: pointer;
 		}
 		.bw_field select:focus,
 		.bw_field input[type="date"]:focus {
