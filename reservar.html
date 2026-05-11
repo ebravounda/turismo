@@ -239,7 +239,27 @@
 			background-position: right 12px center;
 			padding-right: 32px;
 		}
-		.campo input[type="date"] { cursor: pointer; }
+		/* Revertir los estilos rotos del template para nuestro date input */
+		.campo input[type="date"] {
+			background: #fff !important;
+			cursor: pointer;
+		}
+		.campo input[type="date"]::-webkit-datetime-edit-text { opacity: 1; }
+		.campo input[type="date"]::-webkit-datetime-edit-month-field { opacity: 1; }
+		.campo input[type="date"]::-webkit-datetime-edit-day-field { opacity: 1; }
+		.campo input[type="date"]::-webkit-datetime-edit-year-field { opacity: 1; }
+		.campo input[type="date"]::-webkit-inner-spin-button { display: revert; }
+		.campo input[type="date"]::-webkit-clear-button { display: revert; }
+		.campo input[type="date"]::-webkit-calendar-picker-indicator {
+			position: relative;
+			width: auto;
+			height: auto;
+			top: auto;
+			right: auto;
+			bottom: auto;
+			opacity: 1;
+			cursor: pointer;
+		}
 		.campo input:focus,
 		.campo select:focus,
 		.campo textarea:focus {
