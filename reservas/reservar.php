@@ -26,13 +26,19 @@ $tipo_tour = clean($_POST['tipo_tour'] ?? '');
 $idioma    = clean($_POST['idioma']    ?? 'Español');
 $mensaje   = clean($_POST['mensaje']   ?? '');
 
-$tours_validos = [
-    'Tour Centro Histórico',
-    'Tour Playa y Puerto',
-    'Tour Ruta Picasso',
-    'Tour Atardecer',
-    'Tour Personalizado',
-];
+try {
+    $tours_validos = getDB()
+        ->query("SELECT tour_nombre FROM precios WHERE activo = 1")
+        ->fetchAll(PDO::FETCH_COLUMN);
+} catch (PDOException $e) {
+    $tours_validos = [
+        'Tour Centro Histórico',
+        'Tour Playa y Puerto',
+        'Tour Ruta Picasso',
+        'Tour Atardecer',
+        'Tour Personalizado',
+    ];
+}
 
 // ── Validación ─────────────────────────────────────────────────
 $errors = [];
