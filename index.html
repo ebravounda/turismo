@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- 
-Template Name: Turismo - Plantilla Web 
+Template Name: TukTuk Norris - Tours en Málaga 
 Version: 1.0.0
 Author: PixelNx
 -->
@@ -27,7 +27,7 @@ Author: PixelNx
 	<link rel="stylesheet" href="assets/css/jquery-ui.css">
 	<link rel="stylesheet" href="assets/css/style.css">
 	<link rel="shortcut icon" type="image/ico" href="assets/images/favicon.png" />
-	<title>Turismo - Plantilla Web</title>
+	<title>TukTuk Norris - Tours en Málaga</title>
 </head>
 
 <body>
@@ -76,7 +76,7 @@ Author: PixelNx
 								<li><a href="about.html">Nosotros</a></li>
 								<li><a href="services.html">Servicios</a></li>
 								<li><a href="blog.html">Blog</a></li>
-								<li><a href="contact.html">Contacto</a></li>
+								<li><a href="reservar.html" class="tor_btn" style="padding:6px 16px;border-radius:20px">Reservar</a></li><li><a href="contact.html">Contacto</a></li>
 							</ul>
 						</div>
 						<div class="tor_search_wrap menu_btn_wrap">
@@ -105,36 +105,29 @@ Author: PixelNx
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-12">
 						<div class="tor_banner_text">
-							<h6>Encuentra tu próximo destino</h6>
-							<h1>¿A dónde quieres ir?</h1>
+							<h6>Descubre Málaga de una forma única</h6>
+							<h1>¿Listo para tu aventura en tuk-tuk?</h1>
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
 		<div class="tor_banner_form">
-			<form>
+			<form id="reservaRapidaForm">
 				<div class="tor_form_field tor_form_location">
 					<div class="tor_form_field_inner">
 						<div class="tor_form_icon">
-							<i class="fa fa-map-marker" aria-hidden="true"></i>
+							<i class="fa fa-road" aria-hidden="true"></i>
 						</div>
 						<div class="tor_form_text">
-							<label>Destino</label>
-							<select data-placeholder="¿A dónde vas?" id="deatination_drop">
-								<option value="">¿A dónde vas?</option>
-								<optgroup label="India">
-									<option>Solt Lake</option>
-									<option>Kolkata</option>
-									<option>Mohamia</option>
-									<option>Mumbai</option>
-									<option>New Delhi</option>
-								</optgroup>
-								<optgroup label=" Bangladash">
-									<option>Cox's Bazer</option>
-									<option>Rangamati</option>
-									<option>Banderban</option>
-								</optgroup>
+							<label>Tour</label>
+							<select id="banner_tour" name="tipo_tour">
+								<option value="">¿Qué tour te interesa?</option>
+								<option value="Tour Centro Histórico">🏛️ Centro Histórico (90 min)</option>
+								<option value="Tour Playa y Puerto">🏖️ Playa y Puerto (60 min)</option>
+								<option value="Tour Ruta Picasso">🎨 Ruta Picasso (75 min)</option>
+								<option value="Tour Atardecer">🌅 Tour Atardecer (45 min)</option>
+								<option value="Tour Personalizado">✨ Tour Personalizado</option>
 							</select>
 						</div>
 					</div>
@@ -142,17 +135,33 @@ Author: PixelNx
 				<div class="tor_form_field tor_form_date">
 					<div class="tor_form_field_inner">
 						<div class="tor_form_icon">
-							<i class="fa fa-align-right" aria-hidden="true"></i>
+							<i class="fa fa-calendar" aria-hidden="true"></i>
+						</div>
+						<div class="tor_form_text tor_form_date">
+							<label>Fecha</label>
+							<input placeholder="Selecciona la fecha" type="date" name="fecha" id="banner_fecha"
+							class="form-control" min="">
+						</div>
+					</div>
+				</div>
+				<div class="tor_form_field tor_form_date">
+					<div class="tor_form_field_inner">
+						<div class="tor_form_icon">
+							<i class="fa fa-clock-o" aria-hidden="true"></i>
 						</div>
 						<div class="tor_form_text">
-							<label>Tipo de Tour</label>
-							<select class="defult-select-drowpown" data-placeholder="Selecciona el tipo de tour"
-								id="activity-dropdown">
-								<option value="">Selecciona el tipo de tour</option>
-								<option value="1">Tipo 1</option>
-								<option value="2">Tipo 2</option>
-								<option value="3">Tipo 3</option>
-								<option value="4">Tipo 4</option>
+							<label>Hora</label>
+							<select name="hora" id="banner_hora">
+								<option value="">Selecciona hora</option>
+								<option value="09:00">09:00</option>
+								<option value="10:00">10:00</option>
+								<option value="11:00">11:00</option>
+								<option value="12:00">12:00</option>
+								<option value="13:00">13:00</option>
+								<option value="16:00">16:00</option>
+								<option value="17:00">17:00</option>
+								<option value="18:00">18:00</option>
+								<option value="19:00">19:00</option>
 							</select>
 						</div>
 					</div>
@@ -165,29 +174,16 @@ Author: PixelNx
 						<div class="tor_form_text">
 							<label>Personas</label>
 							<div class="quantity-box">
-								<input type="text" class="quantity" value="2">
+								<input type="text" class="quantity" id="banner_personas" name="personas" value="2">
 								<span class="quantity-minus pa-sub quantity-icon"> - </span>
-								<span class="quantity-plus  pa-add quantity-icon"> + </span>
+								<span class="quantity-plus pa-add quantity-icon"> + </span>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="tor_form_field tor_form_type">
-					<div class="tor_form_field_inner">
-						<div class="tor_form_icon">
-							<i class="fa fa-arrow-up" aria-hidden="true"></i>
-						</div>
-						<div class="tor_form_text tor_form_date">
-							<label>Cuándo</label>
-								<input placeholder="Selecciona la fecha" type="text" name="select-date" id="datepicker" value=""
-								class="datepicker form-control">
-							<i class="fa fa-calendar" aria-hidden="true"></i>
-						</div>
-					</div>
-				</div>
 				<div class="tor_form_field tor_form_btn">
-					<a href="javascript:void(0);" class="tor_btn">
-						Buscar
+					<a href="reservar.html" class="tor_btn" id="bannerReservaBtn">
+						Reservar Ahora
 					</a>
 				</div>
 			</form>
@@ -197,7 +193,7 @@ Author: PixelNx
 				<div class="row">
 					<div class="col-lg-12 col-sm-12 col-md-12">
 						<div class="tor_heading_wrpper tor_destination_heading">
-							<h4 class="tor_heading">Destinos Principales</h4>
+							<h4 class="tor_heading">Nuestros Tours</h4>
 							<img src="assets/images/border2.png" alt="">
 							<p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
 								aliqua. Quis ipsum suspendisse ultrices gravida.</p>
@@ -211,10 +207,10 @@ Author: PixelNx
 								<div class="swiper-slide">
 									<div class="tor_destination-card">
 										<div class="d-card-thumb">
-											<img src="https://dummyimage.com/270x250/" alt="">
+											<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=270&h=250&fit=crop&auto=format" alt="">
 										</div>
 										<div class="d-card-content">
-											<h4 class="destination-title"><a href="#">Hamburg</a>
+											<h4 class="destination-title"><a href="#">Casco Antiguo</a>
 											</h4>
 											<div class="place-count">
 												<span>45</span> Lugar
@@ -223,10 +219,10 @@ Author: PixelNx
 									</div>
 									<div class="tor_destination-card">
 										<div class="d-card-thumb">
-											<img src="https://dummyimage.com/270x250/" alt="">
+											<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=270&h=250&fit=crop&auto=format" alt="">
 										</div>
 										<div class="d-card-content">
-											<h4 class="destination-title"><a href="#">Dusseldorf</a></h4>
+											<h4 class="destination-title"><a href="#">La Malagueta</a></h4>
 											<div class="place-count">
 												<span>40</span> Lugar
 											</div>
@@ -236,10 +232,10 @@ Author: PixelNx
 								<div class="swiper-slide">
 									<div class="tor_destination-card">
 										<div class="d-card-thumb">
-											<img src="https://dummyimage.com/270x250/" alt="">
+											<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=270&h=250&fit=crop&auto=format" alt="">
 										</div>
 										<div class="d-card-content">
-											<h4 class="destination-title"><a href="#">Marakana</a></h4>
+											<h4 class="destination-title"><a href="#">El Soho</a></h4>
 											<div class="place-count">
 												<span>35</span> Lugar
 											</div>
@@ -247,10 +243,10 @@ Author: PixelNx
 									</div>
 									<div class="tor_destination-card">
 										<div class="d-card-thumb">
-											<img src="https://dummyimage.com/270x250/" alt="">
+											<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=270&h=250&fit=crop&auto=format" alt="">
 										</div>
 										<div class="d-card-content">
-											<h4 class="destination-title"><a href="#">Wiesbaden</a></h4>
+											<h4 class="destination-title"><a href="#">Pedregalejo</a></h4>
 											<div class="place-count">
 												<span>43</span> Lugar
 											</div>
@@ -260,10 +256,10 @@ Author: PixelNx
 								<div class="swiper-slide">
 									<div class="tor_destination-card">
 										<div class="d-card-thumb">
-											<img src="https://dummyimage.com/270x250/" alt="">
+											<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=270&h=250&fit=crop&auto=format" alt="">
 										</div>
 										<div class="d-card-content">
-											<h4 class="destination-title"><a href="#">Nuremberg</a></h4>
+											<h4 class="destination-title"><a href="#">Teatinos</a></h4>
 											<div class="place-count">
 												<span>42</span> Lugar
 											</div>
@@ -271,10 +267,10 @@ Author: PixelNx
 									</div>
 									<div class="tor_destination-card">
 										<div class="d-card-thumb">
-											<img src="https://dummyimage.com/270x250/" alt="">
+											<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=270&h=250&fit=crop&auto=format" alt="">
 										</div>
 										<div class="d-card-content">
-											<h4 class="destination-title"><a href="#">Chemnitz</a></h4>
+											<h4 class="destination-title"><a href="#">El Palo</a></h4>
 											<div class="place-count">
 												<span>40</span> Lugar
 											</div>
@@ -284,10 +280,10 @@ Author: PixelNx
 								<div class="swiper-slide">
 									<div class="tor_destination-card">
 										<div class="d-card-thumb">
-											<img src="https://dummyimage.com/270x250/" alt="">
+											<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=270&h=250&fit=crop&auto=format" alt="">
 										</div>
 										<div class="d-card-content">
-											<h4 class="destination-title"><a href="#">Bielefeld</a></h4>
+											<h4 class="destination-title"><a href="#">Muelle Uno</a></h4>
 											<div class="place-count">
 												<span>35</span> Lugar
 											</div>
@@ -295,10 +291,10 @@ Author: PixelNx
 									</div>
 									<div class="tor_destination-card">
 										<div class="d-card-thumb">
-											<img src="https://dummyimage.com/270x250/" alt="">
+											<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=270&h=250&fit=crop&auto=format" alt="">
 										</div>
 										<div class="d-card-content">
-											<h4 class="destination-title"><a href="#">Oberhausen</a></h4>
+											<h4 class="destination-title"><a href="#">La Victoria</a></h4>
 											<div class="place-count">
 												<span>25</span> Lugar
 											</div>
@@ -319,8 +315,8 @@ Author: PixelNx
 					<div class="col-xl-4 col-lg-5 col-md-6 col-sm-12 col-12 mb_30">
 						<div class="tor_service_img relative">
 							<div class="tor_heading_wrpper">
-								<h4 class="tor_heading">Lugares Increíbles Para Disfrutar Tu Viaje</h4>
-								<p>Phasellus volutpat sapien diam, et accumsan massa mattis nec. Vestibulum vitae lectus hendrerit, sodales massa eget, malesuada erat. Nullam cursus a libero ut maximus. Nam pharetra non massa eu suscipit. </p>
+								<h4 class="tor_heading">Explora Málaga en Tuk-Tuk</h4>
+								<p>Sube a nuestros tuk-tuks y descubre los rincones más emblemáticos de Málaga. Guías locales apasionados, rutas únicas y diversión asegurada para toda la familia. </p>
 							</div>
 							<!-- Slider Arrows -->
 							<div class="tor_nav_button">
@@ -349,14 +345,14 @@ Author: PixelNx
 										<div class="swiper-slide">
 											<div class="tor_service_container text-center">
 												<div class="tor_service_text">
-													<img src="https://dummyimage.com/305x402/" alt="" />
+													<img src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=305&h=402&fit=crop&auto=format" alt="" />
 													<div class="tor_service_hover">
 														<div class="tor_service_hover_inner">
 															<a class="popup-youtube"
 																href="https://media.istockphoto.com/videos/family-of-two-parents-and-two-kids-with-luggage-walking-down-the-video-id1313992035">
 																<i class="fa fa-play" aria-hidden="true"></i>
 															</a>
-															<h4 class="tor_subHeading">Bali, Indonesia</h4>
+															<h4 class="tor_subHeading">Centro Histórico</h4>
 															<p>Calificación</p>
 															<div class="tor_rating">
 																<span class="fa fa-star"></span>
@@ -376,14 +372,14 @@ Author: PixelNx
 										<div class="swiper-slide">
 											<div class="tor_service_container text-center">
 												<div class="tor_service_text">
-													<img src="https://dummyimage.com/305x402/" alt="" />
+													<img src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=305&h=402&fit=crop&auto=format" alt="" />
 													<div class="tor_service_hover">
 														<div class="tor_service_hover_inner">
 															<a class="popup-youtube"
 																href="https://media.istockphoto.com/videos/family-of-two-parents-and-two-kids-with-luggage-walking-down-the-video-id1313992035">
 																<i class="fa fa-play" aria-hidden="true"></i>
 															</a>
-															<h4 class="tor_subHeading">Torajaland, Indonesia</h4>
+															<h4 class="tor_subHeading">Ruta del Picasso</h4>
 															<p>Calificación</p>
 															<div class="tor_rating">
 																<span class="fa fa-star"></span>
@@ -402,14 +398,14 @@ Author: PixelNx
 										<div class="swiper-slide">
 											<div class="tor_service_container text-center">
 												<div class="tor_service_text">
-													<img src="https://dummyimage.com/305x402/" alt="" />
+													<img src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=305&h=402&fit=crop&auto=format" alt="" />
 													<div class="tor_service_hover">
 														<div class="tor_service_hover_inner">
 															<a class="popup-youtube"
 																href="https://media.istockphoto.com/videos/family-of-two-parents-and-two-kids-with-luggage-walking-down-the-video-id1313992035">
 																<i class="fa fa-play" aria-hidden="true"></i>
 															</a>
-															<h4 class="tor_subHeading">Lombok, Indonesia</h4>
+															<h4 class="tor_subHeading">Playa y Puerto</h4>
 															<p>Calificación</p>
 															<div class="tor_rating">
 																<span class="fa fa-star"></span>
@@ -428,14 +424,14 @@ Author: PixelNx
 										<div class="swiper-slide">
 											<div class="tor_service_container text-center">
 												<div class="tor_service_text">
-													<img src="https://dummyimage.com/305x402/" alt="" />
+													<img src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=305&h=402&fit=crop&auto=format" alt="" />
 													<div class="tor_service_hover">
 														<div class="tor_service_hover_inner">
 															<a class="popup-youtube"
 																href="https://media.istockphoto.com/videos/family-of-two-parents-and-two-kids-with-luggage-walking-down-the-video-id1313992035">
 																<i class="fa fa-play" aria-hidden="true"></i>
 															</a>
-															<h4 class="tor_subHeading">Yogyakarta, Indonesia</h4>
+															<h4 class="tor_subHeading">Tour Atardecer</h4>
 															<p>Calificación</p>
 															<div class="tor_rating">
 																<span class="fa fa-star"></span>
@@ -495,7 +491,7 @@ Author: PixelNx
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
 						<div class="tor_heading_wrpper">
-							<h4 class="tor_heading">Ofrecemos el Mejor Servicio</h4>
+							<h4 class="tor_heading">Nuestros Tours en Tuk-Tuk</h4>
 							<img src="assets/images/border2.png" alt="" />
 							<p>Sollicitudin eleifend congue quam sit amet iaculis Vivamus sit amet dui justo Donec est tortor tristique sed iaculis eu ornare ac turpis</p>
 						</div>
@@ -584,42 +580,16 @@ Author: PixelNx
 					<div class="row">
 						<div class="col-lg-4 col-md-4">
 							<div class="gallary-item">
-								<a href="https://dummyimage.com/560x400/">
-									<img src="https://dummyimage.com/374x405/" alt="Image Gallery">
+								<a href="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format">
+									<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="Image Gallery">
 									<div class="galleryimg-overlay">
 										<i class="fa fa-eye" aria-hidden="true"></i>
 									</div>
 								</a>
 							</div>
 							<div class="gallary-item">
-								<a href="https://dummyimage.com/560x400/">
-									<img src="https://dummyimage.com/374x273/" alt="Image Gallery">
-									<div class="galleryimg-overlay">
-										<i class="fa fa-eye" aria-hidden="true"></i>
-									</div>
-								</a>
-							</div>
-						</div>
-						<div class="col-lg-4 col-md-4">
-							<div class="gallary-item">
-								<a href="https://dummyimage.com/560x400/">
-									<img src="https://dummyimage.com/374x187/" alt="Image Gallery">
-									<div class="galleryimg-overlay gal-small">
-										<i class="fa fa-eye" aria-hidden="true"></i>
-									</div>
-								</a>
-							</div>
-							<div class="gallary-item">
-								<a href="https://dummyimage.com/560x400/">
-									<img src="https://dummyimage.com/374x187/" alt="Image Gallery">
-									<div class="galleryimg-overlay gal-small">
-										<i class="fa fa-eye" aria-hidden="true"></i>
-									</div>
-								</a>
-							</div>
-							<div class="gallary-item">
-								<a href="https://dummyimage.com/560x400/">
-									<img src="https://dummyimage.com/374x273/" alt="Image Gallery">
+								<a href="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format">
+									<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="Image Gallery">
 									<div class="galleryimg-overlay">
 										<i class="fa fa-eye" aria-hidden="true"></i>
 									</div>
@@ -628,16 +598,42 @@ Author: PixelNx
 						</div>
 						<div class="col-lg-4 col-md-4">
 							<div class="gallary-item">
-								<a href="https://dummyimage.com/560x400/">
-									<img src="https://dummyimage.com/374x405/" alt="Image Gallery">
+								<a href="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format">
+									<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="Image Gallery">
+									<div class="galleryimg-overlay gal-small">
+										<i class="fa fa-eye" aria-hidden="true"></i>
+									</div>
+								</a>
+							</div>
+							<div class="gallary-item">
+								<a href="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format">
+									<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="Image Gallery">
+									<div class="galleryimg-overlay gal-small">
+										<i class="fa fa-eye" aria-hidden="true"></i>
+									</div>
+								</a>
+							</div>
+							<div class="gallary-item">
+								<a href="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format">
+									<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="Image Gallery">
+									<div class="galleryimg-overlay">
+										<i class="fa fa-eye" aria-hidden="true"></i>
+									</div>
+								</a>
+							</div>
+						</div>
+						<div class="col-lg-4 col-md-4">
+							<div class="gallary-item">
+								<a href="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format">
+									<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="Image Gallery">
 									<div class="galleryimg-overlay">
 										<i class="fa fa-eye" aria-hidden="true"></i>
 									</div>
 								</a>
 							</div>
 							<div class="gallary-item">
-								<a href="https://dummyimage.com/560x400/">
-									<img src="https://dummyimage.com/374x273/" alt="Image Gallery">
+								<a href="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format">
+									<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="Image Gallery">
 									<div class="galleryimg-overlay">
 										<i class="fa fa-eye" aria-hidden="true"></i>
 									</div>
@@ -655,7 +651,7 @@ Author: PixelNx
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
 						<div class="tor_heading_wrpper tor_package_heading">
-							<h4 class="tor_heading">Ofrecemos el Mejor Servicio</h4>
+							<h4 class="tor_heading">Nuestros Tours en Tuk-Tuk</h4>
 							<img src="assets/images/border3.png" alt="" />
 							<p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
 								aliqua. Quis ipsum suspendisse ultrices gravida.</p>
@@ -672,11 +668,11 @@ Author: PixelNx
 									<div class="swiper-slide">
 										<div class="tor_package_container">
 											<div class="tor_package_text">
-												<img src="https://dummyimage.com/411x504/" alt="" />
+												<img src="https://images.unsplash.com/photo-1559060017-445af11d0bb6?w=411&h=504&fit=crop&auto=format" alt="" />
 												<div class="tor_package_hover">
 													<div class="tor_package_hover_inner">
-														<h4 class="tor_subHeading">Australia</h4>
-														<p>5 Días 6 Noches desde $7000</p>
+														<h4 class="tor_subHeading">Centro Histórico</h4>
+														<p>90 min · Desde 15€/persona</p>
 														<div class="tor_rating">
 															<span class="fa fa-star"></span>
 															<span class="fa fa-star"></span>
@@ -694,11 +690,11 @@ Author: PixelNx
 									<div class="swiper-slide">
 										<div class="tor_package_container">
 											<div class="tor_package_text">
-												<img src="https://dummyimage.com/411x504/" alt="" />
+												<img src="https://images.unsplash.com/photo-1559060017-445af11d0bb6?w=411&h=504&fit=crop&auto=format" alt="" />
 												<div class="tor_package_hover">
 													<div class="tor_package_hover_inner">
-														<h4 class="tor_subHeading">London</h4>
-														<p>4 Días 3 Noches desde $7000</p>
+														<h4 class="tor_subHeading">Malagueta y Puerto</h4>
+														<p>60 min · Desde 12€/persona</p>
 														<div class="tor_rating">
 															<span class="fa fa-star"></span>
 															<span class="fa fa-star"></span>
@@ -716,11 +712,11 @@ Author: PixelNx
 									<div class="swiper-slide">
 										<div class="tor_package_container">
 											<div class="tor_package_text">
-												<img src="https://dummyimage.com/411x504/" alt="" />
+												<img src="https://images.unsplash.com/photo-1559060017-445af11d0bb6?w=411&h=504&fit=crop&auto=format" alt="" />
 												<div class="tor_package_hover">
 													<div class="tor_package_hover_inner">
-														<h4 class="tor_subHeading">New York</h4>
-														<p>6 Días 5 Noches desde $7000</p>
+														<h4 class="tor_subHeading">Ruta Picasso</h4>
+														<p>75 min · Desde 14€/persona</p>
 														<div class="tor_rating">
 															<span class="fa fa-star"></span>
 															<span class="fa fa-star"></span>
@@ -738,11 +734,11 @@ Author: PixelNx
 									<div class="swiper-slide">
 										<div class="tor_package_container">
 											<div class="tor_package_text">
-												<img src="https://dummyimage.com/411x504/" alt="" />
+												<img src="https://images.unsplash.com/photo-1559060017-445af11d0bb6?w=411&h=504&fit=crop&auto=format" alt="" />
 												<div class="tor_package_hover">
 													<div class="tor_package_hover_inner">
-														<h4 class="tor_subHeading">Germany</h4>
-														<p>3 Días 2 Noches desde $7000</p>
+														<h4 class="tor_subHeading">Tour Atardecer</h4>
+														<p>45 min · Desde 10€/persona</p>
 														<div class="tor_rating">
 															<span class="fa fa-star"></span>
 															<span class="fa fa-star"></span>
@@ -771,7 +767,7 @@ Author: PixelNx
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
 						<div class="tor_heading_wrpper tor_testimonial_heading">
-							<h4 class="tor_heading">Lo que dicen nuestros clientes</h4>
+							<h4 class="tor_heading">Lo que dicen nuestros viajeros</h4>
 							<img src="assets/images/border2.png" alt="" />
 							<p>Etiam at varius velit Etiam fermentum massa non nisl pellentesque molestie Morbi congue augue odio sed dictum quis</p>
 						</div>
@@ -788,7 +784,7 @@ Author: PixelNx
 									<div class="swiper-slide">
 										<div class="tor_testimonial_section">
 											<div class="tor_testimonial_img">
-												<img src="https://dummyimage.com/270x314/" alt="" />
+												<img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=270&h=314&fit=crop&auto=format" alt="" />
 												<div class="tor_testimonials_quote">
 													<img class="tor_quote_img" src="assets/images/quote.png" alt="" />
 												</div>
@@ -804,7 +800,7 @@ Author: PixelNx
 									<div class="swiper-slide">
 										<div class="tor_testimonial_section">
 											<div class="tor_testimonial_img">
-												<img src="https://dummyimage.com/270x314/" alt="" />
+												<img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=270&h=314&fit=crop&auto=format" alt="" />
 												<div class="tor_testimonials_quote">
 													<img class="tor_quote_img" src="assets/images/quote.png" alt="" />
 												</div>
@@ -854,7 +850,7 @@ Author: PixelNx
 					<div class="col-lg-4 col-md-6 col-sm-12">
 						<div class="tor_guide_box_wrapper">
 							<div class="tor_guide_img">
-								<img src="https://dummyimage.com/374x283/" alt="guide-img">
+								<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="guide-img">
 								<ul class="guide_social_link">
 									<li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
 									<li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
@@ -871,7 +867,7 @@ Author: PixelNx
 					<div class="col-lg-4 col-md-6 col-sm-12">
 						<div class="tor_guide_box_wrapper">
 							<div class="tor_guide_img">
-								<img src="https://dummyimage.com/374x283/" alt="guide-img">
+								<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="guide-img">
 								<ul class="guide_social_link">
 									<li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
 									<li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
@@ -888,7 +884,7 @@ Author: PixelNx
 					<div class="col-lg-4 col-md-6 col-sm-12 offset-md-2">
 						<div class="tor_guide_box_wrapper">
 							<div class="tor_guide_img">
-								<img src="https://dummyimage.com/374x283/" alt="guide-img">
+								<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="guide-img">
 								<ul class="guide_social_link">
 									<li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
 									<li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
@@ -911,7 +907,7 @@ Author: PixelNx
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
 						<div class="tor_heading_wrpper">
-							<h4 class="tor_heading white">Encuentra tu Aventura Soñada</h4>
+							<h4 class="tor_heading white">Reserva tu Tour en Tuk-Tuk</h4>
 							<img src="assets/images/border3.png" alt="" />
 							<p>Phasellus hendrerit sapien vel ipsum rutrum non ultrices enim rhoncus In tempor suscipit purus at vulputate Ut eu leo non nisl gravida</p>
 						</div>
@@ -1834,7 +1830,7 @@ Author: PixelNx
 					<div class="col-lg-4 col-md-6 col-sm-12 col-12">
 						<div class="tor_blog_thumb">
 							<a href="javascript:void(0);" class="tor_blog_img">
-								<img src="https://dummyimage.com/374x283/" alt="" />
+								<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="" />
 							</a>
 							<div class="blog_text">
 								<ul class="tor_blog_info">
@@ -1857,7 +1853,7 @@ Author: PixelNx
 					<div class="col-lg-4 col-md-6 col-sm-12 col-12">
 						<div class="tor_blog_thumb">
 							<a href="javascript:void(0);" class="tor_blog_img">
-								<img src="https://dummyimage.com/374x283/" alt="" />
+								<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="" />
 							</a>
 							<div class="blog_text">
 								<ul class="tor_blog_info">
@@ -1878,7 +1874,7 @@ Author: PixelNx
 					<div class="col-lg-4 col-md-6 col-sm-12 col-12 offset-md-2">
 						<div class="tor_blog_thumb">
 							<a href="javascript:void(0);" class="tor_blog_img">
-								<img src="https://dummyimage.com/374x283/" alt="" />
+								<img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop&auto=format" alt="" />
 							</a>
 							<div class="blog_text">
 								<ul class="tor_blog_info">
@@ -1992,11 +1988,11 @@ Author: PixelNx
 						<div class="tor_widgets mb_30">
 							<h4>Tipo de Tour</h4>
 							<ul>
-								<li><a href="javascript:void(0)">Tours de Aventura y Naturaleza</a></li>
-								<li><a href="javascript:void(0)">Tour en Grupo</a></li>
-								<li><a href="javascript:void(0)">Tours de Temporada</a></li>
-								<li><a href="javascript:void(0)">Tours de Relajación</a></li>
-								<li><a href="javascript:void(0)">Tours Familiares</a></li>
+								<li><a href="javascript:void(0)">Tour Centro Histórico</a></li>
+								<li><a href="javascript:void(0)">Tour Playa y Puerto</a></li>
+								<li><a href="javascript:void(0)">Tour Ruta Picasso</a></li>
+								<li><a href="javascript:void(0)">Tour Atardecer</a></li>
+								<li><a href="javascript:void(0)">Tour Personalizado</a></li>
 							</ul>
 						</div>
 					</div>
@@ -2041,8 +2037,7 @@ Author: PixelNx
 							</span>
 							<h4>Ubicación</h4>
 							<div class="tor_footer_info_text">
-								<a href="javascript:void(0);">512/B Winston st, Upper West Side, Manhattan, New York, NY
-									05120</a>
+								<a href="javascript:void(0);">Calle Larios 5, Centro Histórico, Málaga, España</a>
 							</div>
 						</div>
 					</div>
@@ -2058,8 +2053,8 @@ Author: PixelNx
 							</span>
 							<h4>Teléfono</h4>
 							<div class="tor_footer_info_text">
-								<a href="javascript:void(0);">+(81) 18001-12452</a>
-								<a href="javascript:void(0);">07272-4535246</a>
+								<a href="javascript:void(0);">+34 951 234 567</a>
+								<a href="javascript:void(0);">+34 600 123 456</a>
 							</div>
 						</div>
 					</div>
@@ -2075,8 +2070,8 @@ Author: PixelNx
 							</span>
 							<h4>Correo electrónico</h4>
 							<div class="tor_footer_info_text">
-								<a href="javascript:void(0);">info@example.com</a>
-								<a href="javascript:void(0);">support@example.com</a>
+								<a href="javascript:void(0);">hola@tuktuknorris.es</a>
+								<a href="javascript:void(0);">reservas@tuktuknorris.es</a>
 							</div>
 						</div>
 					</div>
@@ -2085,7 +2080,7 @@ Author: PixelNx
 		</div>
 		<div class="tor_copyright_wrapper white">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
-				<p>Copyright &#169; <span id="current-year"></span> <a class="white" href="javascript:void(0);">Tourism</a>. Todos los derechos reservados.</p>
+				<p>Copyright &#169; <span id="current-year"></span> <a class="white" href="javascript:void(0);">TukTuk Norris</a>. Todos los derechos reservados.</p>
 			</div>
 		</div>
 	</footer>
