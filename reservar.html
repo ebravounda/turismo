@@ -10,44 +10,354 @@
 	<link rel="shortcut icon" type="image/ico" href="assets/images/favicon.png" />
 	<title>Reservar Tour - TukTuk Norris</title>
 	<style>
-		.reserva_wrapper { padding: 60px 0; background: #f9f9f9; }
-		.reserva_card { background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 40px; }
-		.reserva_card h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #222; }
-		.reserva_card .subtitle { color: #888; margin-bottom: 30px; }
-		.form-group { margin-bottom: 20px; }
-		.form-group label { font-weight: 600; color: #444; margin-bottom: 6px; display: block; font-size: 14px; }
-		.form-group input, .form-group select, .form-group textarea {
-			width: 100%; padding: 12px 16px; border: 1.5px solid #e0e0e0; border-radius: 8px;
-			font-size: 15px; color: #333; transition: border-color 0.2s;
-			background: #fafafa;
+		/* ── Variables ─────────────────────────────────────────── */
+		:root {
+			--naranja: #f0a500;
+			--naranja-dark: #d4940a;
+			--naranja-light: #fff8e6;
+			--gris-bg: #f5f6fa;
+			--gris-borde: #e2e5eb;
+			--texto: #2b2d42;
+			--texto-suave: #7b8190;
+			--radio: 10px;
+			--sombra: 0 2px 20px rgba(0,0,0,0.08);
 		}
-		.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-			border-color: #f0a500; outline: none; background: #fff;
+
+		/* ── Layout principal ─────────────────────────────────── */
+		.reserva_section {
+			background: var(--gris-bg);
+			padding: 60px 0 80px;
 		}
-		.form-group textarea { resize: vertical; min-height: 90px; }
-		.form-group .input-icon { position: relative; }
-		.form-group .input-icon i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #aaa; }
-		.form-group .input-icon input, .form-group .input-icon select { padding-left: 40px; }
-		.tour_option { border: 2px solid #e0e0e0; border-radius: 10px; padding: 16px; cursor: pointer; transition: all 0.2s; margin-bottom: 12px; }
-		.tour_option:hover, .tour_option.selected { border-color: #f0a500; background: #fffbf0; }
-		.tour_option input[type="radio"] { display: none; }
-		.tour_option .tour_name { font-weight: 700; font-size: 16px; color: #222; }
-		.tour_option .tour_desc { font-size: 13px; color: #888; margin-top: 3px; }
-		.tour_option .tour_price { font-size: 15px; font-weight: 700; color: #f0a500; margin-top: 6px; }
-		.btn_reservar { background: #f0a500; color: #fff; border: none; padding: 14px 40px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; transition: background 0.2s; }
-		.btn_reservar:hover { background: #d4940a; }
-		.resumen_card { background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 30px; position: sticky; top: 20px; }
-		.resumen_card h4 { font-size: 18px; font-weight: 700; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
-		.resumen_item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
-		.resumen_item .label { color: #888; }
-		.resumen_item .value { font-weight: 600; color: #333; }
-		.resumen_total { border-top: 2px solid #f0a500; padding-top: 14px; margin-top: 14px; }
-		.resumen_total .label { font-weight: 700; color: #333; }
-		.resumen_total .value { font-weight: 700; color: #f0a500; font-size: 20px; }
-		.alert_success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 16px 20px; border-radius: 8px; display: none; margin-bottom: 20px; }
-		.alert_error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 16px 20px; border-radius: 8px; display: none; margin-bottom: 20px; }
-		.section_label { font-size: 12px; text-transform: uppercase; font-weight: 700; color: #f0a500; letter-spacing: 1px; margin-bottom: 16px; }
-		.divider { border: none; border-top: 1px solid #f0f0f0; margin: 24px 0; }
+
+		/* Grid de dos columnas */
+		.reserva_grid {
+			display: grid;
+			grid-template-columns: 1fr 360px;
+			gap: 28px;
+			align-items: start;
+		}
+		@media (max-width: 991px) {
+			.reserva_grid {
+				grid-template-columns: 1fr;
+			}
+			.resumen_col { order: -1; }
+		}
+
+		/* ── Tarjetas blancas ─────────────────────────────────── */
+		.card_blanca {
+			background: #fff;
+			border-radius: 14px;
+			box-shadow: var(--sombra);
+			padding: 36px 40px;
+		}
+		@media (max-width: 575px) {
+			.card_blanca { padding: 24px 20px; }
+		}
+
+		/* ── Encabezado del formulario ────────────────────────── */
+		.form_titulo {
+			font-size: 26px;
+			font-weight: 800;
+			color: var(--texto);
+			margin: 0 0 6px;
+		}
+		.form_subtitulo {
+			color: var(--texto-suave);
+			font-size: 15px;
+			margin: 0 0 32px;
+		}
+
+		/* ── Etiqueta de sección ──────────────────────────────── */
+		.seccion_label {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-size: 11px;
+			font-weight: 800;
+			text-transform: uppercase;
+			letter-spacing: 1.2px;
+			color: var(--naranja);
+			margin-bottom: 16px;
+		}
+		.seccion_label::after {
+			content: '';
+			flex: 1;
+			height: 1px;
+			background: var(--gris-borde);
+		}
+
+		/* ── Opciones de tour ─────────────────────────────────── */
+		.tours_grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+			margin-bottom: 0;
+		}
+		@media (max-width: 575px) {
+			.tours_grid { grid-template-columns: 1fr; }
+		}
+
+		.tour_card {
+			border: 2px solid var(--gris-borde);
+			border-radius: var(--radio);
+			padding: 16px;
+			cursor: pointer;
+			transition: border-color 0.18s, background 0.18s, transform 0.18s;
+			user-select: none;
+			position: relative;
+		}
+		.tour_card:hover {
+			border-color: var(--naranja);
+			background: var(--naranja-light);
+			transform: translateY(-1px);
+		}
+		.tour_card.activo {
+			border-color: var(--naranja);
+			background: var(--naranja-light);
+			box-shadow: 0 0 0 3px rgba(240,165,0,0.15);
+		}
+		.tour_card input[type="radio"] { display: none; }
+
+		.tour_card_icono {
+			font-size: 24px;
+			line-height: 1;
+			margin-bottom: 8px;
+		}
+		.tour_card_nombre {
+			font-size: 14px;
+			font-weight: 700;
+			color: var(--texto);
+			margin-bottom: 4px;
+		}
+		.tour_card_desc {
+			font-size: 12px;
+			color: var(--texto-suave);
+			line-height: 1.4;
+			margin-bottom: 8px;
+		}
+		.tour_card_meta {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.tour_card_duracion {
+			font-size: 12px;
+			color: var(--texto-suave);
+			background: var(--gris-bg);
+			padding: 2px 8px;
+			border-radius: 20px;
+		}
+		.tour_card_precio {
+			font-size: 14px;
+			font-weight: 800;
+			color: var(--naranja);
+		}
+		/* Check visual cuando está activo */
+		.tour_card_check {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			width: 20px;
+			height: 20px;
+			background: var(--naranja);
+			border-radius: 50%;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			color: #fff;
+			font-size: 11px;
+		}
+		.tour_card.activo .tour_card_check { display: flex; }
+
+		/* ── Divisor de sección ───────────────────────────────── */
+		.form_divider { border: none; border-top: 1px solid var(--gris-borde); margin: 28px 0; }
+
+		/* ── Campos de formulario ─────────────────────────────── */
+		.campos_grid {
+			display: grid;
+			gap: 16px;
+		}
+		.campos_grid.tres { grid-template-columns: 1fr 1fr 1fr; }
+		.campos_grid.dos  { grid-template-columns: 1fr 1fr; }
+		.campos_grid.uno  { grid-template-columns: 1fr; }
+
+		@media (max-width: 767px) {
+			.campos_grid.tres { grid-template-columns: 1fr 1fr; }
+		}
+		@media (max-width: 575px) {
+			.campos_grid.tres,
+			.campos_grid.dos { grid-template-columns: 1fr; }
+		}
+
+		.campo label {
+			display: block;
+			font-size: 13px;
+			font-weight: 700;
+			color: var(--texto);
+			margin-bottom: 7px;
+		}
+		.campo label span {
+			color: var(--naranja);
+			margin-left: 2px;
+		}
+
+		.campo_icono {
+			position: relative;
+		}
+		.campo_icono i {
+			position: absolute;
+			left: 14px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: #b0b5c0;
+			font-size: 14px;
+			pointer-events: none;
+		}
+		.campo_icono input,
+		.campo_icono select {
+			padding-left: 38px !important;
+		}
+
+		.campo input,
+		.campo select,
+		.campo textarea {
+			width: 100%;
+			padding: 11px 14px;
+			border: 1.5px solid var(--gris-borde);
+			border-radius: 8px;
+			font-size: 14px;
+			color: var(--texto);
+			background: #fff;
+			transition: border-color 0.18s, box-shadow 0.18s;
+			outline: none;
+			-webkit-appearance: none;
+			appearance: none;
+		}
+		.campo select {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237b8190' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+			background-repeat: no-repeat;
+			background-position: right 12px center;
+			padding-right: 32px;
+		}
+		.campo input:focus,
+		.campo select:focus,
+		.campo textarea:focus {
+			border-color: var(--naranja);
+			box-shadow: 0 0 0 3px rgba(240,165,0,0.12);
+		}
+		.campo textarea {
+			resize: vertical;
+			min-height: 88px;
+			font-family: inherit;
+		}
+
+		/* ── Botón principal ──────────────────────────────────── */
+		.btn_reservar {
+			display: block;
+			width: 100%;
+			padding: 15px;
+			background: var(--naranja);
+			color: #fff;
+			border: none;
+			border-radius: 10px;
+			font-size: 16px;
+			font-weight: 800;
+			cursor: pointer;
+			transition: background 0.18s, transform 0.12s;
+			letter-spacing: 0.3px;
+			margin-top: 28px;
+		}
+		.btn_reservar:hover { background: var(--naranja-dark); transform: translateY(-1px); }
+		.btn_reservar:active { transform: translateY(0); }
+		.btn_reservar:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+		.form_aviso {
+			text-align: center;
+			color: var(--texto-suave);
+			font-size: 12.5px;
+			margin-top: 12px;
+		}
+		.form_aviso a { color: var(--naranja); }
+
+		/* ── Alertas ──────────────────────────────────────────── */
+		.alerta {
+			display: none;
+			padding: 14px 18px;
+			border-radius: 8px;
+			font-size: 14px;
+			margin-bottom: 24px;
+			line-height: 1.5;
+		}
+		.alerta_ok  { background: #d4edda; border: 1px solid #b8dfc6; color: #155724; }
+		.alerta_err { background: #fde8e8; border: 1px solid #f5c6cb; color: #842029; }
+
+		/* ── Columna de resumen ───────────────────────────────── */
+		.resumen_sticky { position: sticky; top: 24px; }
+
+		.resumen_card h4 {
+			font-size: 16px;
+			font-weight: 800;
+			color: var(--texto);
+			margin: 0 0 20px;
+			padding-bottom: 14px;
+			border-bottom: 1px solid var(--gris-borde);
+		}
+
+		.resumen_fila {
+			display: flex;
+			justify-content: space-between;
+			align-items: baseline;
+			gap: 8px;
+			padding: 8px 0;
+			border-bottom: 1px dashed #eee;
+		}
+		.resumen_fila:last-of-type { border-bottom: none; }
+		.resumen_fila .r_label {
+			font-size: 13px;
+			color: var(--texto-suave);
+			flex-shrink: 0;
+		}
+		.resumen_fila .r_valor {
+			font-size: 13px;
+			font-weight: 700;
+			color: var(--texto);
+			text-align: right;
+		}
+
+		.resumen_total {
+			background: var(--naranja-light);
+			border-radius: 8px;
+			padding: 14px 16px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-top: 14px;
+		}
+		.resumen_total .r_label { font-size: 13px; font-weight: 700; color: var(--texto); }
+		.resumen_total .r_valor { font-size: 22px; font-weight: 800; color: var(--naranja); }
+
+		.resumen_info {
+			margin-top: 20px;
+			padding-top: 16px;
+			border-top: 1px solid var(--gris-borde);
+		}
+		.info_item {
+			display: flex;
+			align-items: flex-start;
+			gap: 10px;
+			margin-bottom: 10px;
+			font-size: 13px;
+			color: var(--texto-suave);
+			line-height: 1.5;
+		}
+		.info_item i {
+			color: var(--naranja);
+			margin-top: 2px;
+			flex-shrink: 0;
+			width: 14px;
+			text-align: center;
+		}
+		.info_item strong { color: var(--texto); }
 	</style>
 </head>
 <body>
@@ -121,241 +431,238 @@
 		</div>
 	</section>
 
-	<!-- Reserva Form -->
-	<div class="reserva_wrapper">
+	<!-- Reserva -->
+	<section class="reserva_section">
 		<div class="container">
-			<div class="row">
-				<!-- Formulario -->
-				<div class="col-lg-8 col-md-12 mb-4">
-					<div class="reserva_card">
-						<h2>¡Reserva tu aventura en tuk-tuk! 🛺</h2>
-						<p class="subtitle">Completa el formulario y te confirmaremos la reserva en menos de 24h.</p>
+			<div class="reserva_grid">
 
-						<div id="alertSuccess" class="alert_success">
-							✅ <strong>¡Reserva enviada con éxito!</strong> Te contactaremos pronto para confirmar. ¡Nos vemos en Málaga!
+				<!-- ── Columna izquierda: formulario ──────────── -->
+				<div class="form_col">
+					<div class="card_blanca">
+						<h2 class="form_titulo">¡Reserva tu aventura en tuk-tuk!</h2>
+						<p class="form_subtitulo">Completa el formulario y te confirmaremos en menos de 24h. Sin cobro previo.</p>
+
+						<div id="alertaOk" class="alerta alerta_ok">
+							<strong>¡Reserva enviada con éxito!</strong> Te contactaremos pronto para confirmar. ¡Nos vemos en Málaga!
 						</div>
-						<div id="alertError" class="alert_error">
-							❌ <strong>Error al enviar la reserva.</strong> Por favor inténtalo de nuevo o llámanos al +34 951 234 567.
+						<div id="alertaErr" class="alerta alerta_err">
+							<strong>Error al enviar la reserva.</strong> Por favor inténtalo de nuevo o llámanos al <strong>+34 951 234 567</strong>.
 						</div>
 
-						<form id="reservaForm">
-							<!-- Elige tu tour -->
-							<div class="section_label">1. Elige tu tour</div>
-							<div class="row">
-								<div class="col-12">
-									<label class="tour_option" onclick="selectTour(this, 'Tour Centro Histórico')">
-										<input type="radio" name="tipo_tour" value="Tour Centro Histórico">
-										<div class="d-flex justify-content-between align-items-start">
-											<div>
-												<div class="tour_name">🏛️ Tour Centro Histórico</div>
-												<div class="tour_desc">Catedral, Alcazaba, calle Larios y los rincones más emblemáticos</div>
-											</div>
-											<div class="tour_price text-right">
-												<div>90 min</div>
-												<div>Desde 15€</div>
-											</div>
+						<form id="reservaForm" novalidate>
+
+							<!-- 1. Tour -->
+							<div class="seccion_label">1. Elige tu tour</div>
+							<div class="tours_grid">
+
+								<label class="tour_card" onclick="seleccionarTour(this, 'Tour Centro Histórico')">
+									<input type="radio" name="tipo_tour" value="Tour Centro Histórico">
+									<div class="tour_card_check"><i class="fa fa-check"></i></div>
+									<div class="tour_card_icono">🏛️</div>
+									<div class="tour_card_nombre">Centro Histórico</div>
+									<div class="tour_card_desc">Catedral, Alcazaba, calle Larios y los rincones más emblemáticos</div>
+									<div class="tour_card_meta">
+										<span class="tour_card_duracion">90 min</span>
+										<span class="tour_card_precio">Desde 15€</span>
+									</div>
+								</label>
+
+								<label class="tour_card" onclick="seleccionarTour(this, 'Tour Playa y Puerto')">
+									<input type="radio" name="tipo_tour" value="Tour Playa y Puerto">
+									<div class="tour_card_check"><i class="fa fa-check"></i></div>
+									<div class="tour_card_icono">🏖️</div>
+									<div class="tour_card_nombre">Playa y Puerto</div>
+									<div class="tour_card_desc">Malagueta, Muelle Uno, Palmeral de las Sorpresas y paseo marítimo</div>
+									<div class="tour_card_meta">
+										<span class="tour_card_duracion">60 min</span>
+										<span class="tour_card_precio">Desde 12€</span>
+									</div>
+								</label>
+
+								<label class="tour_card" onclick="seleccionarTour(this, 'Tour Ruta Picasso')">
+									<input type="radio" name="tipo_tour" value="Tour Ruta Picasso">
+									<div class="tour_card_check"><i class="fa fa-check"></i></div>
+									<div class="tour_card_icono">🎨</div>
+									<div class="tour_card_nombre">Ruta Picasso</div>
+									<div class="tour_card_desc">Museo Picasso, casa natal, barrio de la Trinidad y arte urbano</div>
+									<div class="tour_card_meta">
+										<span class="tour_card_duracion">75 min</span>
+										<span class="tour_card_precio">Desde 14€</span>
+									</div>
+								</label>
+
+								<label class="tour_card" onclick="seleccionarTour(this, 'Tour Atardecer')">
+									<input type="radio" name="tipo_tour" value="Tour Atardecer">
+									<div class="tour_card_check"><i class="fa fa-check"></i></div>
+									<div class="tour_card_icono">🌅</div>
+									<div class="tour_card_nombre">Tour Atardecer</div>
+									<div class="tour_card_desc">Las mejores vistas de Málaga al caer el sol desde el Gibralfaro</div>
+									<div class="tour_card_meta">
+										<span class="tour_card_duracion">45 min</span>
+										<span class="tour_card_precio">Desde 10€</span>
+									</div>
+								</label>
+
+								<label class="tour_card" onclick="seleccionarTour(this, 'Tour Personalizado')" style="grid-column: 1 / -1;">
+									<input type="radio" name="tipo_tour" value="Tour Personalizado">
+									<div class="tour_card_check"><i class="fa fa-check"></i></div>
+									<div style="display:flex; align-items:center; gap:12px;">
+										<div class="tour_card_icono" style="margin:0; font-size:28px;">✨</div>
+										<div style="flex:1;">
+											<div class="tour_card_nombre">Tour Personalizado</div>
+											<div class="tour_card_desc" style="margin:0;">Diseña tu propio recorrido por Málaga a tu medida — precio especial</div>
 										</div>
-									</label>
-									<label class="tour_option" onclick="selectTour(this, 'Tour Playa y Puerto')">
-										<input type="radio" name="tipo_tour" value="Tour Playa y Puerto">
-										<div class="d-flex justify-content-between align-items-start">
-											<div>
-												<div class="tour_name">🏖️ Tour Playa y Puerto</div>
-												<div class="tour_desc">Malagueta, Muelle Uno, Palmeral de las Sorpresas y paseo marítimo</div>
-											</div>
-											<div class="tour_price text-right">
-												<div>60 min</div>
-												<div>Desde 12€</div>
-											</div>
-										</div>
-									</label>
-									<label class="tour_option" onclick="selectTour(this, 'Tour Ruta Picasso')">
-										<input type="radio" name="tipo_tour" value="Tour Ruta Picasso">
-										<div class="d-flex justify-content-between align-items-start">
-											<div>
-												<div class="tour_name">🎨 Tour Ruta Picasso</div>
-												<div class="tour_desc">Museo Picasso, casa natal, barrio de la Trinidad y arte urbano</div>
-											</div>
-											<div class="tour_price text-right">
-												<div>75 min</div>
-												<div>Desde 14€</div>
-											</div>
-										</div>
-									</label>
-									<label class="tour_option" onclick="selectTour(this, 'Tour Atardecer')">
-										<input type="radio" name="tipo_tour" value="Tour Atardecer">
-										<div class="d-flex justify-content-between align-items-start">
-											<div>
-												<div class="tour_name">🌅 Tour Atardecer</div>
-												<div class="tour_desc">Las mejores vistas de Málaga al caer el sol desde el Gibralfaro</div>
-											</div>
-											<div class="tour_price text-right">
-												<div>45 min</div>
-												<div>Desde 10€</div>
-											</div>
-										</div>
-									</label>
-									<label class="tour_option" onclick="selectTour(this, 'Tour Personalizado')">
-										<input type="radio" name="tipo_tour" value="Tour Personalizado">
-										<div class="d-flex justify-content-between align-items-start">
-											<div>
-												<div class="tour_name">✨ Tour Personalizado</div>
-												<div class="tour_desc">Diseña tu propio recorrido por Málaga a tu medida</div>
-											</div>
-											<div class="tour_price text-right">
-												<div>A consultar</div>
-												<div>Precio especial</div>
-											</div>
-										</div>
-									</label>
-								</div>
+										<span class="tour_card_precio" style="white-space:nowrap;">A consultar</span>
+									</div>
+								</label>
+
 							</div>
 
-							<hr class="divider">
+							<hr class="form_divider">
 
-							<!-- Fecha y hora -->
-							<div class="section_label">2. Fecha y hora</div>
-							<div class="row">
-								<div class="col-md-4 col-sm-12">
-									<div class="form-group">
-										<label>Fecha *</label>
-										<div class="input-icon">
-											<i class="fa fa-calendar"></i>
-											<input type="date" name="fecha" id="fecha" required>
-										</div>
+							<!-- 2. Fecha y hora -->
+							<div class="seccion_label">2. Fecha y hora</div>
+							<div class="campos_grid tres">
+								<div class="campo">
+									<label>Fecha <span>*</span></label>
+									<div class="campo_icono">
+										<i class="fa fa-calendar"></i>
+										<input type="date" name="fecha" id="fecha" required>
 									</div>
 								</div>
-								<div class="col-md-4 col-sm-12">
-									<div class="form-group">
-										<label>Hora *</label>
-										<div class="input-icon">
-											<i class="fa fa-clock-o"></i>
-											<select name="hora" id="hora" required>
-												<option value="">Selecciona hora</option>
-												<option value="09:00">09:00</option>
-												<option value="10:00">10:00</option>
-												<option value="11:00">11:00</option>
-												<option value="12:00">12:00</option>
-												<option value="13:00">13:00</option>
-												<option value="16:00">16:00</option>
-												<option value="17:00">17:00</option>
-												<option value="18:00">18:00</option>
-												<option value="19:00">19:00</option>
-											</select>
-										</div>
+								<div class="campo">
+									<label>Hora <span>*</span></label>
+									<div class="campo_icono">
+										<i class="fa fa-clock-o"></i>
+										<select name="hora" id="hora" required>
+											<option value="">Selecciona hora</option>
+											<option value="09:00">09:00 h</option>
+											<option value="10:00">10:00 h</option>
+											<option value="11:00">11:00 h</option>
+											<option value="12:00">12:00 h</option>
+											<option value="13:00">13:00 h</option>
+											<option value="16:00">16:00 h</option>
+											<option value="17:00">17:00 h</option>
+											<option value="18:00">18:00 h</option>
+											<option value="19:00">19:00 h</option>
+										</select>
 									</div>
 								</div>
-								<div class="col-md-4 col-sm-12">
-									<div class="form-group">
-										<label>Número de personas *</label>
-										<div class="input-icon">
-											<i class="fa fa-users"></i>
-											<input type="number" name="personas" id="personas" min="1" max="6" value="2" required>
-										</div>
+								<div class="campo">
+									<label>Personas <span>*</span></label>
+									<div class="campo_icono">
+										<i class="fa fa-users"></i>
+										<input type="number" name="personas" id="personas" min="1" max="6" value="2" required>
 									</div>
 								</div>
 							</div>
 
-							<hr class="divider">
+							<hr class="form_divider">
 
-							<!-- Datos personales -->
-							<div class="section_label">3. Tus datos</div>
-							<div class="row">
-								<div class="col-md-6 col-sm-12">
-									<div class="form-group">
-										<label>Nombre completo *</label>
-										<div class="input-icon">
-											<i class="fa fa-user"></i>
-											<input type="text" name="nombre" id="nombre" placeholder="Tu nombre" required>
-										</div>
+							<!-- 3. Datos personales -->
+							<div class="seccion_label">3. Tus datos</div>
+							<div class="campos_grid dos">
+								<div class="campo">
+									<label>Nombre completo <span>*</span></label>
+									<div class="campo_icono">
+										<i class="fa fa-user"></i>
+										<input type="text" name="nombre" id="nombre" placeholder="Tu nombre y apellidos" required>
 									</div>
 								</div>
-								<div class="col-md-6 col-sm-12">
-									<div class="form-group">
-										<label>Teléfono *</label>
-										<div class="input-icon">
-											<i class="fa fa-phone"></i>
-											<input type="tel" name="telefono" id="telefono" placeholder="+34 600 000 000" required>
-										</div>
+								<div class="campo">
+									<label>Teléfono <span>*</span></label>
+									<div class="campo_icono">
+										<i class="fa fa-phone"></i>
+										<input type="tel" name="telefono" id="telefono" placeholder="+34 600 000 000" required>
 									</div>
 								</div>
-								<div class="col-md-6 col-sm-12">
-									<div class="form-group">
-										<label>Correo electrónico *</label>
-										<div class="input-icon">
-											<i class="fa fa-envelope"></i>
-											<input type="email" name="email" id="email" placeholder="tu@email.com" required>
-										</div>
+								<div class="campo">
+									<label>Correo electrónico <span>*</span></label>
+									<div class="campo_icono">
+										<i class="fa fa-envelope"></i>
+										<input type="email" name="email" id="email" placeholder="tu@email.com" required>
 									</div>
 								</div>
-								<div class="col-md-6 col-sm-12">
-									<div class="form-group">
-										<label>Idioma preferido</label>
-										<div class="input-icon">
-											<i class="fa fa-globe"></i>
-											<select name="idioma" id="idioma">
-												<option value="Español">🇪🇸 Español</option>
-												<option value="English">🇬🇧 English</option>
-												<option value="Français">🇫🇷 Français</option>
-												<option value="Deutsch">🇩🇪 Deutsch</option>
-											</select>
-										</div>
+								<div class="campo">
+									<label>Idioma preferido</label>
+									<div class="campo_icono">
+										<i class="fa fa-globe"></i>
+										<select name="idioma" id="idioma">
+											<option value="Español">Español</option>
+											<option value="English">English</option>
+											<option value="Français">Français</option>
+											<option value="Deutsch">Deutsch</option>
+										</select>
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-group">
-										<label>Comentarios o peticiones especiales</label>
-										<textarea name="mensaje" id="mensaje" placeholder="¿Tienes alguna petición especial? ¿Celebras algo? ¡Cuéntanos!"></textarea>
-									</div>
+								<div class="campo" style="grid-column: 1 / -1;">
+									<label>Comentarios o peticiones especiales</label>
+									<textarea name="mensaje" id="mensaje" placeholder="¿Celebras algo especial? ¿Necesitas accesibilidad? ¡Cuéntanos!"></textarea>
 								</div>
 							</div>
 
 							<button type="submit" class="btn_reservar" id="btnEnviar">
-								<i class="fa fa-check-circle"></i> Confirmar Reserva
+								<i class="fa fa-check-circle"></i>&nbsp; Confirmar Reserva
 							</button>
-							<p style="text-align:center; color:#aaa; font-size:13px; margin-top:12px;">
-								Al reservar aceptas nuestras <a href="#">condiciones</a>. Sin cobro previo — pago el día del tour.
-							</p>
+							<p class="form_aviso">Sin cobro previo — pago el día del tour en efectivo o tarjeta. <a href="#">Condiciones de reserva.</a></p>
+
 						</form>
 					</div>
 				</div>
 
-				<!-- Resumen -->
-				<div class="col-lg-4 col-md-12">
-					<div class="resumen_card">
-						<h4>📋 Resumen de tu reserva</h4>
-						<div class="resumen_item">
-							<span class="label">Tour</span>
-							<span class="value" id="res_tour">—</span>
-						</div>
-						<div class="resumen_item">
-							<span class="label">Fecha</span>
-							<span class="value" id="res_fecha">—</span>
-						</div>
-						<div class="resumen_item">
-							<span class="label">Hora</span>
-							<span class="value" id="res_hora">—</span>
-						</div>
-						<div class="resumen_item">
-							<span class="label">Personas</span>
-							<span class="value" id="res_personas">2</span>
-						</div>
-						<div class="resumen_item resumen_total">
-							<span class="label">Precio estimado</span>
-							<span class="value" id="res_precio">—</span>
-						</div>
-						<hr>
-						<div style="font-size:13px; color:#888; line-height:1.6;">
-							<p>📍 <strong>Punto de encuentro:</strong> Calle Larios 5, Málaga</p>
-							<p>📞 <strong>Teléfono:</strong> +34 951 234 567</p>
-							<p>💳 <strong>Pago:</strong> El día del tour en efectivo o tarjeta</p>
-							<p>❌ <strong>Cancelación:</strong> Gratuita hasta 24h antes</p>
+				<!-- ── Columna derecha: resumen ────────────────── -->
+				<div class="resumen_col">
+					<div class="resumen_sticky">
+						<div class="card_blanca resumen_card">
+							<h4>Resumen de tu reserva</h4>
+
+							<div class="resumen_fila">
+								<span class="r_label">Tour</span>
+								<span class="r_valor" id="res_tour">—</span>
+							</div>
+							<div class="resumen_fila">
+								<span class="r_label">Fecha</span>
+								<span class="r_valor" id="res_fecha">—</span>
+							</div>
+							<div class="resumen_fila">
+								<span class="r_label">Hora</span>
+								<span class="r_valor" id="res_hora">—</span>
+							</div>
+							<div class="resumen_fila">
+								<span class="r_label">Personas</span>
+								<span class="r_valor" id="res_personas">2</span>
+							</div>
+
+							<div class="resumen_total">
+								<span class="r_label">Precio estimado</span>
+								<span class="r_valor" id="res_precio">—</span>
+							</div>
+
+							<div class="resumen_info">
+								<div class="info_item">
+									<i class="fa fa-map-marker"></i>
+									<span><strong>Punto de encuentro:</strong> Calle Larios 5, Málaga</span>
+								</div>
+								<div class="info_item">
+									<i class="fa fa-phone"></i>
+									<span><strong>Teléfono:</strong> +34 951 234 567</span>
+								</div>
+								<div class="info_item">
+									<i class="fa fa-credit-card"></i>
+									<span><strong>Pago:</strong> El día del tour en efectivo o tarjeta</span>
+								</div>
+								<div class="info_item">
+									<i class="fa fa-times-circle-o"></i>
+									<span><strong>Cancelación:</strong> Gratuita hasta 24h antes</span>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</div>
-	</div>
+	</section>
 
 	<!-- Footer -->
 	<footer class="tor_footer_main_wrapper">
@@ -373,104 +680,109 @@
 	<script src="assets/js/SmoothScroll.min.js"></script>
 	<script src="assets/js/custom.js"></script>
 	<script>
-		// Set min date to today
-		const today = new Date().toISOString().split('T')[0];
-		document.getElementById('fecha').setAttribute('min', today);
+		document.getElementById('fecha').setAttribute('min', new Date().toISOString().split('T')[0]);
 		document.getElementById('current-year').textContent = new Date().getFullYear();
 
-		// Preselect from URL params
-		const params = new URLSearchParams(window.location.search);
-		if (params.get('tour')) {
-			document.querySelectorAll('.tour_option').forEach(el => {
-				const radio = el.querySelector('input[type="radio"]');
-				if (radio.value === params.get('tour')) {
-					el.click();
-				}
-			});
-		}
-		if (params.get('fecha')) document.getElementById('fecha').value = params.get('fecha');
-		if (params.get('hora')) document.getElementById('hora').value = params.get('hora');
-		if (params.get('personas')) document.getElementById('personas').value = params.get('personas');
-
-		// Tour prices map
-		const tourPrices = {
+		const tourPrecios = {
 			'Tour Centro Histórico': 15,
-			'Tour Playa y Puerto': 12,
-			'Tour Ruta Picasso': 14,
-			'Tour Atardecer': 10,
-			'Tour Personalizado': null
+			'Tour Playa y Puerto':   12,
+			'Tour Ruta Picasso':     14,
+			'Tour Atardecer':        10,
+			'Tour Personalizado':    null
 		};
 
-		function selectTour(el, tourName) {
-			document.querySelectorAll('.tour_option').forEach(o => o.classList.remove('selected'));
-			el.classList.add('selected');
-			updateResumen();
+		function seleccionarTour(el, nombre) {
+			document.querySelectorAll('.tour_card').forEach(c => c.classList.remove('activo'));
+			el.classList.add('activo');
+			actualizarResumen();
 		}
 
-		function updateResumen() {
-			const tour = document.querySelector('.tour_option.selected input');
-			const fecha = document.getElementById('fecha').value;
-			const hora = document.getElementById('hora').value;
+		function actualizarResumen() {
+			const tourEl   = document.querySelector('.tour_card.activo input[type="radio"]');
+			const fecha    = document.getElementById('fecha').value;
+			const hora     = document.getElementById('hora').value;
 			const personas = parseInt(document.getElementById('personas').value) || 0;
 
-			document.getElementById('res_tour').textContent = tour ? tour.value : '—';
-			document.getElementById('res_fecha').textContent = fecha ? new Date(fecha + 'T00:00:00').toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'}) : '—';
-			document.getElementById('res_hora').textContent = hora || '—';
+			document.getElementById('res_tour').textContent = tourEl ? tourEl.value : '—';
+			document.getElementById('res_fecha').textContent = fecha
+				? new Date(fecha + 'T00:00:00').toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' })
+				: '—';
+			document.getElementById('res_hora').textContent = hora ? hora + ' h' : '—';
 			document.getElementById('res_personas').textContent = personas || '—';
 
-			if (tour && tourPrices[tour.value] !== null && tourPrices[tour.value] !== undefined) {
-				const total = tourPrices[tour.value] * personas;
-				document.getElementById('res_precio').textContent = total + '€';
-			} else if (tour && tour.value === 'Tour Personalizado') {
-				document.getElementById('res_precio').textContent = 'A consultar';
+			if (tourEl) {
+				const precio = tourPrecios[tourEl.value];
+				if (precio === null) {
+					document.getElementById('res_precio').textContent = 'A consultar';
+				} else {
+					document.getElementById('res_precio').textContent = (precio * personas) + '€';
+				}
 			} else {
 				document.getElementById('res_precio').textContent = '—';
 			}
 		}
 
 		['fecha', 'hora', 'personas'].forEach(id => {
-			document.getElementById(id).addEventListener('change', updateResumen);
+			document.getElementById(id).addEventListener('change', actualizarResumen);
 		});
+
+		// Preselect from URL params
+		const params = new URLSearchParams(window.location.search);
+		if (params.get('tour')) {
+			document.querySelectorAll('.tour_card').forEach(el => {
+				const radio = el.querySelector('input[type="radio"]');
+				if (radio && radio.value === params.get('tour')) {
+					seleccionarTour(el, radio.value);
+				}
+			});
+		}
+		if (params.get('fecha'))    document.getElementById('fecha').value    = params.get('fecha');
+		if (params.get('hora'))     document.getElementById('hora').value     = params.get('hora');
+		if (params.get('personas')) document.getElementById('personas').value = params.get('personas');
+		actualizarResumen();
 
 		// Form submit
 		document.getElementById('reservaForm').addEventListener('submit', function(e) {
 			e.preventDefault();
 
-			const tour = document.querySelector('.tour_option.selected input');
-			if (!tour) { alert('Por favor selecciona un tour'); return; }
+			const tourEl = document.querySelector('.tour_card.activo input[type="radio"]');
+			if (!tourEl) {
+				alert('Por favor selecciona un tour primero.');
+				return;
+			}
 
 			const btn = document.getElementById('btnEnviar');
 			btn.disabled = true;
-			btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Enviando...';
+			btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>&nbsp; Enviando...';
 
 			const formData = new FormData(this);
-			formData.set('tipo_tour', tour.value);
+			formData.set('tipo_tour', tourEl.value);
 
-			fetch('reservas/reservar.php', {
-				method: 'POST',
-				body: formData
-			})
-			.then(r => r.json())
-			.then(data => {
-				if (data.success) {
-					document.getElementById('alertSuccess').style.display = 'block';
-					document.getElementById('alertError').style.display = 'none';
-					this.reset();
-					document.querySelectorAll('.tour_option').forEach(o => o.classList.remove('selected'));
-					updateResumen();
-					window.scrollTo({top: 0, behavior: 'smooth'});
-				} else {
-					document.getElementById('alertError').style.display = 'block';
-					document.getElementById('alertError').innerHTML = '❌ ' + (data.message || 'Error al enviar');
-				}
-			})
-			.catch(() => {
-				document.getElementById('alertError').style.display = 'block';
-			})
-			.finally(() => {
-				btn.disabled = false;
-				btn.innerHTML = '<i class="fa fa-check-circle"></i> Confirmar Reserva';
-			});
+			fetch('reservas/reservar.php', { method: 'POST', body: formData })
+				.then(r => r.json())
+				.then(data => {
+					if (data.success) {
+						document.getElementById('alertaOk').style.display = 'block';
+						document.getElementById('alertaErr').style.display = 'none';
+						this.reset();
+						document.querySelectorAll('.tour_card').forEach(c => c.classList.remove('activo'));
+						actualizarResumen();
+						window.scrollTo({ top: 0, behavior: 'smooth' });
+					} else {
+						const err = document.getElementById('alertaErr');
+						err.innerHTML = '<strong>Error:</strong> ' + (data.message || 'No se pudo enviar la reserva.');
+						err.style.display = 'block';
+						document.getElementById('alertaOk').style.display = 'none';
+					}
+				})
+				.catch(() => {
+					document.getElementById('alertaErr').style.display = 'block';
+					document.getElementById('alertaOk').style.display = 'none';
+				})
+				.finally(() => {
+					btn.disabled = false;
+					btn.innerHTML = '<i class="fa fa-check-circle"></i>&nbsp; Confirmar Reserva';
+				});
 		});
 	</script>
 </body>
