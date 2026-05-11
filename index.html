@@ -92,7 +92,10 @@ Author: PixelNx
 			background-position: right 12px center;
 			padding-right: 32px;
 		}
-		.bw_field input[type="date"] { cursor: pointer; }
+		.bw_field input[type="date"] {
+			cursor: pointer;
+			min-height: 44px;  /* iOS tap target mínimo */
+		}
 		.bw_field select:focus,
 		.bw_field input[type="date"]:focus {
 			border-color: #f0a500;
@@ -2221,7 +2224,12 @@ Author: PixelNx
 	<script src="assets/js/custom.js"></script>
 	<script>
 		// Fecha mínima = hoy
-		document.getElementById('banner_fecha').setAttribute('min', new Date().toISOString().split('T')[0]);
+		var fechaInput = document.getElementById('banner_fecha');
+		fechaInput.setAttribute('min', new Date().toISOString().split('T')[0]);
+		// iOS Safari: forzar apertura del picker al tocar el campo
+		fechaInput.addEventListener('click', function() {
+			try { this.showPicker(); } catch(e) {}
+		});
 		// Copyright year
 		var cy = document.getElementById('current-year');
 		if (cy) cy.textContent = new Date().getFullYear();

@@ -2878,7 +2878,7 @@ strong.select2-results__group {
     font-weight: 600;
     color: #666666;
 }
-input[type="date"] {
+#datepicker[type="date"] {
     border: none;
     width: 100%;
 }

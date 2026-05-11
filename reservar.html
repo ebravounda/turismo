@@ -239,7 +239,10 @@
 			background-position: right 12px center;
 			padding-right: 32px;
 		}
-		.campo input[type="date"] { cursor: pointer; }
+		.campo input[type="date"] {
+			cursor: pointer;
+			min-height: 44px;
+		}
 		.campo input:focus,
 		.campo select:focus,
 		.campo textarea:focus {
@@ -681,7 +684,11 @@
 	<script src="assets/js/SmoothScroll.min.js"></script>
 	<script src="assets/js/custom.js"></script>
 	<script>
-		document.getElementById('fecha').setAttribute('min', new Date().toISOString().split('T')[0]);
+		var fechaEl = document.getElementById('fecha');
+		fechaEl.setAttribute('min', new Date().toISOString().split('T')[0]);
+		fechaEl.addEventListener('click', function() {
+			try { this.showPicker(); } catch(e) {}
+		});
 		document.getElementById('current-year').textContent = new Date().getFullYear();
 
 		// Precios en memoria (se sobreescriben con los datos del servidor)
