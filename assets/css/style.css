@@ -852,32 +852,25 @@ iframe {
     right: 20px;
     top: 15px;
 }
-input[type="date"] {
+/* Estilos del datepicker original del template — solo para #datepicker */
+#datepicker[type="date"] {
     display:block;
     position:relative;
-    background: url("../images/calender.png") right 1rem  center  no-repeat;    
+    background: url("../images/calender.png") right 1rem  center  no-repeat;
     cursor:pointer;
 }
-::-webkit-datetime-edit-text {
-    opacity:0;
-}
-::-webkit-clear-button,
-::-webkit-inner-spin-button {
-    display:none;
-}
-::-webkit-calendar-picker-indicator {
+#datepicker[type="date"]::-webkit-datetime-edit-text { opacity:0; }
+#datepicker[type="date"]::-webkit-clear-button,
+#datepicker[type="date"]::-webkit-inner-spin-button { display:none; }
+#datepicker[type="date"]::-webkit-calendar-picker-indicator {
     position:absolute;
     width:2.5rem;
     height:100%;
-    top:0;
-    right:0;
-    bottom:0;
+    top:0; right:0; bottom:0;
     opacity:0;
     cursor:pointer;
     background:transparent;
 }
-.tor_field_inner input[type="date"]:hover::-webkit-calendar-picker-indicator { opacity:0; }
-.tor_field_inner input[type="date"]:hover::-webkit-calendar-picker-indicator:hover { opacity:0;}
 
 /********************************************************
     6. Service CSS Start
