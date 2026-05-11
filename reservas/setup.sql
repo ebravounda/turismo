@@ -34,7 +34,28 @@ CREATE TABLE IF NOT EXISTS `reservas` (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
 
--- 3. Tabla de administradores (opcional, para futuras mejoras)
+-- 3. Tabla de precios por tour (editable desde el panel admin)
+CREATE TABLE IF NOT EXISTS `precios` (
+    `id`          INT UNSIGNED    NOT NULL AUTO_INCREMENT,
+    `tour_nombre` VARCHAR(100)    NOT NULL UNIQUE,
+    `precio_base` DECIMAL(8,2)   NOT NULL DEFAULT 0.00,
+    `duracion`    VARCHAR(30)     NOT NULL DEFAULT '',
+    `activo`      TINYINT(1)      NOT NULL DEFAULT 1,
+    `updated_at`  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `precios` (`tour_nombre`, `precio_base`, `duracion`, `activo`) VALUES
+('Tour Centro Histórico', 15.00, '90 min', 1),
+('Tour Playa y Puerto',   12.00, '60 min', 1),
+('Tour Ruta Picasso',     14.00, '75 min', 1),
+('Tour Atardecer',        10.00, '45 min', 1),
+('Tour Personalizado',     0.00, 'A consultar', 1)
+ON DUPLICATE KEY UPDATE precio_base = VALUES(precio_base);
+
+-- 4. Tabla de administradores (opcional, para futuras mejoras)
 CREATE TABLE IF NOT EXISTS `admins` (
     `id`         INT UNSIGNED    NOT NULL AUTO_INCREMENT,
     `username`   VARCHAR(50)     NOT NULL UNIQUE,

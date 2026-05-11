@@ -43,9 +43,25 @@ if (isset($_SESSION['admin']) && isset($_GET['delete'])) {
     exit;
 }
 
+// ── Actualizar precio ──────────────────────────────────────────
+if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_precio'])) {
+    $tour_id  = (int)($_POST['tour_id']    ?? 0);
+    $precio   = max(0, round((float)str_replace(',', '.', $_POST['precio_base'] ?? '0'), 2));
+    $duracion = htmlspecialchars(strip_tags(trim($_POST['duracion'] ?? '')), ENT_QUOTES, 'UTF-8');
+    $activo   = isset($_POST['activo']) ? 1 : 0;
+    if ($tour_id > 0) {
+        $db = getDB();
+        $db->prepare("UPDATE precios SET precio_base = ?, duracion = ?, activo = ? WHERE id = ?")
+           ->execute([$precio, $duracion, $activo, $tour_id]);
+    }
+    header('Location: admin.php?vista=precios&ok=1');
+    exit;
+}
+
 // ── Parámetros de vista ────────────────────────────────────────
 $filter_date = $_GET['fecha'] ?? date('Y-m-d');
 $view_mode   = $_GET['vista'] ?? 'dia';
+$precio_ok   = isset($_GET['ok']) && $view_mode === 'precios';
 
 // ── Consultas MySQL ────────────────────────────────────────────
 $filtered = [];
@@ -60,19 +76,28 @@ if (isset($_SESSION['admin'])) {
     $stats['pendientes'] = (int)$db->query("SELECT COUNT(*) FROM reservas WHERE estado = 'pendiente'")->fetchColumn();
     $stats['confirmadas']= (int)$db->query("SELECT COUNT(*) FROM reservas WHERE estado = 'confirmada'")->fetchColumn();
 
+    // Precios
+    $all_precios = [];
+    if ($view_mode === 'precios') {
+        $all_precios = $db->query("SELECT * FROM precios ORDER BY id")->fetchAll();
+    }
+
     // Reservas según vista
     if ($view_mode === 'semana') {
         $week_start = date('Y-m-d', strtotime('monday this week', strtotime($filter_date)));
         $week_end   = date('Y-m-d', strtotime('sunday this week', strtotime($filter_date)));
         $stmt = $db->prepare("SELECT * FROM reservas WHERE fecha BETWEEN ? AND ? ORDER BY fecha, hora");
         $stmt->execute([$week_start, $week_end]);
+        $filtered = $stmt->fetchAll();
     } elseif ($view_mode === 'todas') {
-        $stmt = $db->query("SELECT * FROM reservas ORDER BY fecha DESC, hora ASC");
+        $filtered = $db->query("SELECT * FROM reservas ORDER BY fecha DESC, hora ASC")->fetchAll();
+    } elseif ($view_mode === 'precios') {
+        $filtered = [];
     } else { // día
         $stmt = $db->prepare("SELECT * FROM reservas WHERE fecha = ? ORDER BY hora");
         $stmt->execute([$filter_date]);
+        $filtered = $stmt->fetchAll();
     }
-    $filtered = $stmt->fetchAll();
 
     // Conteo por día para la semana (puntos calendario)
     $week_start_nav = date('Y-m-d', strtotime('monday this week', strtotime($filter_date)));
@@ -229,6 +254,9 @@ table tr:hover td{background:#fafafa}
         <a href="admin.php?vista=todas" class="<?= $view_mode === 'todas' ? 'active' : '' ?>">
             <i class="fa fa-list"></i> Todas las reservas
         </a>
+        <a href="admin.php?vista=precios" class="<?= $view_mode === 'precios' ? 'active' : '' ?>">
+            <i class="fa fa-tag"></i> Precios
+        </a>
         <a href="../index.html" target="_blank"><i class="fa fa-globe"></i> Ver web</a>
         <a href="../reservar.html" target="_blank"><i class="fa fa-plus-circle"></i> Nueva reserva</a>
     </nav>
@@ -309,6 +337,85 @@ table tr:hover td{background:#fafafa}
     <?php endif; ?>
     <?php endif; ?>
 
+    <?php if ($view_mode === 'precios'): ?>
+    <!-- ════ GESTIÓN DE PRECIOS ════ -->
+    <style>
+    .precios_grid{display:grid;gap:16px}
+    .precio_card{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:24px 28px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+    .precio_card .tour_info .nombre{font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:2px}
+    .precio_card .tour_info .tour_id{font-size:12px;color:#aaa}
+    .precio_card .campos{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .precio_campo{display:flex;flex-direction:column;gap:4px}
+    .precio_campo label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#888}
+    .precio_campo input[type=text],
+    .precio_campo input[type=number]{padding:9px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:15px;font-weight:600;width:110px;outline:none;color:#1a1a2e}
+    .precio_campo input[type=text]{width:130px}
+    .precio_campo input:focus{border-color:#f0a500;box-shadow:0 0 0 3px rgba(240,165,0,.1)}
+    .precio_campo .toggle{display:flex;align-items:center;gap:8px;padding-top:4px;font-size:13px;color:#555}
+    .precio_campo .toggle input[type=checkbox]{width:18px;height:18px;accent-color:#f0a500;cursor:pointer}
+    .btn_guardar_precio{background:#f0a500;color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.15s}
+    .btn_guardar_precio:hover{background:#d4940a}
+    .alerta_precios_ok{background:#d4edda;border:1px solid #b8dfc6;color:#155724;padding:12px 18px;border-radius:8px;margin-bottom:20px;font-size:14px}
+    @media(max-width:768px){.precio_card{grid-template-columns:1fr}.precio_card .campos{gap:10px}}
+    </style>
+
+    <div class="topbar" style="margin-bottom:20px">
+        <div>
+            <h1><i class="fa fa-tag"></i> Gestión de precios</h1>
+            <div class="date_info">Modifica el precio base por persona de cada tour</div>
+        </div>
+    </div>
+
+    <?php if ($precio_ok): ?>
+    <div class="alerta_precios_ok"><i class="fa fa-check-circle"></i> <strong>¡Precio actualizado!</strong> Los cambios ya son visibles en el formulario de reservas.</div>
+    <?php endif; ?>
+
+    <div class="precios_grid">
+    <?php
+    $iconos = [
+        'Tour Centro Histórico' => '🏛️',
+        'Tour Playa y Puerto'   => '🏖️',
+        'Tour Ruta Picasso'     => '🎨',
+        'Tour Atardecer'        => '🌅',
+        'Tour Personalizado'    => '✨',
+    ];
+    foreach ($all_precios as $p):
+        $icono = $iconos[$p['tour_nombre']] ?? '🛺';
+    ?>
+    <div class="precio_card">
+        <div class="tour_info">
+            <div class="nombre"><?= $icono ?> <?= htmlspecialchars($p['tour_nombre']) ?></div>
+            <div class="tour_id">ID #<?= (int)$p['id'] ?></div>
+        </div>
+        <form method="POST" action="admin.php?vista=precios" style="display:contents">
+            <input type="hidden" name="update_precio" value="1">
+            <input type="hidden" name="tour_id" value="<?= (int)$p['id'] ?>">
+            <div class="campos">
+                <div class="precio_campo">
+                    <label>Precio base (€/persona)</label>
+                    <input type="number" name="precio_base" value="<?= number_format((float)$p['precio_base'], 2, '.', '') ?>"
+                           min="0" step="0.50"
+                           <?= $p['tour_nombre'] === 'Tour Personalizado' ? 'placeholder="0 = a consultar"' : '' ?>>
+                </div>
+                <div class="precio_campo">
+                    <label>Duración</label>
+                    <input type="text" name="duracion" value="<?= htmlspecialchars($p['duracion']) ?>" placeholder="p.ej. 90 min">
+                </div>
+                <div class="precio_campo">
+                    <label>Visible</label>
+                    <div class="toggle">
+                        <input type="checkbox" name="activo" <?= $p['activo'] ? 'checked' : '' ?>>
+                        <span><?= $p['activo'] ? 'Activo' : 'Oculto' ?></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn_guardar_precio"><i class="fa fa-save"></i> Guardar</button>
+            </div>
+        </form>
+    </div>
+    <?php endforeach; ?>
+    </div>
+
+    <?php elseif ($view_mode !== 'precios'): ?>
     <!-- Tabla -->
     <div class="table_card">
         <div class="table_header">
@@ -416,6 +523,7 @@ table tr:hover td{background:#fafafa}
         </table>
         <?php endif; ?>
     </div>
+    <?php endif; // end elseif ($view_mode !== 'precios') ?>
 </div>
 
 <?php endif; ?>

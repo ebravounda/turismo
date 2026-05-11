@@ -455,7 +455,7 @@
 							<div class="seccion_label">1. Elige tu tour</div>
 							<div class="tours_grid">
 
-								<label class="tour_card" onclick="seleccionarTour(this, 'Tour Centro Histórico')">
+								<label class="tour_card" data-tour="Tour Centro Histórico" onclick="seleccionarTour(this, 'Tour Centro Histórico')">
 									<input type="radio" name="tipo_tour" value="Tour Centro Histórico">
 									<div class="tour_card_check"><i class="fa fa-check"></i></div>
 									<div class="tour_card_icono">🏛️</div>
@@ -467,7 +467,7 @@
 									</div>
 								</label>
 
-								<label class="tour_card" onclick="seleccionarTour(this, 'Tour Playa y Puerto')">
+								<label class="tour_card" data-tour="Tour Playa y Puerto" onclick="seleccionarTour(this, 'Tour Playa y Puerto')">
 									<input type="radio" name="tipo_tour" value="Tour Playa y Puerto">
 									<div class="tour_card_check"><i class="fa fa-check"></i></div>
 									<div class="tour_card_icono">🏖️</div>
@@ -479,7 +479,7 @@
 									</div>
 								</label>
 
-								<label class="tour_card" onclick="seleccionarTour(this, 'Tour Ruta Picasso')">
+								<label class="tour_card" data-tour="Tour Ruta Picasso" onclick="seleccionarTour(this, 'Tour Ruta Picasso')">
 									<input type="radio" name="tipo_tour" value="Tour Ruta Picasso">
 									<div class="tour_card_check"><i class="fa fa-check"></i></div>
 									<div class="tour_card_icono">🎨</div>
@@ -491,7 +491,7 @@
 									</div>
 								</label>
 
-								<label class="tour_card" onclick="seleccionarTour(this, 'Tour Atardecer')">
+								<label class="tour_card" data-tour="Tour Atardecer" onclick="seleccionarTour(this, 'Tour Atardecer')">
 									<input type="radio" name="tipo_tour" value="Tour Atardecer">
 									<div class="tour_card_check"><i class="fa fa-check"></i></div>
 									<div class="tour_card_icono">🌅</div>
@@ -503,7 +503,7 @@
 									</div>
 								</label>
 
-								<label class="tour_card" onclick="seleccionarTour(this, 'Tour Personalizado')" style="grid-column: 1 / -1;">
+								<label class="tour_card" data-tour="Tour Personalizado" onclick="seleccionarTour(this, 'Tour Personalizado')" style="grid-column: 1 / -1;">
 									<input type="radio" name="tipo_tour" value="Tour Personalizado">
 									<div class="tour_card_check"><i class="fa fa-check"></i></div>
 									<div style="display:flex; align-items:center; gap:12px;">
@@ -683,6 +683,7 @@
 		document.getElementById('fecha').setAttribute('min', new Date().toISOString().split('T')[0]);
 		document.getElementById('current-year').textContent = new Date().getFullYear();
 
+		// Precios en memoria (se sobreescriben con los datos del servidor)
 		const tourPrecios = {
 			'Tour Centro Histórico': 15,
 			'Tour Playa y Puerto':   12,
@@ -690,6 +691,32 @@
 			'Tour Atardecer':        10,
 			'Tour Personalizado':    null
 		};
+
+		// Cargar precios actuales desde el servidor
+		fetch('reservas/precios.php')
+			.then(r => r.json())
+			.then(precios => {
+				precios.forEach(tour => {
+					tourPrecios[tour.nombre] = tour.precio > 0 ? tour.precio : null;
+
+					// Actualizar el precio y duración mostrados en la tarjeta
+					const card = document.querySelector('.tour_card[data-tour="' + tour.nombre + '"]');
+					if (!card) return;
+					const elPrecio   = card.querySelector('.tour_card_precio');
+					const elDuracion = card.querySelector('.tour_card_duracion');
+					if (elPrecio && tour.precio > 0) {
+						elPrecio.textContent = 'Desde ' + tour.precio.toFixed(0) + '€';
+					} else if (elPrecio && tour.precio === 0) {
+						elPrecio.textContent = 'A consultar';
+					}
+					if (elDuracion && tour.duracion) {
+						elDuracion.textContent = tour.duracion;
+					}
+				});
+				// Recalcular resumen por si ya había algo seleccionado
+				actualizarResumen();
+			})
+			.catch(() => { /* usa los precios por defecto */ });
 
 		function seleccionarTour(el, nombre) {
 			document.querySelectorAll('.tour_card').forEach(c => c.classList.remove('activo'));
