@@ -92,8 +92,28 @@ Author: PixelNx
 			background-position: right 12px center;
 			padding-right: 32px;
 		}
-		/* El date input conserva su apariencia nativa (el selector de fecha del browser) */
+		/* Revertir los estilos rotos del template para nuestro date input */
 		.bw_field input[type="date"] {
+			background: #fafafa !important;
+			cursor: pointer;
+		}
+		.bw_field input[type="date"]:focus {
+			background: #fff !important;
+		}
+		.bw_field input[type="date"]::-webkit-datetime-edit-text { opacity: 1; }
+		.bw_field input[type="date"]::-webkit-datetime-edit-month-field { opacity: 1; }
+		.bw_field input[type="date"]::-webkit-datetime-edit-day-field { opacity: 1; }
+		.bw_field input[type="date"]::-webkit-datetime-edit-year-field { opacity: 1; }
+		.bw_field input[type="date"]::-webkit-inner-spin-button { display: revert; }
+		.bw_field input[type="date"]::-webkit-clear-button { display: revert; }
+		.bw_field input[type="date"]::-webkit-calendar-picker-indicator {
+			position: relative;
+			width: auto;
+			height: auto;
+			top: auto;
+			right: auto;
+			bottom: auto;
+			opacity: 1;
 			cursor: pointer;
 		}
 		.bw_field select:focus,
