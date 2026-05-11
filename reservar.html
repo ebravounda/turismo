@@ -230,15 +230,16 @@
 			background: #fff;
 			transition: border-color 0.18s, box-shadow 0.18s;
 			outline: none;
-			-webkit-appearance: none;
-			appearance: none;
 		}
 		.campo select {
+			-webkit-appearance: none;
+			appearance: none;
 			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237b8190' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
 			background-repeat: no-repeat;
 			background-position: right 12px center;
 			padding-right: 32px;
 		}
+		.campo input[type="date"] { cursor: pointer; }
 		.campo input:focus,
 		.campo select:focus,
 		.campo textarea:focus {
