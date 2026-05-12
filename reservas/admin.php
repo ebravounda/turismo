@@ -264,7 +264,41 @@ table tr:hover td{background:#fafafa}
 .empty_state{text-align:center;padding:48px 20px;color:#bbb}
 .empty_state i{font-size:48px;display:block;margin-bottom:12px}
 .section_date{padding:10px 20px;background:#f9f9f9;border-bottom:1px solid #f0f0f0;font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px}
-@media(max-width:768px){.sidebar{display:none}.main_content{margin-left:0;padding:16px}.stats_grid{grid-template-columns:repeat(2,1fr)}.week_grid{grid-template-columns:repeat(4,1fr)}}
+/* ── Mobile top bar ── */
+.mobile_topbar{display:none;position:fixed;top:0;left:0;right:0;height:54px;background:#1a1a2e;z-index:1001;align-items:center;justify-content:space-between;padding:0 16px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.mobile_topbar .m_brand{color:#f0a500;font-weight:800;font-size:16px;letter-spacing:.3px}
+.mobile_topbar .m_hamburger{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:6px 4px;line-height:1}
+.sidebar_overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;cursor:pointer}
+.sidebar_overlay.open{display:block}
+/* ── Responsive ── */
+@media(max-width:900px){
+  .mobile_topbar{display:flex}
+  .sidebar{transform:translateX(-100%);transition:transform .28s ease;z-index:1000;top:0;min-height:100vh}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar .logout{position:relative;bottom:auto;margin:20px 20px 24px}
+  .main_content{margin-left:0;padding:16px;padding-top:70px}
+  .stats_grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .week_grid{grid-template-columns:repeat(4,1fr);gap:8px}
+  .table_card{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{min-width:640px}
+  .topbar{flex-direction:column;align-items:flex-start;gap:6px;margin-bottom:20px}
+  .topbar h1{font-size:18px}
+  .controls{flex-wrap:wrap;gap:8px}
+}
+@media(max-width:600px){
+  .week_grid{grid-template-columns:repeat(2,1fr)}
+  .stats_grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat_card{padding:14px}
+  .stat_card .number{font-size:26px}
+  .controls input[type=date]{width:100%}
+  .view_btns{display:flex;flex-wrap:wrap;gap:6px}
+  .view_btns a{flex:1;text-align:center}
+  .main_content{padding:12px;padding-top:66px}
+}
+@media(max-width:400px){
+  .login_card{width:100%;border-radius:12px;padding:36px 20px;margin:16px}
+  .stats_grid{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
@@ -292,7 +326,16 @@ table tr:hover td{background:#fafafa}
 <?php else: ?>
 
 <!-- ════ DASHBOARD ════ -->
-<div class="sidebar">
+<!-- Mobile top bar -->
+<div class="mobile_topbar">
+    <span class="m_brand">🛺 TukTuk Norris</span>
+    <button class="m_hamburger" onclick="toggleSidebar()" aria-label="Menú">
+        <i class="fa fa-bars"></i>
+    </button>
+</div>
+<div class="sidebar_overlay" id="sidebar_overlay" onclick="closeSidebar()"></div>
+
+<div class="sidebar" id="admin_sidebar">
     <div class="brand"><h3>🛺 TukTuk Norris</h3><p>Panel Admin</p></div>
     <nav>
         <a href="admin.php" class="<?= $view_mode !== 'todas' ? 'active' : '' ?>">
@@ -827,5 +870,19 @@ table tr:hover td{background:#fafafa}
 </div>
 
 <?php endif; ?>
+<script>
+function toggleSidebar(){
+    document.getElementById('admin_sidebar').classList.toggle('open');
+    document.getElementById('sidebar_overlay').classList.toggle('open');
+}
+function closeSidebar(){
+    document.getElementById('admin_sidebar').classList.remove('open');
+    document.getElementById('sidebar_overlay').classList.remove('open');
+}
+// Close sidebar when a nav link is tapped on mobile
+document.querySelectorAll('#admin_sidebar nav a').forEach(function(a){
+    a.addEventListener('click', function(){ if(window.innerWidth <= 900) closeSidebar(); });
+});
+</script>
 </body>
 </html>
