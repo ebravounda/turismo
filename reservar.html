@@ -259,21 +259,26 @@
 		.btn_reservar {
 			display: block;
 			width: 100%;
-			padding: 15px;
+			padding: 16px 24px;
 			background: var(--naranja);
-			color: #fff;
+			color: #fff !important;
 			border: none;
 			border-radius: 10px;
-			font-size: 16px;
+			font-size: 17px;
 			font-weight: 800;
+			line-height: 1.4;
+			text-align: center;
 			cursor: pointer;
-			transition: background 0.18s, transform 0.12s;
-			letter-spacing: 0.3px;
+			-webkit-appearance: none;
+			appearance: none;
+			transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+			letter-spacing: 0.4px;
 			margin-top: 28px;
+			box-shadow: 0 4px 14px rgba(240,165,0,0.35);
 		}
-		.btn_reservar:hover { background: var(--naranja-dark); transform: translateY(-1px); }
-		.btn_reservar:active { transform: translateY(0); }
-		.btn_reservar:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+		.btn_reservar:hover { background: var(--naranja-dark); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(240,165,0,0.45); }
+		.btn_reservar:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(240,165,0,0.25); }
+		.btn_reservar:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
 
 		.form_aviso {
 			text-align: center;
@@ -692,8 +697,10 @@
 	<script>
 		var fechaEl = document.getElementById('fecha');
 		fechaEl.setAttribute('min', new Date().toISOString().split('T')[0]);
-		fechaEl.addEventListener('click', function() {
-			try { this.showPicker(); } catch(e) {}
+		// showPicker() only needed for keyboard/programmatic focus; native click handles mouse/touch
+		fechaEl.addEventListener('focus', function(e) {
+			if (!e.relatedTarget) return; // came from mouse/touch click — browser already opens picker
+			try { this.showPicker(); } catch(err) {}
 		});
 		document.getElementById('current-year').textContent = new Date().getFullYear();
 
