@@ -4,15 +4,15 @@
 //  Edita estos valores con los datos de tu Plesk
 // ══════════════════════════════════════════════════════════════
 
-define('DB_HOST',    'localhost');          // Normalmente localhost en Plesk
-define('DB_NAME',    'tuktuk_norris');      // Nombre de la base de datos que creaste
-define('DB_USER',    'tuktuk_user');        // Usuario MySQL de Plesk
-define('DB_PASS',    'TU_CONTRASEÑA_AQUI'); // Contraseña del usuario MySQL
+define('DB_HOST',    '127.0.0.1');
+define('DB_NAME',    'tuktuk_norris');
+define('DB_USER',    'tuktusr');
+define('DB_PASS',    '6OMP4c5hsdb?jpo@');
 define('DB_CHARSET', 'utf8mb4');
 
 // ── Contraseña del panel admin ─────────────────────────────────
 define('ADMIN_USER', 'admin');
-define('ADMIN_PASS', 'tuktuk2024');         // Cámbiala antes de poner en producción
+define('ADMIN_PASS', 'tuktuk2024');
 
 // ── Zona horaria ───────────────────────────────────────────────
 date_default_timezone_set('Europe/Madrid');
