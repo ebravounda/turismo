@@ -17,6 +17,14 @@ define('ADMIN_PASS', 'tuktuk2024');         // Cámbiala antes de poner en produ
 // ── Zona horaria ───────────────────────────────────────────────
 date_default_timezone_set('Europe/Madrid');
 
+// ── Producción segura ──────────────────────────────────────────
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_secure', 1);
+ini_set('session.cookie_samesite', 'Strict');
+ini_set('session.use_strict_mode', 1);
+
 // ── Conexión PDO (no tocar) ────────────────────────────────────
 function getDB(): PDO {
     static $pdo = null;
