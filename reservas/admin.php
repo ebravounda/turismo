@@ -284,6 +284,9 @@ table tr:hover td{background:#fafafa}
         <a href="admin.php?vista=precios" class="<?= $view_mode === 'precios' ? 'active' : '' ?>">
             <i class="fa fa-tag"></i> Precios
         </a>
+        <a href="admin.php?vista=imagenes" class="<?= $view_mode === 'imagenes' ? 'active' : '' ?>">
+            <i class="fa fa-picture-o"></i> Imágenes
+        </a>
         <a href="../index.html" target="_blank"><i class="fa fa-globe"></i> Ver web</a>
         <a href="../reservar.html" target="_blank"><i class="fa fa-plus-circle"></i> Nueva reserva</a>
     </nav>
@@ -442,7 +445,186 @@ table tr:hover td{background:#fafafa}
     <?php endforeach; ?>
     </div>
 
-    <?php elseif ($view_mode !== 'precios'): ?>
+    <?php elseif ($view_mode === 'imagenes'): ?>
+    <!-- ════ GESTIÓN DE IMÁGENES ════ -->
+    <style>
+    .img_grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-bottom:32px}
+    .img_slot_card{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column}
+    .img_slot_card .slot_preview{width:100%;height:150px;object-fit:cover;background:#f0f0f0;display:block}
+    .img_slot_card .slot_preview_placeholder{width:100%;height:150px;background:#f4f6fb;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:36px}
+    .img_slot_card .slot_body{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:10px}
+    .img_slot_card .slot_label{font-size:13px;font-weight:700;color:#1a1a2e;margin:0}
+    .img_slot_card .slot_id{font-size:11px;color:#aaa;font-family:monospace}
+    .img_slot_card .slot_actions{display:flex;gap:8px;flex-wrap:wrap}
+    .img_slot_card .slot_actions label{display:inline-block;padding:7px 14px;background:#f0a500;color:#fff;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
+    .img_slot_card .slot_actions label:hover{background:#d4940a}
+    .img_slot_card .slot_actions input[type=file]{display:none}
+    .btn_reset_slot{padding:7px 12px;background:#fde8e8;color:#dc3545;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
+    .btn_reset_slot:hover{background:#f5c0c0}
+    .img_section_title{font-size:15px;font-weight:800;color:#1a1a2e;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid #f0a500;display:flex;align-items:center;gap:8px}
+    .alerta_img_ok{background:#d4edda;border:1px solid #b8dfc6;color:#155724;padding:12px 18px;border-radius:8px;margin-bottom:20px;font-size:14px}
+    </style>
+
+    <div class="topbar" style="margin-bottom:20px">
+        <div>
+            <h1><i class="fa fa-picture-o"></i> Gestión de imágenes</h1>
+            <div class="date_info">Sube imágenes personalizadas para cada sección de la web</div>
+        </div>
+    </div>
+
+    <?php if ($img_ok): ?>
+    <div class="alerta_img_ok"><i class="fa fa-check-circle"></i> <strong>Imagen actualizada.</strong></div>
+    <?php endif; ?>
+
+    <?php
+    $img_cfg_file = __DIR__ . '/images_config.json';
+    $img_cfg = file_exists($img_cfg_file) ? (json_decode(file_get_contents($img_cfg_file), true) ?: []) : [];
+
+    $img_slots = [
+        'Destinos' => [
+            'dest_1' => 'Casco Antiguo',
+            'dest_2' => 'La Malagueta',
+            'dest_3' => 'El Soho',
+            'dest_4' => 'Pedregalejo',
+            'dest_5' => 'Teatinos',
+            'dest_6' => 'Destino slide 3-2',
+            'dest_7' => 'Destino slide 4-1',
+            'dest_8' => 'Destino slide 4-2',
+        ],
+        'Tours' => [
+            'service_1' => 'Tour: Centro Histórico',
+            'service_2' => 'Tour: Ruta Picasso',
+            'service_3' => 'Tour: Playa y Puerto',
+            'service_4' => 'Tour: Atardecer',
+        ],
+        'Paquetes' => [
+            'package_1' => 'Paquete: Centro Histórico',
+            'package_2' => 'Paquete: Malagueta y Puerto',
+            'package_3' => 'Paquete: Ruta Picasso',
+            'package_4' => 'Paquete: Tour Atardecer',
+        ],
+        'Galería' => [
+            'gallery_1' => 'Galería 1',
+            'gallery_2' => 'Galería 2',
+            'gallery_3' => 'Galería 3',
+            'gallery_4' => 'Galería 4',
+            'gallery_5' => 'Galería 5',
+            'gallery_6' => 'Galería 6',
+            'gallery_7' => 'Galería 7',
+        ],
+        'Guías' => [
+            'guide_1' => 'Guía: Sebastian Mateo',
+            'guide_2' => 'Guía: Theodore Aiden',
+            'guide_3' => 'Guía: Lincoln Anthony',
+        ],
+    ];
+    foreach ($img_slots as $cat => $slots):
+    ?>
+    <div class="img_section_title"><i class="fa fa-folder-open-o"></i> <?= htmlspecialchars($cat) ?></div>
+    <div class="img_grid">
+    <?php foreach ($slots as $slot_id => $slot_label):
+        $has_img = isset($img_cfg[$slot_id]);
+        $img_url = $has_img ? '../' . $img_cfg[$slot_id] : '';
+    ?>
+    <div class="img_slot_card">
+        <?php if ($has_img): ?>
+            <img class="slot_preview" src="<?= htmlspecialchars($img_url) ?>" alt="" id="prev_<?= $slot_id ?>">
+        <?php else: ?>
+            <div class="slot_preview_placeholder" id="prev_<?= $slot_id ?>"><i class="fa fa-image"></i></div>
+        <?php endif; ?>
+        <div class="slot_body">
+            <div>
+                <div class="slot_label"><?= htmlspecialchars($slot_label) ?></div>
+                <div class="slot_id"><?= htmlspecialchars($slot_id) ?></div>
+            </div>
+            <div class="slot_actions" id="actions_<?= $slot_id ?>">
+                <input type="file" id="file_<?= $slot_id ?>" accept="image/jpeg,image/png,image/webp"
+                       onchange="doUpload(this,'<?= $slot_id ?>')" style="display:none">
+                <label for="file_<?= $slot_id ?>"><i class="fa fa-upload"></i> Subir</label>
+                <?php if ($has_img): ?>
+                <button type="button" class="btn_reset_slot" onclick="doReset('<?= $slot_id ?>')"><i class="fa fa-undo"></i> Reset</button>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+    <?php endforeach; ?>
+    </div>
+    <?php endforeach; ?>
+
+    <script>
+    function setPreview(slot, url) {
+        var prev = document.getElementById('prev_' + slot);
+        if (!prev) return;
+        if (url) {
+            var img = document.createElement('img');
+            img.className = 'slot_preview';
+            img.src = url;
+            img.id = 'prev_' + slot;
+            prev.parentNode.replaceChild(img, prev);
+        } else {
+            var ph = document.createElement('div');
+            ph.className = 'slot_preview_placeholder';
+            ph.id = 'prev_' + slot;
+            ph.innerHTML = '<i class="fa fa-image"></i>';
+            prev.parentNode.replaceChild(ph, prev);
+        }
+    }
+    function setResetBtn(slot, show) {
+        var actions = document.getElementById('actions_' + slot);
+        if (!actions) return;
+        var btn = actions.querySelector('.btn_reset_slot');
+        if (show && !btn) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'btn_reset_slot';
+            b.innerHTML = '<i class="fa fa-undo"></i> Reset';
+            b.onclick = function(){ doReset(slot); };
+            actions.appendChild(b);
+        } else if (!show && btn) {
+            btn.remove();
+        }
+    }
+    function doUpload(input, slot) {
+        if (!input.files || !input.files[0]) return;
+        var file = input.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e){ setPreview(slot, e.target.result); };
+        reader.readAsDataURL(file);
+        var fd = new FormData();
+        fd.append('action', 'upload');
+        fd.append('slot', slot);
+        fd.append('file', file);
+        fetch('imagenes.php', {method:'POST', body:fd})
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+                if (d.success) {
+                    setPreview(slot, '../' + d.url);
+                    setResetBtn(slot, true);
+                } else {
+                    alert(d.error || 'Error al subir');
+                }
+            }).catch(function(){ alert('Error de conexión'); });
+        input.value = '';
+    }
+    function doReset(slot) {
+        if (!confirm('¿Restablecer imagen por defecto?')) return;
+        var fd = new FormData();
+        fd.append('action', 'reset');
+        fd.append('slot', slot);
+        fetch('imagenes.php', {method:'POST', body:fd})
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+                if (d.success) {
+                    setPreview(slot, null);
+                    setResetBtn(slot, false);
+                } else {
+                    alert(d.error || 'Error al restablecer');
+                }
+            }).catch(function(){ alert('Error de conexión'); });
+    }
+    </script>
+
+    <?php elseif ($view_mode !== 'precios' && $view_mode !== 'imagenes'): ?>
     <!-- Tabla -->
     <div class="table_card">
         <div class="table_header">
