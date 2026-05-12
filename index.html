@@ -244,7 +244,7 @@ Author: PixelNx
 			<div class="row">
 				<div class="col-lg-3 col-md-4 col-sm-7 col-7">
 					<div class="tor_logo">
-						<a href="index.html"><img src="assets/images/logo-tuktuk.svg" alt="TukTuk Norris" style="height:64px;width:auto;" data-img-slot="site_logo" /></a>
+						<a href="index.html"><img src="assets/images/logo-tuktuk.svg" alt="TukTuk Norris" data-img-slot="site_logo" /></a>
 					</div>
 				</div>
 				<div class="col-lg-9 col-md-8 col-sm-5 col-5">
@@ -1178,7 +1178,7 @@ Author: PixelNx
         // CSS background sections
         if (bgSlots[slot]) {
           var el = document.querySelector(bgSlots[slot]);
-          if (el) el.style.backgroundImage = "url('"+url+"')";
+          if (el) el.style.backgroundImage = "linear-gradient(90deg,rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url('"+url+"')";
         }
       });
     }).catch(function(){});
