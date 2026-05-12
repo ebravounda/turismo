@@ -1282,11 +1282,19 @@ Author: PixelNx
   fetch('reservas/settings.php')
     .then(function(r){ return r.json(); })
     .then(function(s){
+      // logo size
+      var sz = parseInt(s.logo_size) || 72;
+      document.querySelectorAll('img[data-img-slot="site_logo"]').forEach(function(img){
+        img.style.height = sz + 'px';
+        img.style.width  = 'auto';
+      });
+      // whatsapp button
       var num = (s.whatsapp || '').replace(/\D/g, '');
-      if (!num) return;
-      var btn = document.getElementById('whatsapp_btn');
-      btn.href = 'https://wa.me/' + num;
-      btn.style.display = 'flex';
+      if (num) {
+        var btn = document.getElementById('whatsapp_btn');
+        btn.href = 'https://wa.me/' + num;
+        btn.style.display = 'flex';
+      }
     }).catch(function(){});
 })();
 </script>

@@ -702,6 +702,12 @@ Author: PixelNx
       document.querySelectorAll('img[data-img-slot="'+slot+'"]').forEach(function(img){img.src=cfg[slot];});
     });
   }).catch(function(){});
+  fetch('reservas/settings.php').then(function(r){return r.json();}).then(function(s){
+    var sz = parseInt(s.logo_size) || 72;
+    document.querySelectorAll('img[data-img-slot="site_logo"]').forEach(function(img){
+      img.style.height = sz + 'px'; img.style.width = 'auto';
+    });
+  }).catch(function(){});
 })();
 </script>
 </body>
