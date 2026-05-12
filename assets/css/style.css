@@ -672,6 +672,27 @@ iframe {
     -o-transition: all 0.5s;
     transition: all 0.5s;
 }
+/* ── Compact nav Reservar button ── */
+.nav_btn_reservar {
+    display: inline-block;
+    background: var(--main-red-version1);
+    color: #fff !important;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 8px 20px;
+    border-radius: 22px;
+    line-height: 1.4;
+    vertical-align: middle;
+    white-space: nowrap;
+    transition: background 0.25s, transform 0.15s;
+    letter-spacing: 0.3px;
+    border: none;
+}
+.nav_btn_reservar:hover {
+    background: #c93020;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
 .tor_heading_wrpper {
     margin: 0px 0 41px 0;
 }
