@@ -2,6 +2,27 @@
 require_once __DIR__ . '/config.php';
 session_start();
 
+// ── Security headers ───────────────────────────────────────────
+header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: same-origin');
+
+// ── Session timeout (30 min inactivity) ────────────────────────
+if (isset($_SESSION['admin'])) {
+    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+        session_destroy();
+        header('Location: admin.php?expired=1');
+        exit;
+    }
+    $_SESSION['last_activity'] = time();
+}
+
+// ── CSRF token ─────────────────────────────────────────────────
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // ── Logout ─────────────────────────────────────────────────────
 if (isset($_GET['logout'])) {
     session_destroy();
@@ -34,10 +55,13 @@ if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset(
     exit;
 }
 
-// ── Eliminar reserva ───────────────────────────────────────────
-if (isset($_SESSION['admin']) && isset($_GET['delete'])) {
+// ── Eliminar reserva (POST + CSRF) ────────────────────────────
+if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+    if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
+        http_response_code(403); die('Token inválido');
+    }
     $db = getDB();
-    $db->prepare("DELETE FROM reservas WHERE id = ?")->execute([$_GET['delete']]);
+    $db->prepare("DELETE FROM reservas WHERE id = ?")->execute([$_POST['delete_id']]);
     $qs = http_build_query(array_filter(['vista' => $_GET['vista'] ?? null, 'fecha' => $_GET['fecha'] ?? null]));
     header('Location: admin.php' . ($qs ? '?' . $qs : ''));
     exit;
@@ -59,7 +83,9 @@ if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset(
 }
 
 // ── Parámetros de vista ────────────────────────────────────────
-$filter_date = $_GET['fecha'] ?? date('Y-m-d');
+$raw_date    = $_GET['fecha'] ?? '';
+$filter_date = preg_match('/^\d{4}-\d{2}-\d{2}$/', $raw_date) ? $raw_date : date('Y-m-d');
+$filter_date_esc = htmlspecialchars($filter_date, ENT_QUOTES, 'UTF-8');
 $view_mode   = $_GET['vista'] ?? 'dia';
 $precio_ok   = isset($_GET['ok']) && $view_mode === 'precios';
 
@@ -291,8 +317,8 @@ table tr:hover td{background:#fafafa}
     <!-- Controls -->
     <div class="controls">
         <div class="view_btns">
-            <a href="admin.php?vista=dia&fecha=<?= $filter_date ?>" class="<?= $view_mode === 'dia' ? 'active' : '' ?>"><i class="fa fa-calendar-o"></i> Día</a>
-            <a href="admin.php?vista=semana&fecha=<?= $filter_date ?>" class="<?= $view_mode === 'semana' ? 'active' : '' ?>"><i class="fa fa-th"></i> Semana</a>
+            <a href="admin.php?vista=dia&fecha=<?= $filter_date_esc ?>" class="<?= $view_mode === 'dia' ? 'active' : '' ?>"><i class="fa fa-calendar-o"></i> Día</a>
+            <a href="admin.php?vista=semana&fecha=<?= $filter_date_esc ?>" class="<?= $view_mode === 'semana' ? 'active' : '' ?>"><i class="fa fa-th"></i> Semana</a>
         </div>
         <div class="nav_arrows">
             <?php
@@ -307,7 +333,7 @@ table tr:hover td{background:#fafafa}
             <a href="admin.php?vista=<?= $view_mode ?>&fecha=<?= date('Y-m-d') ?>" style="margin:0 4px;background:#f0a500;color:#fff;border-color:#f0a500">Hoy</a>
             <a href="admin.php?vista=<?= $view_mode ?>&fecha=<?= $next ?>">Siguiente →</a>
         </div>
-        <input type="date" value="<?= $filter_date ?>"
+        <input type="date" value="<?= $filter_date_esc ?>"
                onchange="window.location='admin.php?vista=<?= $view_mode ?>&fecha='+this.value">
     </div>
 
@@ -511,11 +537,11 @@ table tr:hover td{background:#fafafa}
                             <button type="submit" name="new_status" value="cancelada" class="action_btn btn_cancel" title="Cancelar"><i class="fa fa-times"></i></button>
                         <?php endif; ?>
                     </form>
-                    <a href="admin.php?delete=<?= $r['id'] ?><?= $qs ? '&'.$qs : '' ?>"
-                       onclick="return confirm('¿Eliminar esta reserva definitivamente?')"
-                       class="action_btn btn_delete" style="text-decoration:none" title="Eliminar">
-                        <i class="fa fa-trash"></i>
-                    </a>
+                    <form method="post" action="admin.php<?= $qs ? '?'.$qs : '' ?>" style="display:inline" onsubmit="return confirm('¿Eliminar esta reserva definitivamente?')">
+                        <input type="hidden" name="delete_id" value="<?= htmlspecialchars($r['id'], ENT_QUOTES, 'UTF-8') ?>">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                        <button type="submit" class="action_btn btn_delete" title="Eliminar"><i class="fa fa-trash"></i></button>
+                    </form>
                 </td>
             </tr>
             <?php endforeach; ?>
