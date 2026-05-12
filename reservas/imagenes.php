@@ -9,6 +9,7 @@ $config_file = __DIR__ . '/images_config.json';
 $upload_dir  = __DIR__ . '/../assets/images/uploads/';
 
 $allowed_slots = [
+    'site_logo',
     'hero_bg',
     'cta_bg', 'packages_bg', 'booking_bg', 'pagetitle_bg',
     'dest_1','dest_2','dest_3','dest_4','dest_5','dest_6','dest_7','dest_8',
