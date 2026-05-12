@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /reservas/
+
+Sitemap: https://www.tuktuknorris.es/sitemap.xml
