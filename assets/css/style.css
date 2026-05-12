@@ -687,11 +687,25 @@ iframe {
     transition: background 0.25s, transform 0.15s;
     letter-spacing: 0.3px;
     border: none;
+    width: auto !important;
 }
 .nav_btn_reservar:hover {
     background: #c93020;
     color: #fff !important;
     transform: translateY(-1px);
+}
+/* Mobile menu override — keep button compact, not full-width */
+.main_menu_wrapper ul > li > a.nav_btn_reservar {
+    display: inline-block !important;
+    width: auto !important;
+    padding: 8px 20px !important;
+    margin: 10px 20px;
+    border-radius: 22px !important;
+    background: var(--main-red-version1) !important;
+    color: #fff !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
 }
 .tor_heading_wrpper {
     margin: 0px 0 41px 0;
