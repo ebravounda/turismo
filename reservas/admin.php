@@ -88,7 +88,7 @@ if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset(
         die('Token inválido');
     }
     $settings_file = __DIR__ . '/site_settings.json';
-    $defaults = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes'];
+    $defaults = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes', 'whatsapp' => ''];
     $existing = file_exists($settings_file) ? (json_decode(file_get_contents($settings_file), true) ?: []) : [];
     $settings = array_merge($defaults, $existing);
     foreach (array_keys($defaults) as $key) {
@@ -704,7 +704,7 @@ table tr:hover td{background:#fafafa}
     <!-- Configuración General -->
     <?php
     $settings_file_adm = __DIR__ . '/site_settings.json';
-    $defaults_adm = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes'];
+    $defaults_adm = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes', 'whatsapp' => ''];
     $existing_adm = file_exists($settings_file_adm) ? (json_decode(file_get_contents($settings_file_adm), true) ?: []) : [];
     $cfg_adm = array_merge($defaults_adm, $existing_adm);
     ?>
@@ -749,6 +749,17 @@ table tr:hover td{background:#fafafa}
                         value="<?= htmlspecialchars($cfg_adm['cancelacion'], ENT_QUOTES, 'UTF-8') ?>"
                         placeholder="Ej: Gratuita hasta 24h antes"
                         style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
+                </div>
+
+                <div style="margin-bottom:28px;">
+                    <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:7px;">
+                        <i class="fa fa-whatsapp" style="color:#25d366;margin-right:6px;"></i> Número de WhatsApp (botón flotante)
+                    </label>
+                    <input type="text" name="whatsapp"
+                        value="<?= htmlspecialchars($cfg_adm['whatsapp'], ENT_QUOTES, 'UTF-8') ?>"
+                        placeholder="Ej: 34612345678 (sin + ni espacios)"
+                        style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
+                    <span style="font-size:11px;color:#aaa;margin-top:4px;display:block;">Incluye el código de país sin el +. Ej: 34612345678</span>
                 </div>
 
                 <button type="submit" style="background:#f0a500;color:#fff;border:none;border-radius:8px;padding:13px 28px;font-size:15px;font-weight:800;cursor:pointer;transition:background .2s;">

@@ -1184,6 +1184,25 @@ Author: PixelNx
     }).catch(function(){});
 })();
 </script>
+
+<!-- Botón flotante WhatsApp -->
+<a id="whatsapp_btn" href="#" class="whatsapp_float" target="_blank" rel="noopener noreferrer" style="display:none;">
+    <i class="fa fa-whatsapp"></i>
+    <span class="wa_label">WhatsApp</span>
+</a>
+<script>
+(function(){
+  fetch('reservas/settings.php')
+    .then(function(r){ return r.json(); })
+    .then(function(s){
+      var num = (s.whatsapp || '').replace(/\D/g, '');
+      if (!num) return;
+      var btn = document.getElementById('whatsapp_btn');
+      btn.href = 'https://wa.me/' + num;
+      btn.style.display = 'flex';
+    }).catch(function(){});
+})();
+</script>
 </body>
 
 </html>

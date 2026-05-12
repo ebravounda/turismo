@@ -11,6 +11,7 @@ $defaults = [
     'punto_encuentro' => 'Calle Larios 5, Málaga',
     'telefono'        => '+34 951 234 567',
     'cancelacion'     => 'Gratuita hasta 24h antes',
+    'whatsapp'        => '',
 ];
 
 function load_settings(string $file, array $defaults): array {
