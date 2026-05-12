@@ -13,9 +13,28 @@ $defaults = [
     'cancelacion'      => 'Gratuita hasta 24h antes',
     'whatsapp'         => '',
     'logo_size'        => 72,
-    // Textos del index
+    // ── Hero ──────────────────────────────────────────
     'hero_subtitle'    => 'Descubre Málaga de una forma única',
     'hero_title'       => '¿Listo para tu aventura en tuk-tuk?',
+    // ── Nuestros Tours ────────────────────────────────
+    'tours_heading'    => 'Nuestros Tours',
+    'tours_subtext'    => 'Descubre los barrios y rincones más emblemáticos de Málaga a bordo de nuestros tuk-tuks.',
+    'dest1_title'      => 'Casco Antiguo',
+    'dest2_title'      => 'La Malagueta',
+    'dest3_title'      => 'El Soho',
+    'dest4_title'      => 'Pedregalejo',
+    'dest5_title'      => 'Teatinos',
+    'dest6_title'      => 'El Palo',
+    'dest7_title'      => 'Muelle Uno',
+    'dest8_title'      => 'La Victoria',
+    // ── Explora Málaga (servicios) ────────────────────
+    'srv_heading'      => 'Explora Málaga en Tuk-Tuk',
+    'srv_subtext'      => 'Sube a nuestros tuk-tuks y descubre los rincones más emblemáticos de Málaga. Guías locales apasionados, rutas únicas y diversión asegurada para toda la familia.',
+    'srv1_title'       => 'Centro Histórico',
+    'srv2_title'       => 'Ruta del Picasso',
+    'srv3_title'       => 'Playa y Puerto',
+    'srv4_title'       => 'Tour Atardecer',
+    // ── Por qué Elegirnos ─────────────────────────────
     'features_heading' => 'Por qué Elegirnos',
     'features_subtext' => 'Más de 10 años recorriendo Málaga en tuk-tuk. Descubre lo que nos hace únicos y por qué nuestros viajeros repiten.',
     'feat1_title'      => 'Tours Exclusivos',
@@ -26,6 +45,26 @@ $defaults = [
     'feat3_desc'       => 'Nuestros tuk-tuks están equipados y mantenidos para ofrecerte la mayor comodidad. Seguridad, puntualidad y una experiencia de primera clase.',
     'feat4_title'      => 'Reserva Segura',
     'feat4_desc'       => 'Pago 100% seguro y cancelación flexible. Tu reserva está protegida y nuestro equipo disponible para atenderte en cualquier momento.',
+    // ── Galería ───────────────────────────────────────
+    'gallery_heading'  => 'Galería de Tours',
+    'gallery_subtext'  => 'Cada ruta es una historia distinta. Descubre Málaga desde otro ángulo — sus plazas, su luz, su gente — a bordo de nuestros tuk-tuks.',
+    // ── Testimonios ───────────────────────────────────
+    'testi_heading'    => 'Lo que dicen nuestros viajeros',
+    'testi1_text'      => '"Fue una experiencia increíble. El conductor nos llevó por rincones de Málaga que nunca hubiéramos encontrado solos. ¡100% recomendable!"',
+    'testi1_name'      => 'María G. — Madrid',
+    'testi2_text'      => '"Reservamos el Tour Atardecer y fue mágico. Ver Málaga desde el puerto al caer el sol en un tuk-tuk es algo que no olvidaremos."',
+    'testi2_name'      => 'James T. — Londres',
+    'testi3_text'      => '"El guía fue muy amable y divertido, sabía todo sobre la historia de la ciudad. Una forma única y diferente de conocer Málaga."',
+    'testi3_name'      => 'Sophie L. — París',
+    // ── Equipo ────────────────────────────────────────
+    'team_heading'     => 'Nuestro Equipo',
+    'team_subtext'     => 'Somos un equipo apasionado por Málaga con más de 10 años de experiencia mostrando los rincones más auténticos de la ciudad a bordo de nuestros tuk-tuks eléctricos.',
+    'guide1_name'      => 'Carlos Norris',
+    'guide1_role'      => 'Fundador & Guía',
+    'guide2_name'      => 'Elena Vega',
+    'guide2_role'      => 'Guía Oficial',
+    'guide3_name'      => 'Marcos Ruiz',
+    'guide3_role'      => 'Copiloto & Fotógrafo',
 ];
 
 function load_settings(string $file, array $defaults): array {
