@@ -373,8 +373,8 @@ Author: PixelNx
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-12">
 						<div class="tor_banner_text">
-							<h6>Descubre Málaga de una forma única</h6>
-							<h1>¿Listo para tu aventura en tuk-tuk?</h1>
+							<h6 id="idx_hero_subtitle">Descubre Málaga de una forma única</h6>
+							<h1 id="idx_hero_title">¿Listo para tu aventura en tuk-tuk?</h1>
 						</div>
 					</div>
 				</div>
@@ -714,9 +714,9 @@ Author: PixelNx
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-12 text-center">
 						<div class="tor_heading_wrpper">
-							<h4 class="tor_heading">Por qué Elegirnos</h4>
+							<h4 class="tor_heading" id="idx_features_heading">Por qué Elegirnos</h4>
 							<img src="assets/images/border2.png" alt="" />
-							<p>Más de 10 años recorriendo Málaga en tuk-tuk. Descubre lo que nos hace únicos y por qué nuestros viajeros repiten.</p>
+							<p id="idx_features_subtext">Más de 10 años recorriendo Málaga en tuk-tuk. Descubre lo que nos hace únicos y por qué nuestros viajeros repiten.</p>
 						</div>
 					</div>
 					<div class="col-lg-3 col-md-6 col-sm-6 col-12 text-center">
@@ -726,8 +726,8 @@ Author: PixelNx
 									<i class="fa fa-map-marker" style="font-size:36px;color:#fff;line-height:80px;"></i>
 								</span>
 							</div>
-							<h4>Tours Exclusivos</h4>
-							<p>Diseñamos cada tour a tu medida. Grupos pequeños, rutas personalizadas y atención cercana para que vivas Málaga como si fueras un local.</p>
+							<h4 id="idx_feat1_title">Tours Exclusivos</h4>
+							<p id="idx_feat1_desc">Diseñamos cada tour a tu medida. Grupos pequeños, rutas personalizadas y atención cercana para que vivas Málaga como si fueras un local.</p>
 						</div>
 					</div>
 					<div class="col-lg-3 col-md-6 col-sm-6 col-12 text-center">
@@ -737,8 +737,8 @@ Author: PixelNx
 									<i class="fa fa-users" style="font-size:32px;color:#fff;line-height:80px;"></i>
 								</span>
 							</div>
-							<h4>Guías Apasionados</h4>
-							<p>Nuestros guías conocen cada rincón de Málaga. Historias reales, anécdotas locales y una sonrisa garantizada durante todo el recorrido.</p>
+							<h4 id="idx_feat2_title">Guías Apasionados</h4>
+							<p id="idx_feat2_desc">Nuestros guías conocen cada rincón de Málaga. Historias reales, anécdotas locales y una sonrisa garantizada durante todo el recorrido.</p>
 						</div>
 					</div>
 					<div class="col-lg-3 col-md-6 col-sm-6 col-12 text-center">
@@ -748,8 +748,8 @@ Author: PixelNx
 									<i class="fa fa-star" style="font-size:34px;color:#fff;line-height:80px;"></i>
 								</span>
 							</div>
-							<h4>Calidad Premium</h4>
-							<p>Nuestros tuk-tuks están equipados y mantenidos para ofrecerte la mayor comodidad. Seguridad, puntualidad y una experiencia de primera clase.</p>
+							<h4 id="idx_feat3_title">Calidad Premium</h4>
+							<p id="idx_feat3_desc">Nuestros tuk-tuks están equipados y mantenidos para ofrecerte la mayor comodidad. Seguridad, puntualidad y una experiencia de primera clase.</p>
 						</div>
 					</div>
 					<div class="col-lg-3 col-md-6 col-sm-6 col-12 text-center">
@@ -759,8 +759,8 @@ Author: PixelNx
 									<i class="fa fa-shield" style="font-size:34px;color:#fff;line-height:80px;"></i>
 								</span>
 							</div>
-							<h4>Reserva Segura</h4>
-							<p>Pago 100% seguro y cancelación flexible. Tu reserva está protegida y nuestro equipo disponible para atenderte en cualquier momento.</p>
+							<h4 id="idx_feat4_title">Reserva Segura</h4>
+							<p id="idx_feat4_desc">Pago 100% seguro y cancelación flexible. Tu reserva está protegida y nuestro equipo disponible para atenderte en cualquier momento.</p>
 						</div>
 					</div>
 				</div>
@@ -1295,6 +1295,21 @@ Author: PixelNx
         btn.href = 'https://wa.me/' + num;
         btn.style.display = 'flex';
       }
+      // index texts
+      var texts = {
+        'idx_hero_subtitle':    s.hero_subtitle,
+        'idx_hero_title':       s.hero_title,
+        'idx_features_heading': s.features_heading,
+        'idx_features_subtext': s.features_subtext,
+        'idx_feat1_title': s.feat1_title, 'idx_feat1_desc': s.feat1_desc,
+        'idx_feat2_title': s.feat2_title, 'idx_feat2_desc': s.feat2_desc,
+        'idx_feat3_title': s.feat3_title, 'idx_feat3_desc': s.feat3_desc,
+        'idx_feat4_title': s.feat4_title, 'idx_feat4_desc': s.feat4_desc,
+      };
+      Object.keys(texts).forEach(function(id){
+        var el = document.getElementById(id);
+        if (el && texts[id]) el.textContent = texts[id];
+      });
     }).catch(function(){});
 })();
 </script>

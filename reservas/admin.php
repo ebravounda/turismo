@@ -82,6 +82,24 @@ if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset(
     exit;
 }
 
+// ── Guardar textos del index ───────────────────────────────────
+if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_texts'])) {
+    if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
+        die('Token inválido');
+    }
+    $settings_file = __DIR__ . '/site_settings.json';
+    $existing = file_exists($settings_file) ? (json_decode(file_get_contents($settings_file), true) ?: []) : [];
+    $text_keys = ['hero_subtitle','hero_title','features_heading','features_subtext','feat1_title','feat1_desc','feat2_title','feat2_desc','feat3_title','feat3_desc','feat4_title','feat4_desc'];
+    foreach ($text_keys as $key) {
+        if (isset($_POST[$key])) {
+            $existing[$key] = htmlspecialchars(strip_tags(trim($_POST[$key])), ENT_QUOTES, 'UTF-8');
+        }
+    }
+    file_put_contents($settings_file, json_encode($existing, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    header('Location: admin.php?vista=textos&ok=1');
+    exit;
+}
+
 // ── Guardar configuración ──────────────────────────────────────
 if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_settings'])) {
     if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
@@ -112,6 +130,7 @@ $view_mode   = $_GET['vista'] ?? 'dia';
 $precio_ok   = isset($_GET['ok']) && $view_mode === 'precios';
 $img_ok      = isset($_GET['ok']) && $view_mode === 'imagenes';
 $config_ok   = isset($_GET['ok']) && $view_mode === 'config';
+$text_ok     = isset($_GET['ok']) && $view_mode === 'textos';
 
 // ── Consultas MySQL ────────────────────────────────────────────
 $filtered = [];
@@ -352,6 +371,9 @@ table tr:hover td{background:#fafafa}
         </a>
         <a href="admin.php?vista=imagenes" class="<?= $view_mode === 'imagenes' ? 'active' : '' ?>">
             <i class="fa fa-picture-o"></i> Imágenes
+        </a>
+        <a href="admin.php?vista=textos" class="<?= $view_mode === 'textos' ? 'active' : '' ?>">
+            <i class="fa fa-pencil"></i> Textos del inicio
         </a>
         <a href="admin.php?vista=config" class="<?= $view_mode === 'config' ? 'active' : '' ?>">
             <i class="fa fa-cog"></i> Configuración
@@ -702,6 +724,105 @@ table tr:hover td{background:#fafafa}
             }).catch(function(){ alert('Error de conexión'); });
     }
     </script>
+
+    <?php elseif ($view_mode === 'textos'): ?>
+    <!-- Textos del index -->
+    <?php
+    $sf_tx = __DIR__ . '/site_settings.json';
+    $def_tx = [
+        'hero_subtitle'    => 'Descubre Málaga de una forma única',
+        'hero_title'       => '¿Listo para tu aventura en tuk-tuk?',
+        'features_heading' => 'Por qué Elegirnos',
+        'features_subtext' => 'Más de 10 años recorriendo Málaga en tuk-tuk. Descubre lo que nos hace únicos y por qué nuestros viajeros repiten.',
+        'feat1_title'      => 'Tours Exclusivos',
+        'feat1_desc'       => 'Diseñamos cada tour a tu medida. Grupos pequeños, rutas personalizadas y atención cercana para que vivas Málaga como si fueras un local.',
+        'feat2_title'      => 'Guías Apasionados',
+        'feat2_desc'       => 'Nuestros guías conocen cada rincón de Málaga. Historias reales, anécdotas locales y una sonrisa garantizada durante todo el recorrido.',
+        'feat3_title'      => 'Calidad Premium',
+        'feat3_desc'       => 'Nuestros tuk-tuks están equipados y mantenidos para ofrecerte la mayor comodidad. Seguridad, puntualidad y una experiencia de primera clase.',
+        'feat4_title'      => 'Reserva Segura',
+        'feat4_desc'       => 'Pago 100% seguro y cancelación flexible. Tu reserva está protegida y nuestro equipo disponible para atenderte en cualquier momento.',
+    ];
+    $ex_tx = file_exists($sf_tx) ? (json_decode(file_get_contents($sf_tx), true) ?: []) : [];
+    $tx = array_merge($def_tx, $ex_tx);
+    $esc = fn($v) => htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
+    ?>
+    <?php if ($text_ok): ?>
+        <div style="background:#d4edda;border:1px solid #b8dfc6;color:#155724;border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:14px;">
+            <i class="fa fa-check-circle"></i> <strong>Textos guardados correctamente.</strong>
+        </div>
+    <?php endif; ?>
+    <form method="POST" action="admin.php?vista=textos">
+    <input type="hidden" name="update_texts" value="1">
+    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+    <div style="max-width:700px;display:flex;flex-direction:column;gap:20px;">
+
+        <!-- Hero -->
+        <div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:28px 32px;">
+            <h3 style="font-size:16px;font-weight:800;color:#1a1a2e;margin:0 0 20px;display:flex;align-items:center;gap:8px;">
+                <i class="fa fa-home" style="color:#f0a500;"></i> Sección Hero (portada)
+            </h3>
+            <div style="margin-bottom:16px;">
+                <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Subtítulo</label>
+                <input type="text" name="hero_subtitle" value="<?= $esc($tx['hero_subtitle']) ?>"
+                    style="width:100%;padding:10px 13px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+            </div>
+            <div>
+                <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Título principal</label>
+                <input type="text" name="hero_title" value="<?= $esc($tx['hero_title']) ?>"
+                    style="width:100%;padding:10px 13px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+            </div>
+        </div>
+
+        <!-- Por qué elegirnos -->
+        <div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:28px 32px;">
+            <h3 style="font-size:16px;font-weight:800;color:#1a1a2e;margin:0 0 20px;display:flex;align-items:center;gap:8px;">
+                <i class="fa fa-star" style="color:#f0a500;"></i> Sección "Por qué Elegirnos"
+            </h3>
+            <div style="margin-bottom:16px;">
+                <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Título de sección</label>
+                <input type="text" name="features_heading" value="<?= $esc($tx['features_heading']) ?>"
+                    style="width:100%;padding:10px 13px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:24px;">
+                <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Descripción de sección</label>
+                <textarea name="features_subtext" rows="2"
+                    style="width:100%;padding:10px 13px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;box-sizing:border-box;resize:vertical;"><?= $esc($tx['features_subtext']) ?></textarea>
+            </div>
+            <?php
+            $cards = [
+                ['num'=>1,'icon'=>'fa-map-marker','label'=>'Tarjeta 1'],
+                ['num'=>2,'icon'=>'fa-users','label'=>'Tarjeta 2'],
+                ['num'=>3,'icon'=>'fa-star','label'=>'Tarjeta 3'],
+                ['num'=>4,'icon'=>'fa-shield','label'=>'Tarjeta 4'],
+            ];
+            foreach ($cards as $c): $n = $c['num']; ?>
+            <div style="border:1.5px solid #f0f2f5;border-radius:10px;padding:16px;margin-bottom:14px;">
+                <div style="font-size:12px;font-weight:800;color:#f0a500;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;">
+                    <i class="fa <?= $c['icon'] ?>"></i> <?= $c['label'] ?>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <label style="display:block;font-size:12px;color:#888;margin-bottom:5px;">Título</label>
+                    <input type="text" name="feat<?= $n ?>_title" value="<?= $esc($tx["feat{$n}_title"]) ?>"
+                        style="width:100%;padding:9px 12px;border:1.5px solid #e2e5eb;border-radius:7px;font-size:13px;box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block;font-size:12px;color:#888;margin-bottom:5px;">Descripción</label>
+                    <textarea name="feat<?= $n ?>_desc" rows="2"
+                        style="width:100%;padding:9px 12px;border:1.5px solid #e2e5eb;border-radius:7px;font-size:13px;box-sizing:border-box;resize:vertical;"><?= $esc($tx["feat{$n}_desc"]) ?></textarea>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+
+        <div>
+            <button type="submit" style="background:#f0a500;color:#fff;border:none;border-radius:8px;padding:13px 32px;font-size:15px;font-weight:800;cursor:pointer;">
+                <i class="fa fa-save"></i> Guardar textos
+            </button>
+        </div>
+    </div>
+    </form>
 
     <?php elseif ($view_mode === 'config'): ?>
     <!-- Configuración General -->
