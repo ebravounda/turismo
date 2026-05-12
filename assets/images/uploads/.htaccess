@@ -1,5 +1,5 @@
-php_flag engine off
-Options -Indexes
-<FilesMatch "\.php$">
+Options -Indexes -ExecCGI
+<FilesMatch "\.(php|php5|phtml|pl|py|cgi)$">
     Require all denied
 </FilesMatch>
+AddType text/plain .php .php5 .phtml

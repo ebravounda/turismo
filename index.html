@@ -2312,13 +2312,27 @@ Author: PixelNx
 	</script>
 <script>
 (function(){
+  var bgSlots = {
+    'hero_bg':      '.tor_banner_wrapper',
+    'cta_bg':       '.tor_callToActionSecond_wrapper',
+    'packages_bg':  '.tor_package_wrapper',
+    'booking_bg':   '.tor_booking_wrapper',
+    'pagetitle_bg': '.page_title_wrapper',
+  };
   fetch('reservas/imagenes.php')
-    .then(r=>r.json())
+    .then(function(r){ return r.json(); })
     .then(function(cfg){
       Object.keys(cfg).forEach(function(slot){
         var url = cfg[slot];
+        // img tags
         document.querySelectorAll('img[data-img-slot="'+slot+'"]').forEach(function(img){ img.src = url; });
+        // gallery anchor hrefs
         document.querySelectorAll('a[data-img-slot="'+slot+'"]').forEach(function(a){ a.href = url; });
+        // CSS background sections
+        if (bgSlots[slot]) {
+          var el = document.querySelector(bgSlots[slot]);
+          if (el) el.style.backgroundImage = "url('"+url+"')";
+        }
       });
     }).catch(function(){});
 })();
