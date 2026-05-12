@@ -82,6 +82,25 @@ if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset(
     exit;
 }
 
+// ── Guardar configuración ──────────────────────────────────────
+if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_settings'])) {
+    if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
+        die('Token inválido');
+    }
+    $settings_file = __DIR__ . '/site_settings.json';
+    $defaults = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes'];
+    $existing = file_exists($settings_file) ? (json_decode(file_get_contents($settings_file), true) ?: []) : [];
+    $settings = array_merge($defaults, $existing);
+    foreach (array_keys($defaults) as $key) {
+        if (isset($_POST[$key])) {
+            $settings[$key] = htmlspecialchars(strip_tags(trim($_POST[$key])), ENT_QUOTES, 'UTF-8');
+        }
+    }
+    file_put_contents($settings_file, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    header('Location: admin.php?vista=config&ok=1');
+    exit;
+}
+
 // ── Parámetros de vista ────────────────────────────────────────
 $raw_date    = $_GET['fecha'] ?? '';
 $filter_date = preg_match('/^\d{4}-\d{2}-\d{2}$/', $raw_date) ? $raw_date : date('Y-m-d');
@@ -89,6 +108,7 @@ $filter_date_esc = htmlspecialchars($filter_date, ENT_QUOTES, 'UTF-8');
 $view_mode   = $_GET['vista'] ?? 'dia';
 $precio_ok   = isset($_GET['ok']) && $view_mode === 'precios';
 $img_ok      = isset($_GET['ok']) && $view_mode === 'imagenes';
+$config_ok   = isset($_GET['ok']) && $view_mode === 'config';
 
 // ── Consultas MySQL ────────────────────────────────────────────
 $filtered = [];
@@ -286,6 +306,9 @@ table tr:hover td{background:#fafafa}
         </a>
         <a href="admin.php?vista=imagenes" class="<?= $view_mode === 'imagenes' ? 'active' : '' ?>">
             <i class="fa fa-picture-o"></i> Imágenes
+        </a>
+        <a href="admin.php?vista=config" class="<?= $view_mode === 'config' ? 'active' : '' ?>">
+            <i class="fa fa-cog"></i> Configuración
         </a>
         <a href="../index.html" target="_blank"><i class="fa fa-globe"></i> Ver web</a>
         <a href="../reservar.html" target="_blank"><i class="fa fa-plus-circle"></i> Nueva reserva</a>
@@ -633,6 +656,64 @@ table tr:hover td{background:#fafafa}
             }).catch(function(){ alert('Error de conexión'); });
     }
     </script>
+
+    <?php elseif ($view_mode === 'config'): ?>
+    <!-- Configuración General -->
+    <?php
+    $settings_file_adm = __DIR__ . '/site_settings.json';
+    $defaults_adm = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes'];
+    $existing_adm = file_exists($settings_file_adm) ? (json_decode(file_get_contents($settings_file_adm), true) ?: []) : [];
+    $cfg_adm = array_merge($defaults_adm, $existing_adm);
+    ?>
+    <?php if ($config_ok): ?>
+        <div style="background:#d4edda;border:1px solid #b8dfc6;color:#155724;border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:14px;">
+            <i class="fa fa-check-circle"></i> <strong>Configuración guardada correctamente.</strong>
+        </div>
+    <?php endif; ?>
+    <div style="max-width:600px;">
+        <div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:32px 36px;">
+            <h3 style="font-size:18px;font-weight:800;color:#1a1a2e;margin:0 0 6px;">Información para el formulario de reserva</h3>
+            <p style="color:#888;font-size:13px;margin:0 0 28px;">Estos datos se muestran al cliente en la página de reserva.</p>
+            <form method="POST" action="admin.php?vista=config">
+                <input type="hidden" name="update_settings" value="1">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:7px;">
+                        <i class="fa fa-map-marker" style="color:#f0a500;margin-right:6px;"></i> Punto de encuentro
+                    </label>
+                    <input type="text" name="punto_encuentro"
+                        value="<?= htmlspecialchars($cfg_adm['punto_encuentro'], ENT_QUOTES, 'UTF-8') ?>"
+                        placeholder="Ej: Calle Larios 5, Málaga"
+                        style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:7px;">
+                        <i class="fa fa-phone" style="color:#f0a500;margin-right:6px;"></i> Teléfono de contacto
+                    </label>
+                    <input type="text" name="telefono"
+                        value="<?= htmlspecialchars($cfg_adm['telefono'], ENT_QUOTES, 'UTF-8') ?>"
+                        placeholder="Ej: +34 951 234 567"
+                        style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
+                </div>
+
+                <div style="margin-bottom:28px;">
+                    <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:7px;">
+                        <i class="fa fa-times-circle-o" style="color:#f0a500;margin-right:6px;"></i> Política de cancelación
+                    </label>
+                    <input type="text" name="cancelacion"
+                        value="<?= htmlspecialchars($cfg_adm['cancelacion'], ENT_QUOTES, 'UTF-8') ?>"
+                        placeholder="Ej: Gratuita hasta 24h antes"
+                        style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
+                </div>
+
+                <button type="submit" style="background:#f0a500;color:#fff;border:none;border-radius:8px;padding:13px 28px;font-size:15px;font-weight:800;cursor:pointer;transition:background .2s;">
+                    <i class="fa fa-save"></i> Guardar cambios
+                </button>
+            </form>
+        </div>
+    </div>
 
     <?php elseif ($view_mode !== 'precios' && $view_mode !== 'imagenes'): ?>
     <!-- Tabla -->
