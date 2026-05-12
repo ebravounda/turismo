@@ -649,11 +649,11 @@
 							<div class="resumen_info">
 								<div class="info_item">
 									<i class="fa fa-map-marker"></i>
-									<span><strong>Punto de encuentro:</strong> Calle Larios 5, Málaga</span>
+									<span><strong>Punto de encuentro:</strong> <span id="info_encuentro">Calle Larios 5, Málaga</span></span>
 								</div>
 								<div class="info_item">
 									<i class="fa fa-phone"></i>
-									<span><strong>Teléfono:</strong> +34 951 234 567</span>
+									<span><strong>Teléfono:</strong> <span id="info_telefono">+34 951 234 567</span></span>
 								</div>
 								<div class="info_item">
 									<i class="fa fa-credit-card"></i>
@@ -661,7 +661,7 @@
 								</div>
 								<div class="info_item">
 									<i class="fa fa-times-circle-o"></i>
-									<span><strong>Cancelación:</strong> Gratuita hasta 24h antes</span>
+									<span><strong>Cancelación:</strong> <span id="info_cancelacion">Gratuita hasta 24h antes</span></span>
 								</div>
 							</div>
 						</div>
@@ -695,6 +695,15 @@
 	<script src="assets/js/SmoothScroll.min.js"></script>
 	<script src="assets/js/custom.js"></script>
 	<script>
+		// Load configurable site settings
+		fetch('reservas/settings.php')
+			.then(r => r.json())
+			.then(s => {
+				if (s.punto_encuentro) document.getElementById('info_encuentro').textContent = s.punto_encuentro;
+				if (s.telefono)        document.getElementById('info_telefono').textContent   = s.telefono;
+				if (s.cancelacion)     document.getElementById('info_cancelacion').textContent = s.cancelacion;
+			}).catch(() => {});
+
 		var fechaEl = document.getElementById('fecha');
 		fechaEl.setAttribute('min', new Date().toISOString().split('T')[0]);
 		// showPicker() only needed for keyboard/programmatic focus; native click handles mouse/touch
