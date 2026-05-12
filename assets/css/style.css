@@ -782,6 +782,11 @@ iframe {
 .tor_logo {
     position: relative;
 }
+.tor_logo img {
+    height: 72px;
+    width: auto;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.55));
+}
 /********************************************************
     5. Banner CSS Start
 ********************************************************/
@@ -800,6 +805,7 @@ iframe {
     font-size: 42px;
     font-weight: 700;
     margin-bottom: 8px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.7);
 }
 .tor_banner_text h1 {
     font-size: 92px;
@@ -807,6 +813,7 @@ iframe {
     line-height: 100px;
     color: var(--main-bg-color);
     margin-bottom: 29px;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.8);
 }
 .tor_banner_form {
     max-width: 1320px;
