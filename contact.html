@@ -56,7 +56,7 @@ Author: PixelNx
 			<div class="row">
 				<div class="col-lg-3 col-md-4 col-sm-7 col-7">
 					<div class="tor_logo">
-						<a href="index.html"><img src="assets/images/logo.png" alt="logo" /></a>
+						<a href="index.html"><img src="assets/images/logo-tuktuk.svg" alt="TukTuk Norris" data-img-slot="site_logo" /></a>
 					</div>
 				</div>
 				<div class="col-lg-9 col-md-8 col-sm-5 col-5">
@@ -365,5 +365,14 @@ Author: PixelNx
 	<script src="assets/js/wow.min.js"></script>
 	<script src="assets/js/jquery.magnific-popup.min.js"></script>
 	<script src="assets/js/custom.js"></script>
+<script>
+(function(){
+  fetch('reservas/imagenes.php').then(function(r){return r.json();}).then(function(cfg){
+    Object.keys(cfg).forEach(function(slot){
+      document.querySelectorAll('img[data-img-slot="'+slot+'"]').forEach(function(img){img.src=cfg[slot];});
+    });
+  }).catch(function(){});
+})();
+</script>
 	</body>
 </html>
