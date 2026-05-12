@@ -88,6 +88,7 @@ $filter_date = preg_match('/^\d{4}-\d{2}-\d{2}$/', $raw_date) ? $raw_date : date
 $filter_date_esc = htmlspecialchars($filter_date, ENT_QUOTES, 'UTF-8');
 $view_mode   = $_GET['vista'] ?? 'dia';
 $precio_ok   = isset($_GET['ok']) && $view_mode === 'precios';
+$img_ok      = isset($_GET['ok']) && $view_mode === 'imagenes';
 
 // ── Consultas MySQL ────────────────────────────────────────────
 $filtered = [];
@@ -104,7 +105,7 @@ if (isset($_SESSION['admin'])) {
 
     // Precios
     $all_precios = [];
-    if ($view_mode === 'precios') {
+    if ($view_mode === 'precios' || $view_mode === 'imagenes') {
         $all_precios = $db->query("SELECT * FROM precios ORDER BY id")->fetchAll();
     }
 
