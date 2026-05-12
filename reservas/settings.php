@@ -12,6 +12,7 @@ $defaults = [
     'telefono'        => '+34 951 234 567',
     'cancelacion'     => 'Gratuita hasta 24h antes',
     'whatsapp'        => '',
+    'logo_size'       => 72,
 ];
 
 function load_settings(string $file, array $defaults): array {

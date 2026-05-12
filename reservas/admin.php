@@ -88,13 +88,16 @@ if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset(
         die('Token inválido');
     }
     $settings_file = __DIR__ . '/site_settings.json';
-    $defaults = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes', 'whatsapp' => ''];
+    $defaults = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes', 'whatsapp' => '', 'logo_size' => 72];
     $existing = file_exists($settings_file) ? (json_decode(file_get_contents($settings_file), true) ?: []) : [];
     $settings = array_merge($defaults, $existing);
-    foreach (array_keys($defaults) as $key) {
+    foreach (['punto_encuentro', 'telefono', 'cancelacion', 'whatsapp'] as $key) {
         if (isset($_POST[$key])) {
             $settings[$key] = htmlspecialchars(strip_tags(trim($_POST[$key])), ENT_QUOTES, 'UTF-8');
         }
+    }
+    if (isset($_POST['logo_size'])) {
+        $settings['logo_size'] = max(30, min(300, (int)$_POST['logo_size']));
     }
     file_put_contents($settings_file, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     header('Location: admin.php?vista=config&ok=1');
@@ -704,7 +707,7 @@ table tr:hover td{background:#fafafa}
     <!-- Configuración General -->
     <?php
     $settings_file_adm = __DIR__ . '/site_settings.json';
-    $defaults_adm = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes', 'whatsapp' => ''];
+    $defaults_adm = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes', 'whatsapp' => '', 'logo_size' => 72];
     $existing_adm = file_exists($settings_file_adm) ? (json_decode(file_get_contents($settings_file_adm), true) ?: []) : [];
     $cfg_adm = array_merge($defaults_adm, $existing_adm);
     ?>
@@ -750,6 +753,39 @@ table tr:hover td{background:#fafafa}
                         placeholder="Ej: Gratuita hasta 24h antes"
                         style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
                 </div>
+
+                <?php $logo_sz = max(30, min(300, (int)($cfg_adm['logo_size'] ?? 72))); ?>
+                <div style="margin-bottom:28px;">
+                    <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:10px;">
+                        <i class="fa fa-picture-o" style="color:#f0a500;margin-right:6px;"></i> Tamaño del logo
+                    </label>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <button type="button" onclick="changeLogoSize(-8)"
+                            style="width:38px;height:38px;border:1.5px solid #e2e5eb;border-radius:8px;background:#f9f9f9;font-size:20px;font-weight:700;cursor:pointer;color:#444;line-height:1;display:flex;align-items:center;justify-content:center;">−</button>
+                        <span id="logo_size_display"
+                            style="min-width:64px;text-align:center;font-size:15px;font-weight:700;color:#1a1a2e;"><?= $logo_sz ?> px</span>
+                        <button type="button" onclick="changeLogoSize(+8)"
+                            style="width:38px;height:38px;border:1.5px solid #e2e5eb;border-radius:8px;background:#f9f9f9;font-size:20px;font-weight:700;cursor:pointer;color:#444;line-height:1;display:flex;align-items:center;justify-content:center;">+</button>
+                        <input type="hidden" name="logo_size" id="logo_size_input" value="<?= $logo_sz ?>">
+                    </div>
+                    <div style="margin-top:14px;background:#f5f6fa;border-radius:10px;padding:18px;text-align:center;border:1.5px dashed #e2e5eb;">
+                        <img src="../assets/images/logo-tuktuk.svg" id="logo_preview"
+                            style="height:<?= $logo_sz ?>px;width:auto;max-width:100%;"
+                            onerror="this.style.display='none'">
+                        <p style="font-size:11px;color:#aaa;margin:8px 0 0;">Vista previa del logo</p>
+                    </div>
+                </div>
+                <script>
+                function changeLogoSize(delta){
+                    var inp  = document.getElementById('logo_size_input');
+                    var disp = document.getElementById('logo_size_display');
+                    var prev = document.getElementById('logo_preview');
+                    var val  = Math.max(30, Math.min(300, parseInt(inp.value) + delta));
+                    inp.value       = val;
+                    disp.textContent = val + ' px';
+                    if(prev) prev.style.height = val + 'px';
+                }
+                </script>
 
                 <div style="margin-bottom:28px;">
                     <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:7px;">

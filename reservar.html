@@ -733,6 +733,10 @@
 				if (s.punto_encuentro) document.getElementById('info_encuentro').textContent = s.punto_encuentro;
 				if (s.telefono)        document.getElementById('info_telefono').textContent   = s.telefono;
 				if (s.cancelacion)     document.getElementById('info_cancelacion').textContent = s.cancelacion;
+				var sz = parseInt(s.logo_size) || 72;
+				document.querySelectorAll('img[data-img-slot="site_logo"]').forEach(function(img){
+					img.style.height = sz + 'px'; img.style.width = 'auto';
+				});
 			}).catch(() => {});
 
 		var fechaEl = document.getElementById('fecha');
