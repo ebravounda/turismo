@@ -8,11 +8,24 @@ header('X-Content-Type-Options: nosniff');
 $settings_file = __DIR__ . '/site_settings.json';
 
 $defaults = [
-    'punto_encuentro' => 'Calle Larios 5, Málaga',
-    'telefono'        => '+34 951 234 567',
-    'cancelacion'     => 'Gratuita hasta 24h antes',
-    'whatsapp'        => '',
-    'logo_size'       => 72,
+    'punto_encuentro'  => 'Calle Larios 5, Málaga',
+    'telefono'         => '+34 951 234 567',
+    'cancelacion'      => 'Gratuita hasta 24h antes',
+    'whatsapp'         => '',
+    'logo_size'        => 72,
+    // Textos del index
+    'hero_subtitle'    => 'Descubre Málaga de una forma única',
+    'hero_title'       => '¿Listo para tu aventura en tuk-tuk?',
+    'features_heading' => 'Por qué Elegirnos',
+    'features_subtext' => 'Más de 10 años recorriendo Málaga en tuk-tuk. Descubre lo que nos hace únicos y por qué nuestros viajeros repiten.',
+    'feat1_title'      => 'Tours Exclusivos',
+    'feat1_desc'       => 'Diseñamos cada tour a tu medida. Grupos pequeños, rutas personalizadas y atención cercana para que vivas Málaga como si fueras un local.',
+    'feat2_title'      => 'Guías Apasionados',
+    'feat2_desc'       => 'Nuestros guías conocen cada rincón de Málaga. Historias reales, anécdotas locales y una sonrisa garantizada durante todo el recorrido.',
+    'feat3_title'      => 'Calidad Premium',
+    'feat3_desc'       => 'Nuestros tuk-tuks están equipados y mantenidos para ofrecerte la mayor comodidad. Seguridad, puntualidad y una experiencia de primera clase.',
+    'feat4_title'      => 'Reserva Segura',
+    'feat4_desc'       => 'Pago 100% seguro y cancelación flexible. Tu reserva está protegida y nuestro equipo disponible para atenderte en cualquier momento.',
 ];
 
 function load_settings(string $file, array $defaults): array {
