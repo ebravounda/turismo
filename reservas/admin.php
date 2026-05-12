@@ -481,6 +481,13 @@ table tr:hover td{background:#fafafa}
     $img_cfg = file_exists($img_cfg_file) ? (json_decode(file_get_contents($img_cfg_file), true) ?: []) : [];
 
     $img_slots = [
+        'Fondos de sección' => [
+            'hero_bg'      => 'Banner principal (hero)',
+            'cta_bg'       => 'Fondo: Call to Action',
+            'packages_bg'  => 'Fondo: Sección Paquetes',
+            'booking_bg'   => 'Fondo: Sección Reservas',
+            'pagetitle_bg' => 'Fondo: Título de página',
+        ],
         'Destinos' => [
             'dest_1' => 'Casco Antiguo',
             'dest_2' => 'La Malagueta',

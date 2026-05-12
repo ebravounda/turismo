@@ -9,6 +9,8 @@ $config_file = __DIR__ . '/images_config.json';
 $upload_dir  = __DIR__ . '/../assets/images/uploads/';
 
 $allowed_slots = [
+    'hero_bg',
+    'cta_bg', 'packages_bg', 'booking_bg', 'pagetitle_bg',
     'dest_1','dest_2','dest_3','dest_4','dest_5','dest_6','dest_7','dest_8',
     'service_1','service_2','service_3','service_4',
     'package_1','package_2','package_3','package_4',
@@ -64,16 +66,17 @@ if ($method === 'POST') {
 
     if ($action === 'upload') {
         if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+            $php_err = $_FILES['file']['error'] ?? 'sin archivo';
             http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Error en la subida']);
+            echo json_encode(['success' => false, 'error' => 'Error en la subida (código: ' . $php_err . ')']);
             exit;
         }
 
         $file = $_FILES['file'];
 
-        if ($file['size'] > 5 * 1024 * 1024) {
+        if ($file['size'] > 8 * 1024 * 1024) {
             http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Archivo demasiado grande (máx 5 MB)']);
+            echo json_encode(['success' => false, 'error' => 'Archivo demasiado grande (máx 8 MB)']);
             exit;
         }
 
@@ -84,11 +87,22 @@ if ($method === 'POST') {
             'image/jpg'  => 'jpg',
             'image/png'  => 'png',
             'image/webp' => 'webp',
+            'image/gif'  => 'gif',
         ];
 
         if (!isset($mime_map[$mime])) {
             http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Tipo de archivo no permitido']);
+            echo json_encode(['success' => false, 'error' => 'Tipo no permitido: ' . $mime]);
+            exit;
+        }
+
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+
+        if (!is_writable($upload_dir)) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Directorio uploads sin permisos de escritura']);
             exit;
         }
 
@@ -103,7 +117,7 @@ if ($method === 'POST') {
 
         if (!move_uploaded_file($file['tmp_name'], $dest)) {
             http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'No se pudo guardar el archivo']);
+            echo json_encode(['success' => false, 'error' => 'No se pudo mover el archivo a: ' . $dest]);
             exit;
         }
 
