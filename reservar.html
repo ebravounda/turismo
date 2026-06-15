@@ -492,70 +492,7 @@
 
 							<!-- 1. Tour -->
 							<div class="seccion_label">1. Elige tu tour</div>
-							<div class="tours_grid">
-
-								<label class="tour_card" data-tour="Tour Centro Histórico" onclick="seleccionarTour(this, 'Tour Centro Histórico')">
-									<input type="radio" name="tipo_tour" value="Tour Centro Histórico">
-									<div class="tour_card_check"><i class="fa fa-check"></i></div>
-									<div class="tour_card_icono">🏛️</div>
-									<div class="tour_card_nombre">Centro Histórico</div>
-									<div class="tour_card_desc">Catedral, Alcazaba, calle Larios y los rincones más emblemáticos</div>
-									<div class="tour_card_meta">
-										<span class="tour_card_duracion">90 min</span>
-										<span class="tour_card_precio">Desde 15€</span>
-									</div>
-								</label>
-
-								<label class="tour_card" data-tour="Tour Playa y Puerto" onclick="seleccionarTour(this, 'Tour Playa y Puerto')">
-									<input type="radio" name="tipo_tour" value="Tour Playa y Puerto">
-									<div class="tour_card_check"><i class="fa fa-check"></i></div>
-									<div class="tour_card_icono">🏖️</div>
-									<div class="tour_card_nombre">Playa y Puerto</div>
-									<div class="tour_card_desc">Malagueta, Muelle Uno, Palmeral de las Sorpresas y paseo marítimo</div>
-									<div class="tour_card_meta">
-										<span class="tour_card_duracion">60 min</span>
-										<span class="tour_card_precio">Desde 12€</span>
-									</div>
-								</label>
-
-								<label class="tour_card" data-tour="Tour Ruta Picasso" onclick="seleccionarTour(this, 'Tour Ruta Picasso')">
-									<input type="radio" name="tipo_tour" value="Tour Ruta Picasso">
-									<div class="tour_card_check"><i class="fa fa-check"></i></div>
-									<div class="tour_card_icono">🎨</div>
-									<div class="tour_card_nombre">Ruta Picasso</div>
-									<div class="tour_card_desc">Museo Picasso, casa natal, barrio de la Trinidad y arte urbano</div>
-									<div class="tour_card_meta">
-										<span class="tour_card_duracion">75 min</span>
-										<span class="tour_card_precio">Desde 14€</span>
-									</div>
-								</label>
-
-								<label class="tour_card" data-tour="Tour Atardecer" onclick="seleccionarTour(this, 'Tour Atardecer')">
-									<input type="radio" name="tipo_tour" value="Tour Atardecer">
-									<div class="tour_card_check"><i class="fa fa-check"></i></div>
-									<div class="tour_card_icono">🌅</div>
-									<div class="tour_card_nombre">Tour Atardecer</div>
-									<div class="tour_card_desc">Las mejores vistas de Málaga al caer el sol desde el Gibralfaro</div>
-									<div class="tour_card_meta">
-										<span class="tour_card_duracion">45 min</span>
-										<span class="tour_card_precio">Desde 10€</span>
-									</div>
-								</label>
-
-								<label class="tour_card" data-tour="Tour Personalizado" onclick="seleccionarTour(this, 'Tour Personalizado')" style="grid-column: 1 / -1;">
-									<input type="radio" name="tipo_tour" value="Tour Personalizado">
-									<div class="tour_card_check"><i class="fa fa-check"></i></div>
-									<div style="display:flex; align-items:center; gap:12px;">
-										<div class="tour_card_icono" style="margin:0; font-size:28px;">✨</div>
-										<div style="flex:1;">
-											<div class="tour_card_nombre">Tour Personalizado</div>
-											<div class="tour_card_desc" style="margin:0;">Diseña tu propio recorrido por Málaga a tu medida — precio especial</div>
-										</div>
-										<span class="tour_card_precio" style="white-space:nowrap;">A consultar</span>
-									</div>
-								</label>
-
-							</div>
+							<div class="tours_grid" id="tours_grid"><!-- cargado dinámicamente desde settings --></div>
 
 							<hr class="form_divider">
 
@@ -726,7 +663,7 @@
 	<script src="assets/js/SmoothScroll.min.js"></script>
 	<script src="assets/js/custom.js"></script>
 	<script>
-		// Load configurable site settings
+		// Load configurable site settings + build tour cards
 		fetch('reservas/settings.php')
 			.then(r => r.json())
 			.then(s => {
@@ -737,6 +674,33 @@
 				document.querySelectorAll('img[data-img-slot="site_logo"]').forEach(function(img){
 					img.style.height = sz + 'px'; img.style.width = 'auto';
 				});
+				// Build tour cards dynamically
+				const grid = document.getElementById('tours_grid');
+				if (grid) {
+					let html = '';
+					for (let n = 1; n <= 3; n++) {
+						const emoji    = s['tour'+n+'_emoji']    || '';
+						const nombre   = s['tour'+n+'_nombre']   || 'Tour '+n;
+						const desc     = s['tour'+n+'_desc']     || '';
+						const duracion = s['tour'+n+'_duracion'] || '';
+						const precio   = s['tour'+n+'_precio']   || '';
+						const nomEsc   = nombre.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+						html += `<label class="tour_card" data-tour="${nombre}" onclick="seleccionarTour(this,'${nomEsc}')">
+							<input type="radio" name="tipo_tour" value="${nombre}">
+							<div class="tour_card_check"><i class="fa fa-check"></i></div>
+							<div class="tour_card_icono">${emoji}</div>
+							<div class="tour_card_nombre">${nombre}</div>
+							<div class="tour_card_desc">${desc}</div>
+							<div class="tour_card_meta">
+								<span class="tour_card_duracion">${duracion}</span>
+								<span class="tour_card_precio">${precio}</span>
+							</div>
+						</label>`;
+						const p = parseFloat(precio.replace(/[^0-9.]/g,''));
+						tourPrecios[nombre] = isNaN(p) ? null : p;
+					}
+					grid.innerHTML = html;
+				}
 			}).catch(() => {});
 
 		var fechaEl = document.getElementById('fecha');
@@ -748,14 +712,8 @@
 		});
 		document.getElementById('current-year').textContent = new Date().getFullYear();
 
-		// Precios en memoria (se sobreescriben con los datos del servidor)
-		const tourPrecios = {
-			'Tour Centro Histórico': 15,
-			'Tour Playa y Puerto':   12,
-			'Tour Ruta Picasso':     14,
-			'Tour Atardecer':        10,
-			'Tour Personalizado':    null
-		};
+		// Precios en memoria (poblados dinámicamente desde settings + precios.php)
+		const tourPrecios = {};
 
 		// Cargar precios actuales desde el servidor
 		fetch('reservas/precios.php')

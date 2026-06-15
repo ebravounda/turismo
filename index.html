@@ -389,12 +389,7 @@ Author: PixelNx
 						<div class="bw_field bw_wide">
 							<label>¿Qué tour te interesa?</label>
 							<select id="banner_tour" name="tipo_tour">
-								<option value="">Selecciona un tour...</option>
-								<option value="Tour Centro Histórico">🏛️ Centro Histórico — 90 min</option>
-								<option value="Tour Playa y Puerto">🏖️ Playa y Puerto — 60 min</option>
-								<option value="Tour Ruta Picasso">🎨 Ruta Picasso — 75 min</option>
-								<option value="Tour Atardecer">🌅 Atardecer — 45 min</option>
-								<option value="Tour Personalizado">✨ Tour Personalizado</option>
+								<option value="">Selecciona un tour...</option><!-- opciones cargadas dinámicamente -->
 							</select>
 						</div>
 
@@ -1294,6 +1289,23 @@ Author: PixelNx
         btn.href = 'https://wa.me/' + num;
         btn.style.display = 'flex';
       }
+      // Populate tour dropdown dynamically
+      var sel = document.getElementById('banner_tour');
+      if (sel) {
+        sel.innerHTML = '<option value="">Selecciona un tour...</option>';
+        for (var n = 1; n <= 3; n++) {
+          var nm = s['tour'+n+'_nombre'];
+          var em = s['tour'+n+'_emoji'] || '';
+          var du = s['tour'+n+'_duracion'] || '';
+          if (nm) {
+            var opt = document.createElement('option');
+            opt.value = nm;
+            opt.textContent = em + ' ' + nm + (du ? ' — ' + du : '');
+            sel.appendChild(opt);
+          }
+        }
+      }
+
       // index texts — map elementId -> settings key
       var texts = {
         'idx_hero_subtitle':s.hero_subtitle,'idx_hero_title':s.hero_title,
