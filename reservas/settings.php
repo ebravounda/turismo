@@ -65,6 +65,22 @@ $defaults = [
     'guide2_role'      => 'Guía Oficial',
     'guide3_name'      => 'Marcos Ruiz',
     'guide3_role'      => 'Copiloto & Fotógrafo',
+    // ── Tours (producto) ──────────────────────────────
+    'tour1_emoji'      => '🏛️',
+    'tour1_nombre'     => 'Centro Histórico',
+    'tour1_desc'       => 'Catedral, Alcazaba, calle Larios y los rincones más emblemáticos',
+    'tour1_duracion'   => '90 min',
+    'tour1_precio'     => 'Desde 15€',
+    'tour2_emoji'      => '🏖️',
+    'tour2_nombre'     => 'Playa y Puerto',
+    'tour2_desc'       => 'Malagueta, Muelle Uno, Palmeral de las Sorpresas y paseo marítimo',
+    'tour2_duracion'   => '60 min',
+    'tour2_precio'     => 'Desde 12€',
+    'tour3_emoji'      => '🎨',
+    'tour3_nombre'     => 'Ruta Picasso',
+    'tour3_desc'       => 'Museo Picasso, casa natal, barrio de la Trinidad y arte urbano',
+    'tour3_duracion'   => '75 min',
+    'tour3_precio'     => 'Desde 14€',
 ];
 
 function load_settings(string $file, array $defaults): array {

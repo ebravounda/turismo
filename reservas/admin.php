@@ -82,6 +82,27 @@ if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset(
     exit;
 }
 
+// ── Guardar tours ──────────────────────────────────────────────
+if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_tours'])) {
+    if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) die('Token inválido');
+    $settings_file = __DIR__ . '/site_settings.json';
+    $existing = file_exists($settings_file) ? (json_decode(file_get_contents($settings_file), true) ?: []) : [];
+    $tour_keys = [];
+    for ($n = 1; $n <= 3; $n++) {
+        foreach (['emoji','nombre','desc','duracion','precio'] as $f) {
+            $tour_keys[] = "tour{$n}_{$f}";
+        }
+    }
+    foreach ($tour_keys as $key) {
+        if (isset($_POST[$key])) {
+            $existing[$key] = htmlspecialchars(strip_tags(trim($_POST[$key])), ENT_QUOTES, 'UTF-8');
+        }
+    }
+    file_put_contents($settings_file, json_encode($existing, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    header('Location: admin.php?vista=tours&ok=1');
+    exit;
+}
+
 // ── Guardar textos del index ───────────────────────────────────
 if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_texts'])) {
     if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
@@ -141,6 +162,7 @@ $precio_ok   = isset($_GET['ok']) && $view_mode === 'precios';
 $img_ok      = isset($_GET['ok']) && $view_mode === 'imagenes';
 $config_ok   = isset($_GET['ok']) && $view_mode === 'config';
 $text_ok     = isset($_GET['ok']) && $view_mode === 'textos';
+$tour_ok     = isset($_GET['ok']) && $view_mode === 'tours';
 
 // ── Consultas MySQL ────────────────────────────────────────────
 $filtered = [];
@@ -381,6 +403,9 @@ table tr:hover td{background:#fafafa}
         </a>
         <a href="admin.php?vista=imagenes" class="<?= $view_mode === 'imagenes' ? 'active' : '' ?>">
             <i class="fa fa-picture-o"></i> Imágenes
+        </a>
+        <a href="admin.php?vista=tours" class="<?= $view_mode === 'tours' ? 'active' : '' ?>">
+            <i class="fa fa-map-o"></i> Tours
         </a>
         <a href="admin.php?vista=textos" class="<?= $view_mode === 'textos' ? 'active' : '' ?>">
             <i class="fa fa-pencil"></i> Textos del inicio
@@ -734,6 +759,75 @@ table tr:hover td{background:#fafafa}
             }).catch(function(){ alert('Error de conexión'); });
     }
     </script>
+
+    <?php elseif ($view_mode === 'tours'): ?>
+    <!-- Tours -->
+    <?php
+    $sf_t = __DIR__ . '/site_settings.json';
+    $ex_t = file_exists($sf_t) ? (json_decode(file_get_contents($sf_t), true) ?: []) : [];
+    $dt = [
+        'tour1_emoji'=>'🏛️','tour1_nombre'=>'Centro Histórico','tour1_desc'=>'Catedral, Alcazaba, calle Larios y los rincones más emblemáticos','tour1_duracion'=>'90 min','tour1_precio'=>'Desde 15€',
+        'tour2_emoji'=>'🏖️','tour2_nombre'=>'Playa y Puerto','tour2_desc'=>'Malagueta, Muelle Uno, Palmeral de las Sorpresas y paseo marítimo','tour2_duracion'=>'60 min','tour2_precio'=>'Desde 12€',
+        'tour3_emoji'=>'🎨','tour3_nombre'=>'Ruta Picasso','tour3_desc'=>'Museo Picasso, casa natal, barrio de la Trinidad y arte urbano','tour3_duracion'=>'75 min','tour3_precio'=>'Desde 14€',
+    ];
+    $tt = array_merge($dt, $ex_t);
+    $esc2 = fn($v) => htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
+    ?>
+    <?php if ($tour_ok): ?>
+        <div style="background:#d4edda;border:1px solid #b8dfc6;color:#155724;border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:14px;">
+            <i class="fa fa-check-circle"></i> <strong>Tours guardados correctamente.</strong>
+        </div>
+    <?php endif; ?>
+    <form method="POST" action="admin.php?vista=tours">
+    <input type="hidden" name="update_tours" value="1">
+    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+    <div style="max-width:700px;display:flex;flex-direction:column;gap:20px;">
+        <p style="color:#888;font-size:13px;margin:0 0 4px;">Edita los 3 tours que aparecen en la página de reserva y en el formulario rápido de la portada.</p>
+        <?php for ($n = 1; $n <= 3; $n++): ?>
+        <div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:24px 28px;">
+            <h3 style="font-size:15px;font-weight:800;color:#1a1a2e;margin:0 0 18px;">
+                <span style="font-size:22px;"><?= $esc2($tt["tour{$n}_emoji"]) ?></span> Tour <?= $n ?>
+            </h3>
+            <div style="display:grid;grid-template-columns:80px 1fr;gap:10px;margin-bottom:12px;">
+                <div>
+                    <label style="display:block;font-size:11px;font-weight:700;color:#999;margin-bottom:5px;text-transform:uppercase;">Emoji</label>
+                    <input type="text" name="tour<?= $n ?>_emoji" value="<?= $esc2($tt["tour{$n}_emoji"]) ?>"
+                        style="width:100%;padding:9px 10px;border:1.5px solid #e2e5eb;border-radius:7px;font-size:20px;text-align:center;box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block;font-size:11px;font-weight:700;color:#999;margin-bottom:5px;text-transform:uppercase;">Nombre del tour</label>
+                    <input type="text" name="tour<?= $n ?>_nombre" value="<?= $esc2($tt["tour{$n}_nombre"]) ?>"
+                        style="width:100%;padding:9px 12px;border:1.5px solid #e2e5eb;border-radius:7px;font-size:14px;box-sizing:border-box;">
+                </div>
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="display:block;font-size:11px;font-weight:700;color:#999;margin-bottom:5px;text-transform:uppercase;">Descripción corta</label>
+                <textarea name="tour<?= $n ?>_desc" rows="2"
+                    style="width:100%;padding:9px 12px;border:1.5px solid #e2e5eb;border-radius:7px;font-size:13px;box-sizing:border-box;resize:vertical;"><?= $esc2($tt["tour{$n}_desc"]) ?></textarea>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                    <label style="display:block;font-size:11px;font-weight:700;color:#999;margin-bottom:5px;text-transform:uppercase;">Duración</label>
+                    <input type="text" name="tour<?= $n ?>_duracion" value="<?= $esc2($tt["tour{$n}_duracion"]) ?>"
+                        placeholder="Ej: 90 min"
+                        style="width:100%;padding:9px 12px;border:1.5px solid #e2e5eb;border-radius:7px;font-size:13px;box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block;font-size:11px;font-weight:700;color:#999;margin-bottom:5px;text-transform:uppercase;">Precio</label>
+                    <input type="text" name="tour<?= $n ?>_precio" value="<?= $esc2($tt["tour{$n}_precio"]) ?>"
+                        placeholder="Ej: Desde 15€"
+                        style="width:100%;padding:9px 12px;border:1.5px solid #e2e5eb;border-radius:7px;font-size:13px;box-sizing:border-box;">
+                </div>
+            </div>
+        </div>
+        <?php endfor; ?>
+        <div>
+            <button type="submit" style="background:#f0a500;color:#fff;border:none;border-radius:8px;padding:13px 32px;font-size:15px;font-weight:800;cursor:pointer;">
+                <i class="fa fa-save"></i> Guardar tours
+            </button>
+        </div>
+    </div>
+    </form>
 
     <?php elseif ($view_mode === 'textos'): ?>
     <!-- Textos del index -->
