@@ -655,7 +655,6 @@ function formatPrecio($num) {
                   <li class="rd-nav-item"><a class="rd-nav-link" href="index.html">Inicio</a></li>
                   <li class="rd-nav-item"><a class="rd-nav-link" href="index.html#services">Clases</a></li>
                   <li class="rd-nav-item"><a class="rd-nav-link" href="index.html#gallery">Galería</a></li>
-                  <li class="rd-nav-item"><a class="rd-nav-link" href="index.html#coaches">Instructoras</a></li>
                   <li class="rd-nav-item active"><a class="rd-nav-link" href="reservar.php">Reservar</a></li>
                 </ul>
               </div>
@@ -687,7 +686,7 @@ function formatPrecio($num) {
             <p class="precio-nombre">Clase Individual</p>
             <div class="precio-valor"><?= formatPrecio($precios['clase_individual']) ?></div>
             <div class="precio-label">por clase</div>
-            <div class="precio-descripcion">Probá una clase sin compromiso. Ideal para principiantes.</div>
+            <div class="precio-descripcion">Prueba una clase sin compromiso. Ideal para principiantes.</div>
           </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-6 col-12 d-flex">
@@ -718,7 +717,7 @@ function formatPrecio($num) {
           </div>
         </div>
       </div>
-      <p style="text-align:center; margin-top:30px; font-size:0.8rem; color:#999; letter-spacing:1px;">* Las reservas online se realizan por clase individual. Para adquirir packs, contactanos.</p>
+      <p style="text-align:center; margin-top:30px; font-size:0.8rem; color:#999; letter-spacing:1px;">* Las reservas online se realizan por clase individual. Para adquirir packs, contáctanos.</p>
     </div>
   </section>
 
@@ -981,7 +980,7 @@ function cargarSlots(fecha) {
     })
     .catch(function() {
       document.getElementById('loading-slots').classList.remove('visible');
-      mostrarError('error-slots', 'Error al cargar los horarios. Intentá de nuevo.');
+      mostrarError('error-slots', 'Error al cargar los horarios. Intenta de nuevo.');
     });
 }
 
@@ -1059,19 +1058,19 @@ function confirmarReserva() {
       if (data.success) {
         mostrarConfirmacion(data.reserva);
       } else {
-        mostrarError('error-formulario', data.error || 'Ocurrió un error. Intentá de nuevo.');
+        mostrarError('error-formulario', data.error || 'Ocurrió un error. Intenta de nuevo.');
       }
     })
     .catch(function() {
       btn.disabled = false;
       btn.textContent = 'Confirmar reserva';
-      mostrarError('error-formulario', 'Error de conexión. Intentá de nuevo.');
+      mostrarError('error-formulario', 'Error de conexión. Intenta de nuevo.');
     });
 }
 
 function mostrarConfirmacion(reserva) {
   // Formatear precio
-  var precioFmt = '$' + parseInt(reserva.precio).toLocaleString('es-AR');
+  var precioFmt = '$' + parseInt(reserva.precio).toLocaleString('es-CL');
   var lista = document.getElementById('detalle-lista');
   lista.innerHTML =
     '<dt>Nombre</dt><dd>' + reserva.nombre + '</dd>' +
