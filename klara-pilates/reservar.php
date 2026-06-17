@@ -1,4 +1,10 @@
 <?php
+// DEBUG TEMPORAL - borrar después
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+// FIN DEBUG
+
 $dataDir      = __DIR__ . '/data/';
 $configFile   = $dataDir . 'config.json';
 $reservasFile = $dataDir . 'reservas.json';
