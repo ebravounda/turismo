@@ -1,14 +1,51 @@
 <?php
-$dataDir = __DIR__ . '/data/';
-$configFile = $dataDir . 'config.json';
+$dataDir      = __DIR__ . '/data/';
+$configFile   = $dataDir . 'config.json';
 $reservasFile = $dataDir . 'reservas.json';
 
-$config = json_decode(file_get_contents($configFile), true);
-$precios = $config['precios'];
-$horarios = $config['horarios'];
+// Valores por defecto si no existe el archivo de configuración
+$defaultConfig = [
+    'precios' => [
+        'clase_individual' => 5000,
+        'pack_4_clases'    => 18000,
+        'pack_8_clases'    => 32000,
+        'pack_mensual'     => 45000,
+    ],
+    'moneda'          => '$',
+    'cupos_por_clase' => 4,
+    'horarios'        => ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'],
+    'tipos_clase'     => ['Pilates Reformer Clásico','Reformer con Tower','Pilates Prenatal','Reformer Avanzado'],
+    'admin_user'      => 'admin',
+    'admin_pass'      => 'klara2025',
+];
+
+// Crear directorio data/ si no existe
+if (!is_dir($dataDir)) {
+    @mkdir($dataDir, 0755, true);
+}
+
+// Crear config.json si no existe
+if (!file_exists($configFile)) {
+    file_put_contents($configFile, json_encode($defaultConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+}
+
+// Crear reservas.json si no existe
+if (!file_exists($reservasFile)) {
+    file_put_contents($reservasFile, '[]', LOCK_EX);
+}
+
+// Leer configuración con fallback
+$configRaw = @file_get_contents($configFile);
+$config    = $configRaw ? json_decode($configRaw, true) : null;
+if (!is_array($config)) {
+    $config = $defaultConfig;
+}
+
+$precios    = $config['precios'];
+$horarios   = $config['horarios'];
 $tiposClase = $config['tipos_clase'];
-$cupos = $config['cupos_por_clase'];
-$moneda = $config['moneda'];
+$cupos      = $config['cupos_por_clase'];
+$moneda     = $config['moneda'];
 
 // Manejar peticiones AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {

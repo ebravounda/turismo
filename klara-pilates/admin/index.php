@@ -9,12 +9,15 @@ $dataDir    = __DIR__ . '/../data/';
 $configFile = $dataDir . 'config.json';
 $reservasFile = $dataDir . 'reservas.json';
 
-// Leer datos
+// Leer datos con fallback seguro
 function leerConfig($configFile) {
-    return json_decode(file_get_contents($configFile), true);
+    $raw = @file_get_contents($configFile);
+    $cfg = $raw ? json_decode($raw, true) : null;
+    return is_array($cfg) ? $cfg : [];
 }
 function leerReservas($reservasFile) {
-    $r = json_decode(file_get_contents($reservasFile), true);
+    $raw = @file_get_contents($reservasFile);
+    $r = $raw ? json_decode($raw, true) : null;
     return is_array($r) ? $r : [];
 }
 function guardarConfig($configFile, $config) {
