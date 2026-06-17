@@ -669,8 +669,8 @@ function formatPrecio($num) {
   <!-- Hero de reservas -->
   <div class="reservas-hero">
     <div class="container">
-      <h2>Reservá tu clase</h2>
-      <p>Elegí el horario que más te convenga y asegurá tu lugar</p>
+      <h2>Reserva tu clase</h2>
+      <p>Elige el horario que más te acomode y asegura tu lugar</p>
     </div>
   </div>
 
@@ -696,7 +696,7 @@ function formatPrecio($num) {
             <p class="precio-nombre">Pack 4 Clases</p>
             <div class="precio-valor"><?= formatPrecio($precios['pack_4_clases']) ?></div>
             <div class="precio-label"><?= formatPrecio(intval($precios['pack_4_clases']/4)) ?> por clase</div>
-            <div class="precio-descripcion">Comenzá tu práctica con regularidad. Válido por 30 días.</div>
+            <div class="precio-descripcion">Comienza tu práctica con regularidad. Válido por 30 días.</div>
           </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-6 col-12 d-flex">
@@ -714,7 +714,7 @@ function formatPrecio($num) {
             <p class="precio-nombre">Pack Mensual</p>
             <div class="precio-valor"><?= formatPrecio($precios['pack_mensual']) ?></div>
             <div class="precio-label">clases ilimitadas</div>
-            <div class="precio-descripcion">Venís cuando quieras durante todo el mes. Máximo compromiso.</div>
+            <div class="precio-descripcion">Viene cuando quieras durante todo el mes. Máximo compromiso.</div>
           </div>
         </div>
       </div>
@@ -725,20 +725,20 @@ function formatPrecio($num) {
   <!-- Sección de Reserva -->
   <section class="section-reserva">
     <div class="container">
-      <h3>Reservá tu lugar</h3>
+      <h3>Reserva tu lugar</h3>
       <div class="section-divider"></div>
-      <p class="subtitulo">Seleccioná fecha, horario y completá tus datos</p>
+      <p class="subtitulo">Selecciona fecha, horario y completa tus datos</p>
 
       <!-- Indicador de pasos -->
       <div class="steps-nav">
         <div class="step-indicator">
           <div class="step-circle active" id="circle-1">1</div>
-          <div class="step-label active" id="label-1">Elegí fecha</div>
+          <div class="step-label active" id="label-1">Elige fecha</div>
         </div>
         <div class="step-line"></div>
         <div class="step-indicator">
           <div class="step-circle" id="circle-2">2</div>
-          <div class="step-label" id="label-2">Elegí horario</div>
+          <div class="step-label" id="label-2">Elige horario</div>
         </div>
         <div class="step-line"></div>
         <div class="step-indicator">
@@ -750,7 +750,7 @@ function formatPrecio($num) {
       <!-- Paso 1: Fecha -->
       <div class="paso activo" id="paso-1">
         <div class="fecha-selector">
-          <label for="input-fecha">Seleccioná una fecha</label>
+          <label for="input-fecha">Selecciona una fecha</label>
           <input type="date" id="input-fecha" min="<?= date('Y-m-d') ?>">
           <div class="alert-kp error" id="error-fecha"></div>
           <button class="btn-kp btn-kp-primary" onclick="verHorarios()">Ver horarios disponibles</button>
@@ -797,7 +797,7 @@ function formatPrecio($num) {
           <div class="form-group-kp">
             <label for="campo-tipo">Tipo de clase <span style="color:#c00">*</span></label>
             <select id="campo-tipo">
-              <option value="">Seleccioná un tipo de clase</option>
+              <option value="">Selecciona un tipo de clase</option>
               <?php foreach ($tiposClase as $tipo): ?>
               <option value="<?= htmlspecialchars($tipo) ?>"><?= htmlspecialchars($tipo) ?></option>
               <?php endforeach; ?>
@@ -944,7 +944,7 @@ function verHorarios() {
   ocultarError('error-fecha');
   var fecha = document.getElementById('input-fecha').value;
   if (!fecha) {
-    mostrarError('error-fecha', 'Por favor seleccioná una fecha.');
+    mostrarError('error-fecha', 'Por favor selecciona una fecha.');
     return;
   }
   var hoy = new Date();
@@ -1034,9 +1034,9 @@ function confirmarReserva() {
 
   if (!nombre) { mostrarError('error-formulario', 'El nombre es requerido.'); return; }
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    mostrarError('error-formulario', 'Ingresá un email válido.'); return;
+    mostrarError('error-formulario', 'Ingresa un email válido.'); return;
   }
-  if (!tipo) { mostrarError('error-formulario', 'Seleccioná un tipo de clase.'); return; }
+  if (!tipo) { mostrarError('error-formulario', 'Selecciona un tipo de clase.'); return; }
 
   var btn = document.getElementById('btn-confirmar');
   btn.disabled = true;
