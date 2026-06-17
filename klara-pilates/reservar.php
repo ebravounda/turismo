@@ -637,7 +637,7 @@ function formatPrecio($num) {
           <div class="rd-navbar-main">
             <div class="rd-navbar-panel">
               <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
-              <div class="rd-navbar-brand"><a class="brand" href="index.html"><img src="images/logo-default-145x38.png" alt="Klara Pilates" width="145" height="38"/></a></div>
+              <div class="rd-navbar-brand"><a class="brand" href="index.html"><img src="images/logo-klara.png" alt="Klara Pilates" style="height:50px;width:auto"/></a></div>
               <div class="rd-navbar-collapse">
                 <div class="navbar-collapse-content">
                   <div class="logo-caption"><span>estudio de</span><span>pilates reformer</span></div>
@@ -843,7 +843,7 @@ function formatPrecio($num) {
     <div class="container">
       <div class="row row-30 justify-content-center">
         <div class="col-md-4 col-sm-6">
-          <a class="brand" href="index.html"><img src="images/logo-default-145x38.png" alt="" width="145" height="38"/></a>
+          <a class="brand" href="index.html"><img src="images/logo-klara.png" alt="Klara Pilates" style="height:50px;width:auto"/></a>
           <ul>
             <li>Lun-Vie: 8am – 20pm</li>
             <li>Sáb: 9am – 13pm</li>

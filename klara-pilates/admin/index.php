@@ -554,7 +554,7 @@ $estadoBadge = function($e) {
 <!-- Header -->
 <div class="admin-header">
   <div class="brand-area">
-    <img src="../images/logo-default-145x38.png" alt="Klara Pilates">
+    <img src="../images/logo-klara.png" alt="Klara Pilates" style="height:60px;width:auto">
     <span class="brand-title">Administración</span>
   </div>
   <div class="user-area">

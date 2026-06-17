@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <div class="login-wrapper">
     <div class="login-logo">
-      <img src="../images/logo-default-145x38.png" alt="Klara Pilates">
+      <img src="../images/logo-klara.png" alt="Klara Pilates" style="height:60px;width:auto">
     </div>
     <p class="login-subtitle">Panel de Administración</p>
 
