@@ -137,10 +137,10 @@ if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset(
         die('Token inválido');
     }
     $settings_file = __DIR__ . '/site_settings.json';
-    $defaults = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes', 'whatsapp' => '', 'logo_size' => 72];
+    $defaults = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes', 'whatsapp' => '', 'logo_size' => 72, 'footer_direccion' => 'Calle Larios 5, Centro Histórico, Málaga, España', 'footer_telefono1' => '+34 951 234 567', 'footer_telefono2' => '+34 600 123 456', 'footer_email1' => 'hola@tuktuknorris.es', 'footer_email2' => 'reservas@tuktuknorris.es'];
     $existing = file_exists($settings_file) ? (json_decode(file_get_contents($settings_file), true) ?: []) : [];
     $settings = array_merge($defaults, $existing);
-    foreach (['punto_encuentro', 'telefono', 'cancelacion', 'whatsapp'] as $key) {
+    foreach (['punto_encuentro', 'telefono', 'cancelacion', 'whatsapp', 'footer_direccion', 'footer_telefono1', 'footer_telefono2', 'footer_email1', 'footer_email2'] as $key) {
         if (isset($_POST[$key])) {
             $settings[$key] = htmlspecialchars(strip_tags(trim($_POST[$key])), ENT_QUOTES, 'UTF-8');
         }
@@ -960,7 +960,7 @@ table tr:hover td{background:#fafafa}
     <!-- Configuración General -->
     <?php
     $settings_file_adm = __DIR__ . '/site_settings.json';
-    $defaults_adm = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes', 'whatsapp' => '', 'logo_size' => 72];
+    $defaults_adm = ['punto_encuentro' => 'Calle Larios 5, Málaga', 'telefono' => '+34 951 234 567', 'cancelacion' => 'Gratuita hasta 24h antes', 'whatsapp' => '', 'logo_size' => 72, 'footer_direccion' => 'Calle Larios 5, Centro Histórico, Málaga, España', 'footer_telefono1' => '+34 951 234 567', 'footer_telefono2' => '+34 600 123 456', 'footer_email1' => 'hola@tuktuknorris.es', 'footer_email2' => 'reservas@tuktuknorris.es'];
     $existing_adm = file_exists($settings_file_adm) ? (json_decode(file_get_contents($settings_file_adm), true) ?: []) : [];
     $cfg_adm = array_merge($defaults_adm, $existing_adm);
     ?>
@@ -1049,6 +1049,60 @@ table tr:hover td{background:#fafafa}
                         placeholder="Ej: 34612345678 (sin + ni espacios)"
                         style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
                     <span style="font-size:11px;color:#aaa;margin-top:4px;display:block;">Incluye el código de país sin el +. Ej: 34612345678</span>
+                </div>
+
+                <hr style="margin:28px 0;border:none;border-top:1.5px solid #f0f0f0;">
+                <h3 style="font-size:16px;font-weight:800;color:#1a1a2e;margin:0 0 6px;">Información del pie de página</h3>
+                <p style="color:#888;font-size:13px;margin:0 0 20px;">Estos datos aparecen en el footer de la web.</p>
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:7px;">
+                        <i class="fa fa-map-marker" style="color:#f0a500;margin-right:6px;"></i> Dirección (footer)
+                    </label>
+                    <input type="text" name="footer_direccion"
+                        value="<?= htmlspecialchars($cfg_adm['footer_direccion'], ENT_QUOTES, 'UTF-8') ?>"
+                        placeholder="Ej: Calle Larios 5, Centro Histórico, Málaga"
+                        style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:7px;">
+                        <i class="fa fa-phone" style="color:#f0a500;margin-right:6px;"></i> Teléfono 1 (footer)
+                    </label>
+                    <input type="text" name="footer_telefono1"
+                        value="<?= htmlspecialchars($cfg_adm['footer_telefono1'], ENT_QUOTES, 'UTF-8') ?>"
+                        placeholder="Ej: +34 951 234 567"
+                        style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:7px;">
+                        <i class="fa fa-phone" style="color:#f0a500;margin-right:6px;"></i> Teléfono 2 (footer)
+                    </label>
+                    <input type="text" name="footer_telefono2"
+                        value="<?= htmlspecialchars($cfg_adm['footer_telefono2'], ENT_QUOTES, 'UTF-8') ?>"
+                        placeholder="Ej: +34 600 123 456"
+                        style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:7px;">
+                        <i class="fa fa-envelope-o" style="color:#f0a500;margin-right:6px;"></i> Email 1 (footer)
+                    </label>
+                    <input type="text" name="footer_email1"
+                        value="<?= htmlspecialchars($cfg_adm['footer_email1'], ENT_QUOTES, 'UTF-8') ?>"
+                        placeholder="Ej: hola@tuktuknorris.es"
+                        style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
+                </div>
+
+                <div style="margin-bottom:28px;">
+                    <label style="display:block;font-size:13px;font-weight:700;color:#444;margin-bottom:7px;">
+                        <i class="fa fa-envelope-o" style="color:#f0a500;margin-right:6px;"></i> Email 2 (footer)
+                    </label>
+                    <input type="text" name="footer_email2"
+                        value="<?= htmlspecialchars($cfg_adm['footer_email2'], ENT_QUOTES, 'UTF-8') ?>"
+                        placeholder="Ej: reservas@tuktuknorris.es"
+                        style="width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">
                 </div>
 
                 <button type="submit" style="background:#f0a500;color:#fff;border:none;border-radius:8px;padding:13px 28px;font-size:15px;font-weight:800;cursor:pointer;transition:background .2s;">
