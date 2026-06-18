@@ -81,6 +81,12 @@ $defaults = [
     'tour3_desc'       => 'Museo Picasso, casa natal, barrio de la Trinidad y arte urbano',
     'tour3_duracion'   => '75 min',
     'tour3_precio'     => 'Desde 14€',
+    // ── Footer ────────────────────────────────────────
+    'footer_direccion' => 'Calle Larios 5, Centro Histórico, Málaga, España',
+    'footer_telefono1' => '+34 951 234 567',
+    'footer_telefono2' => '+34 600 123 456',
+    'footer_email1'    => 'hola@tuktuknorris.es',
+    'footer_email2'    => 'reservas@tuktuknorris.es',
 ];
 
 function load_settings(string $file, array $defaults): array {

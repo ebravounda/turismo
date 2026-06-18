@@ -999,7 +999,7 @@ Author: PixelNx
 							</span>
 							<h4>Ubicación</h4>
 							<div class="tor_footer_info_text">
-								<a href="javascript:void(0);">Calle Larios 5, Centro Histórico, Málaga, España</a>
+								<a href="javascript:void(0);" id="idx_footer_direccion">Calle Larios 5, Centro Histórico, Málaga, España</a>
 							</div>
 						</div>
 					</div>
@@ -1015,8 +1015,8 @@ Author: PixelNx
 							</span>
 							<h4>Teléfono</h4>
 							<div class="tor_footer_info_text">
-								<a href="javascript:void(0);">+34 951 234 567</a>
-								<a href="javascript:void(0);">+34 600 123 456</a>
+								<a href="javascript:void(0);" id="idx_footer_telefono1">+34 951 234 567</a>
+								<a href="javascript:void(0);" id="idx_footer_telefono2">+34 600 123 456</a>
 							</div>
 						</div>
 					</div>
@@ -1032,8 +1032,8 @@ Author: PixelNx
 							</span>
 							<h4>Correo electrónico</h4>
 							<div class="tor_footer_info_text">
-								<a href="javascript:void(0);">hola@tuktuknorris.es</a>
-								<a href="javascript:void(0);">reservas@tuktuknorris.es</a>
+								<a href="javascript:void(0);" id="idx_footer_email1">hola@tuktuknorris.es</a>
+								<a href="javascript:void(0);" id="idx_footer_email2">reservas@tuktuknorris.es</a>
 							</div>
 						</div>
 					</div>
@@ -1198,6 +1198,9 @@ Author: PixelNx
         'idx_guide1_name':s.guide1_name,'idx_guide1_role':s.guide1_role,
         'idx_guide2_name':s.guide2_name,'idx_guide2_role':s.guide2_role,
         'idx_guide3_name':s.guide3_name,'idx_guide3_role':s.guide3_role,
+        'idx_footer_direccion':s.footer_direccion,
+        'idx_footer_telefono1':s.footer_telefono1,'idx_footer_telefono2':s.footer_telefono2,
+        'idx_footer_email1':s.footer_email1,'idx_footer_email2':s.footer_email2,
       };
       Object.keys(texts).forEach(function(id){
         var el = document.getElementById(id);
