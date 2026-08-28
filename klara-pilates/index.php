@@ -36,19 +36,14 @@ $horarioLineas = explode('|', $contacto['horario_atencion']);
       </div>
     </div>
     <div class="page">
-      <!-- Page Header-->
       <header class="section page-header" id="home">
-        <!-- RD Navbar-->
         <div class="rd-navbar-wrap">
           <nav class="rd-navbar rd-navbar-classic" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-xl-layout="rd-navbar-static" data-xl-device-layout="rd-navbar-static" data-lg-stick-up-offset="46px" data-xl-stick-up-offset="46px" data-xxl-stick-up-offset="46px" data-lg-stick-up="true" data-xl-stick-up="true" data-xxl-stick-up="true">
             <div class="rd-navbar-collapse-toggle rd-navbar-fixed-element-1" data-rd-navbar-toggle=".rd-navbar-collapse"><span></span></div>
             <div class="rd-navbar-main-outer">
               <div class="rd-navbar-main">
-                <!-- RD Navbar Panel-->
                 <div class="rd-navbar-panel">
-                  <!-- RD Navbar Toggle-->
                   <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
-                  <!-- RD Navbar Brand-->
                   <div class="rd-navbar-brand"><a class="brand" href="index.php"><img src="images/logo-klara.png" alt="Klara Pilates" style="height:100px;width:auto"/></a>
                   </div>
                   <div class="rd-navbar-collapse">
@@ -64,7 +59,6 @@ $horarioLineas = explode('|', $contacto['horario_atencion']);
                 </div>
                 <div class="rd-navbar-main-element">
                   <div class="rd-navbar-nav-wrap">
-                    <!-- RD Navbar Nav-->
                     <ul class="rd-navbar-nav">
                       <li class="rd-nav-item active"><a class="rd-nav-link" href="#home">Inicio</a>
                       </li>
@@ -82,7 +76,6 @@ $horarioLineas = explode('|', $contacto['horario_atencion']);
           </nav>
         </div>
       </header>
-      <!--Main section-->
       <section class="section main-section media-overlay" data-type="anchor" style="background-image:url('images/background-1.jpg')">
         <div class="container">
           <div class="row justify-content-md-end justify-content-sm-start">
@@ -93,7 +86,6 @@ $horarioLineas = explode('|', $contacto['horario_atencion']);
           </div>
         </div>
       </section>
-      <!--Service-->
       <section class="section section-lg" id="services" data-type="anchor">
         <div class="container">
           <div class="row row-50 justify-content-start">
@@ -136,7 +128,6 @@ $horarioLineas = explode('|', $contacto['horario_atencion']);
           </div>
         </div>
       </section>
-      <!--CTA section-->
       <section class="section cta-section" id="join-now" style="background-image:url('images/background-2.png')">
         <div class="container">
           <div class="row">
@@ -155,7 +146,6 @@ $horarioLineas = explode('|', $contacto['horario_atencion']);
           </div>
         </div>
       </section>
-      <!--Gallery section-->
       <section class="section section-lg bg-gray-lighten" id="gallery" data-type="anchor">
         <div class="container">
           <div class="gallery-wrap">
@@ -180,7 +170,6 @@ $horarioLineas = explode('|', $contacto['horario_atencion']);
           </div>
         </div>
       </section>
-      <!--CTA section 2-->
       <section class="section cta-creative media-overlay" style="background-image:url('images/background-3.jpg')">
         <div class="container">
           <div class="row row-30">
@@ -193,7 +182,6 @@ $horarioLineas = explode('|', $contacto['horario_atencion']);
           </div>
         </div>
       </section>
-      <!--Footer-->
       <footer class="section footer-classic context-light">
         <div class="container">
           <div class="row row-30 justify-content-center">

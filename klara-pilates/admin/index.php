@@ -89,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $mensaje = 'Todos los campos requeridos deben completarse.';
             $mensajeTipo = 'danger';
         } else {
-            // Verificar cupos si el estado es confirmada
             if ($estado === 'confirmada') {
                 $ocupados = 0;
                 foreach ($reservas as $rv) {
@@ -125,6 +124,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     }
 
+    elseif ($action === 'update_contacto') {
+        $contacto = [
+            'direccion'        => htmlspecialchars(trim($_POST['direccion'] ?? ''), ENT_QUOTES),
+            'ciudad'           => htmlspecialchars(trim($_POST['ciudad'] ?? ''), ENT_QUOTES),
+            'horario_atencion' => htmlspecialchars(trim($_POST['horario_atencion'] ?? ''), ENT_QUOTES),
+            'telefono'         => htmlspecialchars(trim($_POST['telefono'] ?? ''), ENT_QUOTES),
+            'email'            => filter_var(trim($_POST['email_contacto'] ?? ''), FILTER_SANITIZE_EMAIL),
+        ];
+        $config['contacto'] = $contacto;
+        guardarConfig($configFile, $config);
+        $mensaje = 'Información de contacto actualizada.';
+    }
+
     elseif ($action === 'update_pass') {
         $nueva  = $_POST['nueva_pass'] ?? '';
         $conf   = $_POST['confirmar_pass'] ?? '';
@@ -144,7 +156,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $mensaje = 'Configuración guardada.';
         }
         if ($mensajeTipo !== 'danger') {
-            // config ya guardado arriba si hubo cambio de pass
             if (!empty($nueva) && $nueva === $conf) {
                 // ya guardado
             } else {
@@ -153,16 +164,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     }
 
-    // Recargar datos después de modificaciones
     $config   = leerConfig($configFile);
     $reservas = leerReservas($reservasFile);
 }
 
-// Cargar datos actuales
 $config   = leerConfig($configFile);
 $reservas = leerReservas($reservasFile);
 
-// Estadísticas
 $hoy = date('Y-m-d');
 $inicioSemana = date('Y-m-d', strtotime('monday this week'));
 $finSemana    = date('Y-m-d', strtotime('sunday this week'));
@@ -179,7 +187,6 @@ foreach ($reservas as $r) {
     $ingresosEstimados += (int)($r['precio'] ?? 0);
 }
 
-// Ordenar reservas por fecha desc
 usort($reservas, function($a, $b) {
     $cmp = strcmp($b['fecha'], $a['fecha']);
     if ($cmp !== 0) return $cmp;
@@ -218,7 +225,6 @@ $estadoBadge = function($e) {
       color: #333;
       margin: 0;
     }
-    /* Header */
     .admin-header {
       background: #1a1a1a;
       color: #fff;
@@ -277,13 +283,11 @@ $estadoBadge = function($e) {
       color: #fff;
       border-color: #555;
     }
-    /* Main */
     .admin-main {
       max-width: 1200px;
       margin: 30px auto;
       padding: 0 20px 60px;
     }
-    /* Stats cards */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -321,7 +325,6 @@ $estadoBadge = function($e) {
     .stat-card.azul .stat-value { color: #1565c0; }
     .stat-card.granate { border-left-color: #6a1a1a; }
     .stat-card.granate .stat-value { color: #6a1a1a; font-size: 1.5rem; }
-    /* Alert */
     .alert-admin {
       padding: 13px 18px;
       border-radius: 3px;
@@ -330,7 +333,6 @@ $estadoBadge = function($e) {
     }
     .alert-admin.success { background: #e8f5e9; color: #2e7d32; border-left: 3px solid #2e7d32; }
     .alert-admin.danger  { background: #fdecea; color: #c62828; border-left: 3px solid #c62828; }
-    /* Tabs */
     .admin-tabs {
       background: #fff;
       border-radius: 4px;
@@ -367,7 +369,6 @@ $estadoBadge = function($e) {
       padding: 28px;
     }
     .tab-panel.active { display: block; }
-    /* Table */
     .admin-table {
       width: 100%;
       border-collapse: collapse;
@@ -391,7 +392,6 @@ $estadoBadge = function($e) {
     }
     .admin-table tr:hover td { background: #fafafa; }
     .admin-table tr.cancelada td { opacity: 0.6; }
-    /* Badges */
     .badge {
       display: inline-block;
       padding: 3px 10px;
@@ -404,7 +404,6 @@ $estadoBadge = function($e) {
     .badge-success { background: #e8f5e9; color: #2e7d32; }
     .badge-danger  { background: #fdecea; color: #c62828; }
     .badge-secondary { background: #f0f0f0; color: #666; }
-    /* Acción botones */
     .btn-sm-admin {
       padding: 5px 10px;
       border: none;
@@ -421,7 +420,6 @@ $estadoBadge = function($e) {
     .btn-sm-confirmar { background: #e8f5e9; color: #2e7d32; }
     .btn-sm-cancelar  { background: #fff3e0; color: #e65100; }
     .btn-sm-eliminar  { background: #fdecea; color: #c62828; }
-    /* Filtros */
     .filtros-bar {
       display: flex;
       gap: 12px;
@@ -474,7 +472,6 @@ $estadoBadge = function($e) {
       cursor: pointer;
       font-family: inherit;
     }
-    /* Formularios admin */
     .admin-form .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -551,7 +548,6 @@ $estadoBadge = function($e) {
   </style>
 </head>
 <body>
-<!-- Header -->
 <div class="admin-header">
   <div class="brand-area">
     <img src="../images/logo-klara.png" alt="Klara Pilates" style="height:60px;width:auto">
@@ -563,7 +559,6 @@ $estadoBadge = function($e) {
   </div>
 </div>
 
-<!-- Main -->
 <div class="admin-main">
 
   <?php if ($mensaje): ?>
@@ -572,7 +567,6 @@ $estadoBadge = function($e) {
   </div>
   <?php endif; ?>
 
-  <!-- Stats -->
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-label">Total de reservas</div>
@@ -592,7 +586,6 @@ $estadoBadge = function($e) {
     </div>
   </div>
 
-  <!-- Tabs -->
   <div class="admin-tabs">
     <div class="tab-nav">
       <button class="tab-btn active" onclick="mostrarTab('reservas', this)">Reservas</button>
@@ -601,11 +594,8 @@ $estadoBadge = function($e) {
       <button class="tab-btn" onclick="mostrarTab('config', this)">Configuración</button>
     </div>
 
-    <!-- TAB 1: RESERVAS -->
     <div class="tab-panel active" id="tab-reservas">
       <div class="section-title">Listado de Reservas</div>
-
-      <!-- Filtros -->
       <div class="filtros-bar">
         <div class="filtro-group">
           <label>Fecha</label>
@@ -622,7 +612,6 @@ $estadoBadge = function($e) {
         <button class="btn-filtrar" onclick="aplicarFiltro()">Filtrar</button>
         <button class="btn-limpiar" onclick="limpiarFiltro()">Limpiar</button>
       </div>
-
       <div class="table-scroll">
         <table class="admin-table" id="tabla-reservas">
           <thead>
@@ -683,7 +672,6 @@ $estadoBadge = function($e) {
       </div>
     </div>
 
-    <!-- TAB 2: NUEVA RESERVA -->
     <div class="tab-panel" id="tab-nueva">
       <div class="section-title">Agregar Reserva Manual</div>
       <form method="POST" class="admin-form">
@@ -712,7 +700,7 @@ $estadoBadge = function($e) {
           <div class="fg">
             <label>Horario *</label>
             <select name="hora" required>
-              <option value="">Seleccioná un horario</option>
+              <option value="">Selecciona un horario</option>
               <?php foreach ($config['horarios'] as $h): ?>
               <option value="<?= $h ?>"><?= $h ?></option>
               <?php endforeach; ?>
@@ -721,7 +709,7 @@ $estadoBadge = function($e) {
           <div class="fg">
             <label>Tipo de clase *</label>
             <select name="tipo_clase" required>
-              <option value="">Seleccioná un tipo</option>
+              <option value="">Selecciona un tipo</option>
               <?php foreach ($config['tipos_clase'] as $t): ?>
               <option value="<?= htmlspecialchars($t) ?>"><?= htmlspecialchars($t) ?></option>
               <?php endforeach; ?>
@@ -745,28 +733,27 @@ $estadoBadge = function($e) {
       </form>
     </div>
 
-    <!-- TAB 3: PRECIOS -->
     <div class="tab-panel" id="tab-precios">
       <div class="section-title">Gestión de Precios</div>
       <form method="POST" class="admin-form">
         <input type="hidden" name="action" value="update_precios">
         <div class="form-row">
           <div class="fg">
-            <label>Clase Individual (ARS)</label>
+            <label>Clase Individual (CLP)</label>
             <input type="number" name="clase_individual" value="<?= (int)$config['precios']['clase_individual'] ?>" min="0" step="100" required>
           </div>
           <div class="fg">
-            <label>Pack 4 Clases (ARS)</label>
+            <label>Pack 4 Clases (CLP)</label>
             <input type="number" name="pack_4_clases" value="<?= (int)$config['precios']['pack_4_clases'] ?>" min="0" step="100" required>
           </div>
         </div>
         <div class="form-row">
           <div class="fg">
-            <label>Pack 8 Clases (ARS)</label>
+            <label>Pack 8 Clases (CLP)</label>
             <input type="number" name="pack_8_clases" value="<?= (int)$config['precios']['pack_8_clases'] ?>" min="0" step="100" required>
           </div>
           <div class="fg">
-            <label>Pack Mensual (ARS)</label>
+            <label>Pack Mensual (CLP)</label>
             <input type="number" name="pack_mensual" value="<?= (int)$config['precios']['pack_mensual'] ?>" min="0" step="100" required>
           </div>
         </div>
@@ -787,9 +774,42 @@ $estadoBadge = function($e) {
       </form>
     </div>
 
-    <!-- TAB 4: CONFIGURACIÓN -->
     <div class="tab-panel" id="tab-config">
-      <div class="section-title">Configuración del Sistema</div>
+      <div class="section-title">Información de Contacto</div>
+      <form method="POST" class="admin-form">
+        <input type="hidden" name="action" value="update_contacto">
+        <div style="max-width:600px;">
+          <div class="form-row">
+            <div class="fg">
+              <label>Dirección</label>
+              <input type="text" name="direccion" value="<?= htmlspecialchars($config['contacto']['direccion'] ?? '') ?>" placeholder="Calle y número">
+            </div>
+            <div class="fg">
+              <label>Ciudad / Región</label>
+              <input type="text" name="ciudad" value="<?= htmlspecialchars($config['contacto']['ciudad'] ?? '') ?>" placeholder="Santiago, Chile">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="fg">
+              <label>Teléfono</label>
+              <input type="text" name="telefono" value="<?= htmlspecialchars($config['contacto']['telefono'] ?? '') ?>" placeholder="+56 9 0000 0000">
+            </div>
+            <div class="fg">
+              <label>Email de contacto</label>
+              <input type="email" name="email_contacto" value="<?= htmlspecialchars($config['contacto']['email'] ?? '') ?>" placeholder="info@klarapilates.cl">
+            </div>
+          </div>
+          <div class="fg">
+            <label>Horario de atención</label>
+            <input type="text" name="horario_atencion" value="<?= htmlspecialchars($config['contacto']['horario_atencion'] ?? '') ?>" placeholder="Lun-Vie: 8am – 20pm | Sáb: 9am – 13pm">
+          </div>
+          <button type="submit" class="btn-admin-save">Guardar Contacto</button>
+        </div>
+      </form>
+
+      <hr class="pass-divider">
+
+      <div class="section-title">Seguridad</div>
       <form method="POST" class="admin-form" onsubmit="return validarPass()">
         <input type="hidden" name="action" value="update_pass">
         <div style="max-width:480px;">
@@ -799,7 +819,7 @@ $estadoBadge = function($e) {
           </div>
           <div class="fg">
             <label>Confirmar nueva contraseña</label>
-            <input type="password" name="confirmar_pass" id="confirmar-pass" placeholder="Repetí la contraseña" autocomplete="new-password">
+            <input type="password" name="confirmar_pass" id="confirmar-pass" placeholder="Repite la contraseña" autocomplete="new-password">
           </div>
           <hr class="pass-divider">
           <div class="fg">
@@ -816,8 +836,8 @@ $estadoBadge = function($e) {
       </p>
     </div>
 
-  </div><!-- /admin-tabs -->
-</div><!-- /admin-main -->
+  </div>
+</div>
 
 <script>
 function mostrarTab(nombre, btn) {
@@ -839,7 +859,6 @@ function aplicarFiltro() {
     fila.style.display = visible ? '' : 'none';
     if (visible) hayResultados = true;
   });
-  // Mostrar mensaje si no hay resultados
   var sinResultados = document.getElementById('sin-resultados');
   if (!sinResultados) {
     sinResultados = document.createElement('tr');
