@@ -9,6 +9,13 @@
   "cupos_por_clase": 4,
   "horarios": ["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"],
   "tipos_clase": ["Pilates Reformer Clásico","Reformer con Tower","Pilates Prenatal","Reformer Avanzado"],
+  "contacto": {
+    "direccion": "Tu dirección aquí",
+    "ciudad": "Ciudad, Chile",
+    "horario_atencion": "Lun-Vie: 8am – 20pm | Sáb: 9am – 13pm",
+    "telefono": "+56 9 0000 0000",
+    "email": "info@klarapilates.cl"
+  },
   "admin_user": "admin",
   "admin_pass": "klara2025"
 }

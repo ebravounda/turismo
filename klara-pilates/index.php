@@ -1,0 +1,250 @@
+<?php
+$configFile = __DIR__ . '/data/config.json';
+$raw = @file_get_contents($configFile);
+$config = ($raw ? json_decode($raw, true) : null) ?: [];
+$contacto = $config['contacto'] ?? [
+    'direccion' => 'Tu dirección aquí',
+    'ciudad' => 'Ciudad, Chile',
+    'horario_atencion' => 'Lun-Vie: 8am – 20pm | Sáb: 9am – 13pm',
+    'telefono' => '+56 9 0000 0000',
+    'email' => 'info@klarapilates.cl',
+];
+$horarioLineas = explode('|', $contacto['horario_atencion']);
+?>
+<!DOCTYPE html>
+<html class="wide wow-animation" lang="en">
+  <head>
+    <title>Klara Pilates | Clases de Cama de Pilates</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700,300i%7CRoboto:400,300i">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>.ie-panel{display: none;background: #212121;padding: 10px 0;box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3);clear: both;text-align:center;position: relative;z-index: 1;} html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {display: block;}</style>
+  </head>
+  <body>
+    <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="images/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
+    <div class="preloader">
+      <div class="preloader-body">
+        <div class="cssload-container">
+          <div class="cssload-speeding-wheel"></div>
+        </div>
+        <p>Loading...</p>
+      </div>
+    </div>
+    <div class="page">
+      <!-- Page Header-->
+      <header class="section page-header" id="home">
+        <!-- RD Navbar-->
+        <div class="rd-navbar-wrap">
+          <nav class="rd-navbar rd-navbar-classic" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-xl-layout="rd-navbar-static" data-xl-device-layout="rd-navbar-static" data-lg-stick-up-offset="46px" data-xl-stick-up-offset="46px" data-xxl-stick-up-offset="46px" data-lg-stick-up="true" data-xl-stick-up="true" data-xxl-stick-up="true">
+            <div class="rd-navbar-collapse-toggle rd-navbar-fixed-element-1" data-rd-navbar-toggle=".rd-navbar-collapse"><span></span></div>
+            <div class="rd-navbar-main-outer">
+              <div class="rd-navbar-main">
+                <!-- RD Navbar Panel-->
+                <div class="rd-navbar-panel">
+                  <!-- RD Navbar Toggle-->
+                  <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
+                  <!-- RD Navbar Brand-->
+                  <div class="rd-navbar-brand"><a class="brand" href="index.php"><img src="images/logo-klara.png" alt="Klara Pilates" style="height:100px;width:auto"/></a>
+                  </div>
+                  <div class="rd-navbar-collapse">
+                    <div class="navbar-collapse-content">
+                      <div class="logo-caption"><span>estudio de</span><span>pilates reformer</span></div>
+                      <ul class="social-links">
+                        <li><a class="icon mdi mdi-facebook" href="#"></a></li>
+                        <li><a class="icon mdi-instagram mdi" href="#"></a></li>
+                        <li><a class="icon icon-sm mdi mdi-youtube-play" href="#"></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="rd-navbar-main-element">
+                  <div class="rd-navbar-nav-wrap">
+                    <!-- RD Navbar Nav-->
+                    <ul class="rd-navbar-nav">
+                      <li class="rd-nav-item active"><a class="rd-nav-link" href="#home">Inicio</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="#services">Clases</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="#gallery">Galería</a>
+                      </li>
+                      <li class="rd-nav-item"><a class="rd-nav-link" href="reservar.php">Reservar</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </header>
+      <!--Main section-->
+      <section class="section main-section media-overlay" data-type="anchor" style="background-image:url('images/background-1.jpg')">
+        <div class="container">
+          <div class="row justify-content-md-end justify-content-sm-start">
+            <div class="col-lg-4 col-sm-8 col-12 text-md-right">
+              <h1 class="big big-title wow fadeInRight"><span>Pilates</span><span>Reformer</span></h1>
+              <p class="wow fadeInRight offset-top-30" data-wow-delay=".1s">Transforma tu cuerpo con nuestras clases de cama de Pilates. Instructoras certificadas, grupos reducidos y equipamiento profesional para todos los niveles.</p><a class="wow fadeInRight button button-primary button-md" href="reservar.php" data-wow-delay=".2s">reservar clase</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--Service-->
+      <section class="section section-lg" id="services" data-type="anchor">
+        <div class="container">
+          <div class="row row-50 justify-content-start">
+            <div class="col-md-6 col-lg-3 col-12 wow fadeIn" data-wow-delay=".1s">
+              <figure class="service-box">
+                <div class="square-figure"><span class="icon linearicons-medal-empty"></span></div>
+                <figcaption>
+                  <h5>Pilates Reformer Clásico</h5>
+                  <p>Trabaja en la cama de Pilates para mejorar la postura, la flexibilidad y la fuerza muscular profunda.</p>
+                </figcaption>
+              </figure>
+            </div>
+            <div class="col-md-6 col-lg-3 col-12 wow fadeIn" data-wow-delay=".2s">
+              <figure class="service-box">
+                <div class="square-figure"><span class="icon linearicons-dumbbell"></span></div>
+                <figcaption>
+                  <h5>Reformer con Tower</h5>
+                  <p>Clases con la combinación de cama y torre para una experiencia de entrenamiento completa y progresiva.</p>
+                </figcaption>
+              </figure>
+            </div>
+            <div class="col-md-6 col-lg-3 col-12 wow fadeIn" data-wow-delay=".3s">
+              <figure class="service-box">
+                <div class="square-figure"><span class="icon linearicons-document"></span></div>
+                <figcaption>
+                  <h5>Pilates Prenatal</h5>
+                  <p>Clases especialmente diseñadas para embarazadas, adaptadas a cada etapa del embarazo con total seguridad.</p>
+                </figcaption>
+              </figure>
+            </div>
+            <div class="col-md-6 col-lg-3 col-12 wow fadeIn" data-wow-delay=".4s">
+              <figure class="service-box">
+                <div class="square-figure"><span class="icon linearicons-users2"></span></div>
+                <figcaption>
+                  <h5>Clases Grupales Reducidas</h5>
+                  <p>Grupos de hasta 4 personas para garantizar la atención personalizada de cada alumna en la cama de Pilates.</p>
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--CTA section-->
+      <section class="section cta-section" id="join-now" style="background-image:url('images/background-2.png')">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-5 col-sm-10 col-12 col-md-8 wow fadeInLeft">
+              <div class="cta-wrap">
+                <h2 class="creative-title">reserva<span> tu<br></span><span>clase</span> hoy</h2>
+                <p>Ingresa tu nombre y email para reservar tu primera clase de cama de Pilates sin cargo.</p>
+                <div class="cta-event-time">¡primeras 5 clases!</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-5 col-sm-10 col-12 col-md-8 wow fadeInUp" data-wow-delay=".2s">
+              <a class="button button-primary button-md" href="reservar.php">Reservar mi clase online</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--Gallery section-->
+      <section class="section section-lg bg-gray-lighten" id="gallery" data-type="anchor">
+        <div class="container">
+          <div class="gallery-wrap">
+            <div class="floating-items" data-lightgallery="group">
+              <div class="item-1 wow fadeInDown"><a class="thumbnail-minimal" href="images/gallery-original-1-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-item-1.jpg" alt=""/></a></div>
+              <div class="item-2 wow fadeInLeft" data-wow-delay=".1s"><a class="thumbnail-minimal" href="images/gallery-original-2-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-item-2.jpg" alt=""/></a></div>
+              <div class="item-3 wow fadeInRight" data-wow-delay=".2s"><a class="thumbnail-minimal" href="images/gallery-original-3-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-item-3.jpg" alt=""/></a></div>
+              <div class="item-4 wow fadeInDown" data-wow-delay=".1s"><a class="thumbnail-minimal" href="images/gallery-original-4-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-item-4.jpg" alt=""/></a></div>
+              <div class="item-5 wow fadeInUp" data-wow-delay=".2s"><a class="thumbnail-minimal" href="images/gallery-original-5-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-item-5.jpg" alt=""/></a></div>
+              <div class="item-6 wow fadeInRight" data-wow-delay=".3s"><a class="thumbnail-minimal" href="images/gallery-original-6-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-item-6.jpg" alt=""/></a></div>
+              <div class="item-7 wow fadeDown" data-wow-delay=".2s"><a class="thumbnail-minimal" href="images/gallery-original-7-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-item-7.jpg" alt=""/></a></div>
+              <div class="item-8 wow fadeInRight" data-wow-delay=".3s"><a class="thumbnail-minimal" href="images/gallery-original-8-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-item-8.jpg" alt=""/></a></div>
+              <div class="item-9 wow fadeInUp" data-wow-delay=".2s"><a class="thumbnail-minimal" href="images/gallery-original-9-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-item-9.jpg" alt=""/></a></div>
+              <div class="item-10 wow fadeInUp" data-wow-delay=".1s"><a class="thumbnail-minimal" href="images/gallery-original-10-1200x800.jpg" data-lightgallery="item"><img src="images/gallery-item-10.jpg" alt=""/></a></div>
+            </div>
+            <div class="gallery-content-wrap wow fadeInRight" data-wow-delay=".4s">
+              <div class="gallery-info">
+                <h2><span> bienvenida</span> a nuestro<br> estudio<span> de pilates</span></h2>
+                <p>Klara Pilates es el estudio especializado en cama de Pilates (reformer) que te acompaña en cada etapa. Trabajamos con grupos reducidos para que cada alumna reciba atención personalizada, sin importar su nivel ni experiencia previa.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--CTA section 2-->
+      <section class="section cta-creative media-overlay" style="background-image:url('images/background-3.jpg')">
+        <div class="container">
+          <div class="row row-30">
+            <div class="col">
+              <div class="col-xl-5 col-sm-10 col-12 col-md-8 wow fadeInLeft">
+                <h2 class="big big-title">es hora<br>de pilates</h2>
+                <p class="offset-top-30">¡Comienza tu camino en la cama de Pilates! Nuestro estudio ofrece instructoras certificadas, rutinas a medida y el ambiente ideal para transformar tu cuerpo.</p><a class="button button-primary button-md" href="reservar.php">Reservar clase</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!--Footer-->
+      <footer class="section footer-classic context-light">
+        <div class="container">
+          <div class="row row-30 justify-content-center">
+            <div class="col-md-4 col-sm-6"><a class="brand" href="index.php"><img src="images/logo-klara.png" alt="Klara Pilates" style="height:100px;width:auto"/></a>
+              <ul>
+                <?php foreach ($horarioLineas as $hl): ?>
+                <li><?= htmlspecialchars(trim($hl)) ?></li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <h6>Dirección</h6>
+              <ul>
+                <li><?= htmlspecialchars($contacto['direccion']) ?></li>
+                <li><?= htmlspecialchars($contacto['ciudad']) ?></li>
+              </ul>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <div class="centered-content">
+                <h6>Contacto</h6>
+                <ul class="contact-links">
+                  <li><span>Teléfono</span><a href="tel:<?= htmlspecialchars($contacto['telefono']) ?>"><?= htmlspecialchars($contacto['telefono']) ?></a></li>
+                  <li><span>E-Mail</span><a href="mailto:<?= htmlspecialchars($contacto['email']) ?>"><?= htmlspecialchars($contacto['email']) ?></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="devider">
+          <hr>
+        </div>
+        <div class="container">
+          <div class="row row-30 justify-content-xl-between justify-content-center flex-column-reverse flex-md-row">
+            <div class="col-12 col-md-7">
+              <p class="rights"><span>&copy;&nbsp; </span><span class="copyright-year"></span><span>&nbsp;</span><span>Klara Pilates</span><span>.&nbsp;</span><a href="#">Política de Privacidad</a></p>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="centered-content">
+                <ul class="social-links">
+                  <li><a class="icon mdi mdi-facebook" href="#"></a></li>
+                  <li><a class="icon mdi-instagram mdi" href="#"></a></li>
+                  <li><a class="icon icon-sm mdi mdi-youtube-play" href="#"></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <div class="snackbars" id="form-output-global"></div>
+    <script src="js/core.min.js"></script>
+    <script src="js/script.js"></script>
+  </body>
+</html>
