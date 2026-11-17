@@ -107,6 +107,20 @@ try {
         ':mensaje'   => $mensaje,
     ]);
 
+    // Send WhatsApp notification (non-blocking: ignore result)
+    require_once __DIR__ . '/enviar_whatsapp.php';
+    enviarWhatsappReserva([
+        'id'        => $id,
+        'nombre'    => $nombre,
+        'telefono'  => $telefono,
+        'tipo_tour' => $tipo_tour,
+        'fecha'     => $fecha,
+        'hora'      => $hora,
+        'personas'  => $personas,
+        'monto'     => $monto,
+        'pagado'    => 0,
+    ]);
+
     echo json_encode([
         'success' => true,
         'message' => '¡Reserva registrada! Confirma ahora con el pago.',

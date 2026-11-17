@@ -41,6 +41,9 @@ if ($reserva && $session_id && !$reserva['pagado']) {
             $reserva['stripe_session_id'] = $session_id;
             $reserva['estado']            = 'confirmada';
             $pagado = true;
+            // Send WhatsApp confirmation after successful payment
+            require_once __DIR__ . '/enviar_whatsapp.php';
+            enviarWhatsappReserva($reserva);
         } catch (PDOException $e) {
             $error = 'No se pudo actualizar la reserva.';
         }

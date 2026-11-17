@@ -31,6 +31,11 @@ define('STRIPE_SECRET_KEY',    'sk_test_REPLACE_WITH_YOUR_KEY');
 define('STRIPE_WEBHOOK_SECRET','whsec_REPLACE_WITH_YOUR_WEBHOOK_SECRET');
 define('SITE_URL',             'https://www.tuktuknorris.es');
 
+// ── Twilio WhatsApp (reemplaza con tus claves reales) ──────────
+define('TWILIO_ACCOUNT_SID',   'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+define('TWILIO_AUTH_TOKEN',    'your_auth_token_here');
+define('TWILIO_WHATSAPP_FROM', '+14155238886');
+
 // ── Conexión PDO (no tocar) ────────────────────────────────────
 function getDB(): PDO {
     static $pdo = null;
