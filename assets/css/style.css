@@ -794,7 +794,7 @@ iframe {
     padding: 320px 0 430px;
     position: relative;
     background-color: var(--main-green-version4);
-    background: linear-gradient(90deg,rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url('https://dummyimage.com/1920x1000/');
+    background: linear-gradient(90deg,rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url('../images/uploads/tuktuk_pompidou.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -1047,7 +1047,7 @@ iframe {
 ********************************************************/
 .tor_callToActionSecond_wrapper {
     position: relative;
-    background: url(https://dummyimage.com/1920x645/);
+    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('../images/uploads/tuktuk_playa.webp');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -1188,7 +1188,7 @@ iframe {
     background: var(--main-gray-version24);
     position: relative;
     padding: 69px 0 41px;
-    background-image: url('https://dummyimage.com/1920x1061/');
+    background-image: url('../images/uploads/tuktuk_parque.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: top center;
@@ -1428,7 +1428,7 @@ iframe {
 ********************************************************/
 .tor_booking_wrapper {
     position: relative;
-    background: url(https://dummyimage.com/1920x753/);
+    background: linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),url('../images/uploads/tuktuk_adoquin.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -1851,7 +1851,7 @@ iframe {
 *******************************************************/
 .page_title_wrapper {
     position: relative;
-    background: url(https://dummyimage.com/1920x281/);
+    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('../images/uploads/tuktuk_pompidou.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
