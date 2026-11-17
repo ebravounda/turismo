@@ -1225,43 +1225,6 @@ Author: PixelNx
 			window.location.href = 'reservar.html' + (p.toString() ? '?' + p.toString() : '');
 		});
 	</script>
-<script>
-(function(){
-  var bgSlots = {
-    'hero_bg':      '.tor_banner_wrapper',
-    'cta_bg':       '.tor_callToActionSecond_wrapper',
-    'packages_bg':  '.tor_package_wrapper',
-    'booking_bg':   '.tor_booking_wrapper',
-    'pagetitle_bg': '.page_title_wrapper',
-  };
-  fetch('reservas/imagenes.php')
-    .then(function(r){ return r.json(); })
-    .then(function(cfg){
-      Object.keys(cfg).forEach(function(slot){
-        var url = cfg[slot];
-        // img tags — only update src if the current src is empty or a placeholder
-        document.querySelectorAll('img[data-img-slot="'+slot+'"]').forEach(function(img){
-          var cur = img.getAttribute('src') || '';
-          if (!cur || cur.indexOf('dummy') !== -1 || cur.indexOf('placeholder') !== -1 || cur.indexOf('via.placeholder') !== -1) {
-            img.src = url;
-          }
-        });
-        // gallery anchor hrefs — only update if currently a placeholder
-        document.querySelectorAll('a[data-img-slot="'+slot+'"]').forEach(function(a){
-          var cur = a.getAttribute('href') || '';
-          if (!cur || cur === '#' || cur.indexOf('dummy') !== -1 || cur.indexOf('placeholder') !== -1) {
-            a.href = url;
-          }
-        });
-        // CSS background sections
-        if (bgSlots[slot]) {
-          var el = document.querySelector(bgSlots[slot]);
-          if (el) el.style.backgroundImage = "linear-gradient(90deg,rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url('"+url+"')";
-        }
-      });
-    }).catch(function(){});
-})();
-</script>
 
 <!-- Botón flotante WhatsApp -->
 <a id="whatsapp_btn" href="#" class="whatsapp_float" target="_blank" rel="noopener noreferrer" style="display:none;">
