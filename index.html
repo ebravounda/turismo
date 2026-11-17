@@ -1225,6 +1225,32 @@ Author: PixelNx
 			window.location.href = 'reservar.html' + (p.toString() ? '?' + p.toString() : '');
 		});
 	</script>
+<script>
+(function(){
+  var bgSlots = {
+    'hero_bg':     '.tor_banner_wrapper',
+    'cta_bg':      '.tor_callToActionSecond_wrapper',
+    'booking_bg':  '.tor_booking_wrapper',
+  };
+  fetch('reservas/imagenes.php')
+    .then(function(r){ return r.json(); })
+    .then(function(cfg){
+      Object.keys(cfg).forEach(function(slot){
+        var url = cfg[slot];
+        if (!url || url.indexOf('dummy') !== -1 || url.indexOf('placeholder') !== -1) return;
+        // img tags
+        document.querySelectorAll('img[data-img-slot="'+slot+'"]').forEach(function(img){ img.src = url; });
+        // gallery anchors
+        document.querySelectorAll('a[data-img-slot="'+slot+'"]').forEach(function(a){ a.href = url; });
+        // CSS backgrounds (hero, cta, etc.)
+        if (bgSlots[slot]) {
+          var el = document.querySelector(bgSlots[slot]);
+          if (el) el.style.backgroundImage = "linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url('"+url+"')";
+        }
+      });
+    }).catch(function(){});
+})();
+</script>
 
 <!-- Botón flotante WhatsApp -->
 <a id="whatsapp_btn" href="#" class="whatsapp_float" target="_blank" rel="noopener noreferrer" style="display:none;">
