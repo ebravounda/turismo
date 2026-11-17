@@ -26,18 +26,41 @@ $tipo_tour = clean($_POST['tipo_tour'] ?? '');
 $idioma    = clean($_POST['idioma']    ?? 'Español');
 $mensaje   = clean($_POST['mensaje']   ?? '');
 
-try {
-    $tours_validos = getDB()
-        ->query("SELECT tour_nombre FROM precios WHERE activo = 1")
-        ->fetchAll(PDO::FETCH_COLUMN);
-} catch (PDOException $e) {
-    $tours_validos = [
-        'Tour Centro Histórico',
-        'Tour Playa y Puerto',
-        'Tour Ruta Picasso',
-        'Tour Atardecer',
-        'Tour Personalizado',
-    ];
+// Load tours from tours_data.json (primary) or DB fallback
+$tours_data_file = __DIR__ . '/tours_data.json';
+$tours_full = [];
+if (file_exists($tours_data_file)) {
+    $td = json_decode(file_get_contents($tours_data_file), true);
+    if (is_array($td)) $tours_full = array_filter($td, fn($t) => !empty($t['activo']));
+}
+if (!empty($tours_full)) {
+    $tours_validos = array_column(array_values($tours_full), 'nombre');
+} else {
+    try {
+        $tours_validos = getDB()
+            ->query("SELECT tour_nombre FROM precios WHERE activo = 1")
+            ->fetchAll(PDO::FETCH_COLUMN);
+    } catch (PDOException $e) {
+        $tours_validos = ['Tour Centro Histórico','Tour Playa y Puerto','Tour Ruta Picasso'];
+    }
+}
+
+// Calculate monto (precio per person * personas)
+$monto = 0.00;
+foreach ($tours_full as $t) {
+    if ($t['nombre'] === $tipo_tour) {
+        $monto = round((float)$t['precio'] * $personas, 2);
+        break;
+    }
+}
+// Fallback: try precios table
+if ($monto === 0.00 && !empty($tipo_tour)) {
+    try {
+        $row = getDB()->prepare("SELECT precio_base FROM precios WHERE tour_nombre = ? AND activo = 1");
+        $row->execute([$tipo_tour]);
+        $p = $row->fetchColumn();
+        if ($p !== false) $monto = round((float)$p * $personas, 2);
+    } catch (PDOException $e) {}
 }
 
 // ── Validación ─────────────────────────────────────────────────
@@ -66,9 +89,9 @@ try {
     $db = getDB();
     $stmt = $db->prepare("
         INSERT INTO reservas
-            (id, nombre, email, telefono, fecha, hora, personas, tipo_tour, idioma, mensaje, estado, created_at)
+            (id, nombre, email, telefono, fecha, hora, personas, monto, stripe_session_id, pagado, tipo_tour, idioma, mensaje, estado, created_at)
         VALUES
-            (:id, :nombre, :email, :telefono, :fecha, :hora, :personas, :tipo_tour, :idioma, :mensaje, 'pendiente', NOW())
+            (:id, :nombre, :email, :telefono, :fecha, :hora, :personas, :monto, NULL, 0, :tipo_tour, :idioma, :mensaje, 'pendiente', NOW())
     ");
     $stmt->execute([
         ':id'        => $id,
@@ -78,6 +101,7 @@ try {
         ':fecha'     => $fecha,
         ':hora'      => $hora,
         ':personas'  => $personas,
+        ':monto'     => $monto,
         ':tipo_tour' => $tipo_tour,
         ':idioma'    => $idioma,
         ':mensaje'   => $mensaje,
@@ -85,8 +109,9 @@ try {
 
     echo json_encode([
         'success' => true,
-        'message' => '¡Reserva realizada con éxito! Te contactaremos pronto para confirmar.',
+        'message' => '¡Reserva registrada! Confirma ahora con el pago.',
         'id'      => $id,
+        'monto'   => $monto,
     ]);
 
 } catch (PDOException $e) {

@@ -1,0 +1,5 @@
+[
+  {"id":1,"emoji":"🏛️","nombre":"Centro Histórico","desc":"Catedral, Alcazaba, calle Larios y los rincones más emblemáticos","duracion":"90 min","precio":"15","activo":true},
+  {"id":2,"emoji":"🏖️","nombre":"Playa y Puerto","desc":"Malagueta, Muelle Uno, Palmeral de las Sorpresas y paseo marítimo","duracion":"60 min","precio":"12","activo":true},
+  {"id":3,"emoji":"🎨","nombre":"Ruta Picasso","desc":"Museo Picasso, casa natal, barrio de la Trinidad y arte urbano","duracion":"75 min","precio":"14","activo":true}
+]
