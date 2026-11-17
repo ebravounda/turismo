@@ -137,6 +137,20 @@ class ReservaPDF {
             $c .= "0.1 0.1 0.1 rg\n";
         }
 
+        // Section: Política de cancelación
+        $y -= 10;
+        $c .= "0.941 0.647 0.000 rg\n";
+        $c .= "BT\n/F2 12 Tf\n{$margin} {$y} Td\n(Politica de cancelacion) Tj\nET\n";
+        $c .= "0.1 0.1 0.1 rg\n";
+        $y -= 5;
+        $c .= "0.880 0.880 0.880 rg\n{$margin} {$y} " . ($W - 2*$margin) . " 1 re f\n0.1 0.1 0.1 rg\n";
+        $y -= 20;
+        $c .= "BT\n/F1 9 Tf\n{$margin} {$y} Td\n(Cancelacion gratuita hasta 24 horas antes del tour.) Tj\nET\n";
+        $y -= 14;
+        $c .= "BT\n/F1 9 Tf\n{$margin} {$y} Td\n(Cancelaciones con menos de 24 horas de antelacion: se devuelve el 50% del importe pagado.) Tj\nET\n";
+        $y -= 14;
+        $c .= "BT\n/F1 9 Tf\n{$margin} {$y} Td\n(Para gestionar una cancelacion contacta con nosotros en info@tuktuknorris.es o al +34 951 234 567.) Tj\nET\n";
+
         // Footer
         $c .= "0.600 0.600 0.600 rg\n";
         $footerY = 50;
