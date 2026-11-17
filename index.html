@@ -196,6 +196,27 @@ Author: PixelNx
 		/* ── Ocultar formulario original del template ────────── */
 		.tor_banner_form { display: none !important; }
 
+		/* ── Video section ───────────────────────────────────── */
+		.ttn_video_wrapper {
+			padding: 70px 0 80px;
+			background: #f9f9fb;
+		}
+		.ttn_video_frame {
+			position: relative;
+			width: 100%;
+			padding-top: 56.25%; /* 16:9 */
+			border-radius: 18px;
+			overflow: hidden;
+			box-shadow: 0 16px 56px rgba(0,0,0,0.18);
+		}
+		.ttn_video_frame iframe {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+
 		/* ── Nuevo widget de reserva rápida ──────────────────── */
 		.bw_wrap {
 			max-width: 960px;
@@ -907,6 +928,30 @@ Author: PixelNx
 				</div>
 			</div>
 		</section>
+		<!-- Video Section -->
+		<section class="ttn_video_wrapper">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-10 col-md-12">
+						<div class="tor_heading_wrpper text-center" style="margin-bottom:36px;">
+							<h4 class="tor_heading">Vive la experiencia</h4>
+							<p style="color:#888;font-size:15px;margin-top:8px;">Descubre Málaga a bordo de nuestros tuk-tuks eléctricos</p>
+						</div>
+						<div class="ttn_video_frame">
+							<iframe
+								src="https://www.youtube.com/embed/3izyB73g4CU?rel=0&modestbranding=1&color=white"
+								title="TukTuk Norris — Tour en Tuk-Tuk por Málaga"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+								allowfullscreen
+								loading="lazy">
+							</iframe>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
 		<!-- Testimonial Section -->
 		<section class="tor_testimonial_wrapper">
 			<div class="container">
