@@ -1239,10 +1239,20 @@ Author: PixelNx
     .then(function(cfg){
       Object.keys(cfg).forEach(function(slot){
         var url = cfg[slot];
-        // img tags
-        document.querySelectorAll('img[data-img-slot="'+slot+'"]').forEach(function(img){ img.src = url; });
-        // gallery anchor hrefs
-        document.querySelectorAll('a[data-img-slot="'+slot+'"]').forEach(function(a){ a.href = url; });
+        // img tags — only update src if the current src is empty or a placeholder
+        document.querySelectorAll('img[data-img-slot="'+slot+'"]').forEach(function(img){
+          var cur = img.getAttribute('src') || '';
+          if (!cur || cur.indexOf('dummy') !== -1 || cur.indexOf('placeholder') !== -1 || cur.indexOf('via.placeholder') !== -1) {
+            img.src = url;
+          }
+        });
+        // gallery anchor hrefs — only update if currently a placeholder
+        document.querySelectorAll('a[data-img-slot="'+slot+'"]').forEach(function(a){
+          var cur = a.getAttribute('href') || '';
+          if (!cur || cur === '#' || cur.indexOf('dummy') !== -1 || cur.indexOf('placeholder') !== -1) {
+            a.href = url;
+          }
+        });
         // CSS background sections
         if (bgSlots[slot]) {
           var el = document.querySelector(bgSlots[slot]);
