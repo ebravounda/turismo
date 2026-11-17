@@ -25,6 +25,12 @@ ini_set('session.cookie_secure', 1);
 ini_set('session.cookie_samesite', 'Strict');
 ini_set('session.use_strict_mode', 1);
 
+// ── Stripe (reemplaza con tus claves reales) ───────────────────
+define('STRIPE_PUBLIC_KEY',    'pk_test_REPLACE_WITH_YOUR_KEY');
+define('STRIPE_SECRET_KEY',    'sk_test_REPLACE_WITH_YOUR_KEY');
+define('STRIPE_WEBHOOK_SECRET','whsec_REPLACE_WITH_YOUR_WEBHOOK_SECRET');
+define('SITE_URL',             'https://www.tuktuknorris.es');
+
 // ── Conexión PDO (no tocar) ────────────────────────────────────
 function getDB(): PDO {
     static $pdo = null;
