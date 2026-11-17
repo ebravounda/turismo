@@ -187,6 +187,19 @@ if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset(
     exit;
 }
 
+// ── Guardar API keys (Stripe / Twilio) ────────────────────────
+if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_apikeys'])) {
+    if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) die('Token inválido');
+    $api_file = __DIR__ . '/api_keys.json';
+    $keys = [];
+    foreach (['stripe_public','stripe_secret','stripe_webhook','twilio_sid','twilio_token','twilio_from','site_url'] as $k) {
+        $keys[$k] = trim($_POST[$k] ?? '');
+    }
+    file_put_contents($api_file, json_encode($keys, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    header('Location: admin.php?vista=apikeys&ok=1');
+    exit;
+}
+
 // ── Parámetros de vista ────────────────────────────────────────
 $raw_date    = $_GET['fecha'] ?? '';
 $filter_date = preg_match('/^\d{4}-\d{2}-\d{2}$/', $raw_date) ? $raw_date : date('Y-m-d');
@@ -443,6 +456,9 @@ table tr:hover td{background:#fafafa}
         </a>
         <a href="admin.php?vista=textos" class="<?= $view_mode === 'textos' ? 'active' : '' ?>">
             <i class="fa fa-pencil"></i> Textos del inicio
+        </a>
+        <a href="admin.php?vista=apikeys" class="<?= $view_mode === 'apikeys' ? 'active' : '' ?>">
+            <i class="fa fa-key"></i> APIs y Pagos
         </a>
         <a href="admin.php?vista=config" class="<?= $view_mode === 'config' ? 'active' : '' ?>">
             <i class="fa fa-cog"></i> Configuración
@@ -1226,6 +1242,67 @@ table tr:hover td{background:#fafafa}
                 </button>
             </form>
         </div>
+    </div>
+
+    <?php elseif ($view_mode === 'apikeys'):
+        $api_file = __DIR__ . '/api_keys.json';
+        $ak = file_exists($api_file) ? (json_decode(file_get_contents($api_file), true) ?: []) : [];
+        $apikeys_ok = isset($_GET['ok']) && $view_mode === 'apikeys';
+        $esc = fn($v) => htmlspecialchars($v ?? '', ENT_QUOTES, 'UTF-8');
+        $inp_style = 'width:100%;padding:11px 14px;border:1.5px solid #e2e5eb;border-radius:8px;font-size:13px;font-family:monospace;outline:none;box-sizing:border-box;';
+    ?>
+    <div class="content_card" style="max-width:720px;">
+        <h2 style="font-size:20px;font-weight:800;color:#1a1a2e;margin:0 0 6px;"><i class="fa fa-key" style="color:#f0a500;margin-right:8px;"></i>APIs y Pagos</h2>
+        <p style="color:#888;font-size:13px;margin:0 0 24px;">Configura las claves de Stripe para pagos y Twilio para WhatsApp. Se guardan en el servidor de forma segura.</p>
+        <?php if ($apikeys_ok): ?>
+        <div style="background:#e8f5e9;border:1.5px solid #a5d6a7;border-radius:10px;padding:14px 18px;margin-bottom:20px;color:#2e7d32;font-weight:700;"><i class="fa fa-check-circle"></i> Claves guardadas correctamente.</div>
+        <?php endif; ?>
+        <form method="POST" action="admin.php?vista=apikeys">
+            <input type="hidden" name="update_apikeys" value="1">
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+            <div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:24px 28px;margin-bottom:20px;">
+                <h3 style="font-size:15px;font-weight:800;color:#1a1a2e;margin:0 0 4px;display:flex;align-items:center;gap:8px;"><i class="fa fa-credit-card" style="color:#635bff;"></i> Stripe — Pagos online</h3>
+                <p style="color:#888;font-size:12px;margin:0 0 20px;">Obtén tus claves en <strong>dashboard.stripe.com → Desarrolladores → Claves de API</strong></p>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Clave pública (Publishable key) <span style="color:#888;font-weight:400;">— empieza por pk_</span></label>
+                    <input type="text" name="stripe_public" value="<?= $esc($ak['stripe_public'] ?? '') ?>" placeholder="pk_live_..." style="<?= $inp_style ?>">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Clave secreta (Secret key) <span style="color:#888;font-weight:400;">— empieza por sk_</span></label>
+                    <input type="password" name="stripe_secret" value="<?= $esc($ak['stripe_secret'] ?? '') ?>" placeholder="sk_live_..." style="<?= $inp_style ?>">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Webhook Secret <span style="color:#888;font-weight:400;">— empieza por whsec_</span></label>
+                    <input type="password" name="stripe_webhook" value="<?= $esc($ak['stripe_webhook'] ?? '') ?>" placeholder="whsec_..." style="<?= $inp_style ?>">
+                </div>
+                <div style="margin-bottom:0;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">URL del sitio</label>
+                    <input type="text" name="site_url" value="<?= $esc($ak['site_url'] ?? 'https://www.tuktuknorris.es') ?>" placeholder="https://www.tuktuknorris.es" style="<?= $inp_style ?>">
+                </div>
+            </div>
+
+            <div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:24px 28px;margin-bottom:24px;">
+                <h3 style="font-size:15px;font-weight:800;color:#1a1a2e;margin:0 0 4px;display:flex;align-items:center;gap:8px;"><i class="fa fa-whatsapp" style="color:#25d366;"></i> Twilio — WhatsApp automático</h3>
+                <p style="color:#888;font-size:12px;margin:0 0 20px;">Para envío automático de confirmaciones por WhatsApp. Obtén las claves en <strong>console.twilio.com</strong></p>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Account SID</label>
+                    <input type="text" name="twilio_sid" value="<?= $esc($ak['twilio_sid'] ?? '') ?>" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="<?= $inp_style ?>">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Auth Token</label>
+                    <input type="password" name="twilio_token" value="<?= $esc($ak['twilio_token'] ?? '') ?>" placeholder="Tu auth token" style="<?= $inp_style ?>">
+                </div>
+                <div style="margin-bottom:0;">
+                    <label style="display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Número WhatsApp Twilio <span style="color:#888;font-weight:400;">— ej: +14155238886</span></label>
+                    <input type="text" name="twilio_from" value="<?= $esc($ak['twilio_from'] ?? '') ?>" placeholder="+14155238886" style="<?= $inp_style ?>">
+                </div>
+            </div>
+
+            <button type="submit" style="background:#f0a500;color:#fff;border:none;border-radius:8px;padding:13px 32px;font-size:15px;font-weight:800;cursor:pointer;">
+                <i class="fa fa-save"></i> Guardar claves
+            </button>
+        </form>
     </div>
 
     <?php elseif ($view_mode !== 'precios' && $view_mode !== 'imagenes'): ?>
