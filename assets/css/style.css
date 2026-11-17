@@ -794,7 +794,7 @@ iframe {
     padding: 320px 0 430px;
     position: relative;
     background-color: var(--main-green-version4);
-    background: linear-gradient(90deg,rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url('../images/uploads/tuktuk_pompidou.jpg');
+    background: linear-gradient(90deg,rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url('../images/uploads/malaga_alcazaba.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -1851,7 +1851,7 @@ iframe {
 *******************************************************/
 .page_title_wrapper {
     position: relative;
-    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('../images/uploads/tuktuk_pompidou.jpg');
+    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('../images/uploads/malaga_alcazaba.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
