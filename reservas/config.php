@@ -25,16 +25,18 @@ ini_set('session.cookie_secure', 1);
 ini_set('session.cookie_samesite', 'Strict');
 ini_set('session.use_strict_mode', 1);
 
-// ── Stripe (reemplaza con tus claves reales) ───────────────────
-define('STRIPE_PUBLIC_KEY',    'pk_test_REPLACE_WITH_YOUR_KEY');
-define('STRIPE_SECRET_KEY',    'sk_test_REPLACE_WITH_YOUR_KEY');
-define('STRIPE_WEBHOOK_SECRET','whsec_REPLACE_WITH_YOUR_WEBHOOK_SECRET');
-define('SITE_URL',             'https://www.tuktuknorris.es');
+// ── API keys: lee desde api_keys.json si existe (configurado desde el admin) ──
+$_ttn_api_file = __DIR__ . '/api_keys.json';
+$_ttn_ak = file_exists($_ttn_api_file) ? (json_decode(file_get_contents($_ttn_api_file), true) ?: []) : [];
 
-// ── Twilio WhatsApp (reemplaza con tus claves reales) ──────────
-define('TWILIO_ACCOUNT_SID',   'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-define('TWILIO_AUTH_TOKEN',    'your_auth_token_here');
-define('TWILIO_WHATSAPP_FROM', '+14155238886');
+define('STRIPE_PUBLIC_KEY',    !empty($_ttn_ak['stripe_public'])  ? $_ttn_ak['stripe_public']  : 'pk_test_REPLACE_WITH_YOUR_KEY');
+define('STRIPE_SECRET_KEY',    !empty($_ttn_ak['stripe_secret'])  ? $_ttn_ak['stripe_secret']  : 'sk_test_REPLACE_WITH_YOUR_KEY');
+define('STRIPE_WEBHOOK_SECRET',!empty($_ttn_ak['stripe_webhook']) ? $_ttn_ak['stripe_webhook'] : 'whsec_REPLACE_WITH_YOUR_WEBHOOK_SECRET');
+define('SITE_URL',             !empty($_ttn_ak['site_url'])       ? $_ttn_ak['site_url']       : 'https://www.tuktuknorris.es');
+define('TWILIO_ACCOUNT_SID',   !empty($_ttn_ak['twilio_sid'])     ? $_ttn_ak['twilio_sid']     : 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+define('TWILIO_AUTH_TOKEN',    !empty($_ttn_ak['twilio_token'])   ? $_ttn_ak['twilio_token']   : 'your_auth_token_here');
+define('TWILIO_WHATSAPP_FROM', !empty($_ttn_ak['twilio_from'])    ? $_ttn_ak['twilio_from']    : '+14155238886');
+unset($_ttn_api_file, $_ttn_ak);
 
 // ── Conexión PDO (no tocar) ────────────────────────────────────
 function getDB(): PDO {
