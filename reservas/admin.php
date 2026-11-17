@@ -1303,6 +1303,14 @@ table tr:hover td{background:#fafafa}
                     <a href="tel:<?= htmlspecialchars($r['telefono']) ?>" style="color:#28a745;font-size:13px;display:block">
                         <i class="fa fa-phone"></i> <?= htmlspecialchars($r['telefono']) ?>
                     </a>
+                    <?php
+                    $wa_num = preg_replace('/[^0-9]/', '', $r['telefono']);
+                    $wa_msg = rawurlencode('Hola ' . $r['nombre'] . ', te escribimos desde TukTuk Norris sobre tu reserva ' . $r['id'] . ' del ' . date('d/m/Y', strtotime($r['fecha'])) . '.');
+                    ?>
+                    <a href="https://wa.me/<?= $wa_num ?>?text=<?= $wa_msg ?>" target="_blank" rel="noopener"
+                        style="color:#25d366;font-size:13px;display:block;margin-top:2px;">
+                        <i class="fa fa-whatsapp"></i> WhatsApp
+                    </a>
                     <?php if (!empty($r['mensaje'])): ?>
                         <span style="color:#aaa;font-size:11px" title="<?= htmlspecialchars($r['mensaje']) ?>">
                             💬 <?= mb_strimwidth(htmlspecialchars($r['mensaje']), 0, 35, '...') ?>
