@@ -964,7 +964,7 @@ Author: PixelNx
 							<ul>
 								<li><a href="contact.html">Contáctanos</a></li>
 								<li><a href="about.html">Sobre nosotros</a></li>
-								<li><a href="#">Términos y condiciones</a></li>
+								<li><a href="terminos.html">Términos y condiciones</a></li>
 							</ul>
 						</div>
 					</div>
@@ -1154,22 +1154,7 @@ Author: PixelNx
         btn.href = 'https://wa.me/' + num;
         btn.style.display = 'flex';
       }
-      // Populate tour dropdown dynamically
-      var sel = document.getElementById('banner_tour');
-      if (sel) {
-        sel.innerHTML = '<option value="">Selecciona un tour...</option>';
-        for (var n = 1; n <= 3; n++) {
-          var nm = s['tour'+n+'_nombre'];
-          var em = s['tour'+n+'_emoji'] || '';
-          var du = s['tour'+n+'_duracion'] || '';
-          if (nm) {
-            var opt = document.createElement('option');
-            opt.value = nm;
-            opt.textContent = em + ' ' + nm + (du ? ' — ' + du : '');
-            sel.appendChild(opt);
-          }
-        }
-      }
+      // Tour dropdown populated from tours_api.php (see below)
 
       // index texts — map elementId -> settings key
       var texts = {
@@ -1203,6 +1188,23 @@ Author: PixelNx
       Object.keys(texts).forEach(function(id){
         var el = document.getElementById(id);
         if (el && texts[id]) el.textContent = texts[id];
+      });
+    }).catch(function(){});
+})();
+
+// Load tours from tours_api.php for the banner dropdown
+(function(){
+  fetch('reservas/tours_api.php')
+    .then(function(r){ return r.json(); })
+    .then(function(tours){
+      var sel = document.getElementById('banner_tour');
+      if (!sel || !tours.length) return;
+      sel.innerHTML = '<option value="">Selecciona un tour...</option>';
+      tours.forEach(function(t){
+        var opt = document.createElement('option');
+        opt.value = t.nombre;
+        opt.textContent = (t.emoji ? t.emoji + ' ' : '') + t.nombre + (t.duracion ? ' — ' + t.duracion : '');
+        sel.appendChild(opt);
       });
     }).catch(function(){});
 })();

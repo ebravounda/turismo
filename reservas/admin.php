@@ -82,6 +82,40 @@ if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset(
     exit;
 }
 
+// ── Guardar tours dinámicos (tours_data.json) ─────────────────
+if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_tours_dynamic'])) {
+    if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) die('Token inválido');
+    $tours_file2 = __DIR__ . '/tours_data.json';
+    $existing_t  = file_exists($tours_file2) ? (json_decode(file_get_contents($tours_file2), true) ?: []) : [];
+    // Build updated list from POST
+    $ids     = $_POST['t_id']      ?? [];
+    $emojis  = $_POST['t_emoji']   ?? [];
+    $nombres = $_POST['t_nombre']  ?? [];
+    $descs   = $_POST['t_desc']    ?? [];
+    $durs    = $_POST['t_duracion']?? [];
+    $precios = $_POST['t_precio']  ?? [];
+    $activos = $_POST['t_activo']  ?? [];
+    $newTours = [];
+    $maxId = 0;
+    foreach ($existing_t as $et) { if ((int)$et['id'] > $maxId) $maxId = (int)$et['id']; }
+    foreach ($ids as $i => $tid) {
+        $tid = (int)$tid;
+        if ($tid === 0) { $maxId++; $tid = $maxId; }
+        $newTours[] = [
+            'id'      => $tid,
+            'emoji'   => htmlspecialchars(strip_tags(trim($emojis[$i]   ?? '')), ENT_QUOTES, 'UTF-8'),
+            'nombre'  => htmlspecialchars(strip_tags(trim($nombres[$i]  ?? '')), ENT_QUOTES, 'UTF-8'),
+            'desc'    => htmlspecialchars(strip_tags(trim($descs[$i]    ?? '')), ENT_QUOTES, 'UTF-8'),
+            'duracion'=> htmlspecialchars(strip_tags(trim($durs[$i]     ?? '')), ENT_QUOTES, 'UTF-8'),
+            'precio'  => htmlspecialchars(strip_tags(trim($precios[$i]  ?? '')), ENT_QUOTES, 'UTF-8'),
+            'activo'  => isset($activos[$i]) && $activos[$i] === '1',
+        ];
+    }
+    file_put_contents($tours_file2, json_encode($newTours, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    header('Location: admin.php?vista=tours2&ok=1');
+    exit;
+}
+
 // ── Guardar tours ──────────────────────────────────────────────
 if (isset($_SESSION['admin']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_tours'])) {
     if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) die('Token inválido');
@@ -162,7 +196,7 @@ $precio_ok   = isset($_GET['ok']) && $view_mode === 'precios';
 $img_ok      = isset($_GET['ok']) && $view_mode === 'imagenes';
 $config_ok   = isset($_GET['ok']) && $view_mode === 'config';
 $text_ok     = isset($_GET['ok']) && $view_mode === 'textos';
-$tour_ok     = isset($_GET['ok']) && $view_mode === 'tours';
+$tour_ok     = isset($_GET['ok']) && ($view_mode === 'tours' || $view_mode === 'tours2');
 
 // ── Consultas MySQL ────────────────────────────────────────────
 $filtered = [];
@@ -404,8 +438,8 @@ table tr:hover td{background:#fafafa}
         <a href="admin.php?vista=imagenes" class="<?= $view_mode === 'imagenes' ? 'active' : '' ?>">
             <i class="fa fa-picture-o"></i> Imágenes
         </a>
-        <a href="admin.php?vista=tours" class="<?= $view_mode === 'tours' ? 'active' : '' ?>">
-            <i class="fa fa-map-o"></i> Tours
+        <a href="admin.php?vista=tours2" class="<?= $view_mode === 'tours2' ? 'active' : '' ?>">
+            <i class="fa fa-map-o"></i> Gestionar Tours
         </a>
         <a href="admin.php?vista=textos" class="<?= $view_mode === 'textos' ? 'active' : '' ?>">
             <i class="fa fa-pencil"></i> Textos del inicio
@@ -829,6 +863,88 @@ table tr:hover td{background:#fafafa}
     </div>
     </form>
 
+    <?php elseif ($view_mode === 'tours2'): ?>
+    <!-- Gestionar Tours Dinámicos -->
+    <?php
+    $tours_file2 = __DIR__ . '/tours_data.json';
+    $tours_list  = file_exists($tours_file2) ? (json_decode(file_get_contents($tours_file2), true) ?: []) : [];
+    ?>
+    <?php if ($tour_ok): ?>
+    <div style="background:#d4edda;border:1px solid #b8dfc6;color:#155724;border-radius:8px;padding:14px 18px;margin-bottom:20px;font-size:14px;">
+        <i class="fa fa-check-circle"></i> <strong>Tours guardados correctamente.</strong>
+    </div>
+    <?php endif; ?>
+    <div style="max-width:900px;">
+      <div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);padding:32px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+          <h3 style="font-size:18px;font-weight:800;color:#1a1a2e;margin:0;">Tours disponibles</h3>
+          <button type="button" id="btn_add_tour" onclick="addTourRow()"
+            style="background:#f0a500;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;">
+            <i class="fa fa-plus"></i> Agregar tour
+          </button>
+        </div>
+        <form method="POST" action="admin.php?vista=tours2" id="tours2_form">
+          <input type="hidden" name="save_tours_dynamic" value="1">
+          <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+          <div id="tours_rows">
+            <?php foreach ($tours_list as $idx => $t): ?>
+            <div class="tour_row" style="border:1.5px solid #e2e5eb;border-radius:10px;padding:18px;margin-bottom:14px;position:relative;">
+              <input type="hidden" name="t_id[]" value="<?= (int)$t['id'] ?>">
+              <div style="display:grid;grid-template-columns:60px 1fr 2fr 100px 100px 80px auto;gap:10px;align-items:center;">
+                <input type="text" name="t_emoji[]" value="<?= htmlspecialchars($t['emoji'] ?? '') ?>"
+                  placeholder="🏛️" style="font-size:22px;border:1.5px solid #e2e5eb;border-radius:8px;padding:8px;text-align:center;width:100%;box-sizing:border-box;">
+                <input type="text" name="t_nombre[]" value="<?= htmlspecialchars($t['nombre'] ?? '') ?>"
+                  placeholder="Nombre del tour" style="border:1.5px solid #e2e5eb;border-radius:8px;padding:9px 12px;width:100%;box-sizing:border-box;font-size:14px;">
+                <input type="text" name="t_desc[]" value="<?= htmlspecialchars($t['desc'] ?? '') ?>"
+                  placeholder="Descripción breve" style="border:1.5px solid #e2e5eb;border-radius:8px;padding:9px 12px;width:100%;box-sizing:border-box;font-size:13px;">
+                <input type="text" name="t_duracion[]" value="<?= htmlspecialchars($t['duracion'] ?? '') ?>"
+                  placeholder="90 min" style="border:1.5px solid #e2e5eb;border-radius:8px;padding:9px 12px;width:100%;box-sizing:border-box;font-size:13px;">
+                <div style="display:flex;align-items:center;border:1.5px solid #e2e5eb;border-radius:8px;padding:9px 12px;box-sizing:border-box;">
+                  <input type="text" name="t_precio[]" value="<?= htmlspecialchars($t['precio'] ?? '') ?>"
+                    placeholder="15" style="border:none;outline:none;width:100%;font-size:13px;">
+                  <span style="color:#aaa;font-size:12px;">€</span>
+                </div>
+                <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;">
+                  <input type="checkbox" name="t_activo[]" value="1" <?= !empty($t['activo']) ? 'checked' : '' ?>>
+                  Activo
+                </label>
+                <button type="button" onclick="this.closest('.tour_row').remove()"
+                  style="background:#fee;border:1.5px solid #f5c6cb;color:#c0392b;border-radius:8px;padding:8px 10px;cursor:pointer;font-size:14px;">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            <?php endforeach; ?>
+          </div>
+          <div style="margin-top:8px;color:#aaa;font-size:12px;margin-bottom:20px;">
+            Columnas: Emoji · Nombre · Descripción · Duración · Precio (€) · Activo
+          </div>
+          <button type="submit" style="background:#f0a500;color:#fff;border:none;border-radius:8px;padding:13px 32px;font-size:15px;font-weight:800;cursor:pointer;">
+            <i class="fa fa-save"></i> Guardar tours
+          </button>
+        </form>
+      </div>
+    </div>
+    <script>
+    function addTourRow() {
+        var row = document.createElement('div');
+        row.className = 'tour_row';
+        row.style.cssText = 'border:1.5px solid #e2e5eb;border-radius:10px;padding:18px;margin-bottom:14px;position:relative;';
+        row.innerHTML = '<input type="hidden" name="t_id[]" value="0">'
+            + '<div style="display:grid;grid-template-columns:60px 1fr 2fr 100px 100px 80px auto;gap:10px;align-items:center;">'
+            + '<input type="text" name="t_emoji[]" placeholder="🗺️" style="font-size:22px;border:1.5px solid #e2e5eb;border-radius:8px;padding:8px;text-align:center;width:100%;box-sizing:border-box;">'
+            + '<input type="text" name="t_nombre[]" placeholder="Nombre del tour" style="border:1.5px solid #e2e5eb;border-radius:8px;padding:9px 12px;width:100%;box-sizing:border-box;font-size:14px;">'
+            + '<input type="text" name="t_desc[]" placeholder="Descripción breve" style="border:1.5px solid #e2e5eb;border-radius:8px;padding:9px 12px;width:100%;box-sizing:border-box;font-size:13px;">'
+            + '<input type="text" name="t_duracion[]" placeholder="60 min" style="border:1.5px solid #e2e5eb;border-radius:8px;padding:9px 12px;width:100%;box-sizing:border-box;font-size:13px;">'
+            + '<div style="display:flex;align-items:center;border:1.5px solid #e2e5eb;border-radius:8px;padding:9px 12px;box-sizing:border-box;">'
+            + '<input type="text" name="t_precio[]" placeholder="12" style="border:none;outline:none;width:100%;font-size:13px;"><span style="color:#aaa;font-size:12px;">€</span></div>'
+            + '<label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;"><input type="checkbox" name="t_activo[]" value="1" checked> Activo</label>'
+            + '<button type="button" onclick="this.closest(\'.tour_row\').remove()" style="background:#fee;border:1.5px solid #f5c6cb;color:#c0392b;border-radius:8px;padding:8px 10px;cursor:pointer;font-size:14px;"><i class="fa fa-trash"></i></button>'
+            + '</div>';
+        document.getElementById('tours_rows').appendChild(row);
+    }
+    </script>
+
     <?php elseif ($view_mode === 'textos'): ?>
     <!-- Textos del index -->
     <?php
@@ -1135,7 +1251,8 @@ table tr:hover td{background:#fafafa}
                     <th>Fecha / Hora</th>
                     <th>Cliente</th>
                     <th>Tour</th>
-                    <th style="text-align:center">Personas</th>
+                    <th style="text-align:center">Pers.</th>
+                    <th style="text-align:center">Pago</th>
                     <th>Contacto</th>
                     <th>Estado</th>
                     <th>Acciones</th>
@@ -1149,7 +1266,7 @@ table tr:hover td{background:#fafafa}
                     $section_date = $r['fecha'];
             ?>
             <tr>
-                <td colspan="8" class="section_date">
+                <td colspan="9" class="section_date">
                     📅 <?= date('l, j \d\e F \d\e Y', strtotime($r['fecha'])) ?>
                 </td>
             </tr>
@@ -1166,8 +1283,18 @@ table tr:hover td{background:#fafafa}
                 </td>
                 <td><span class="tour_pill"><?= htmlspecialchars($r['tipo_tour']) ?></span></td>
                 <td style="text-align:center">
-                    <strong style="font-size:18px"><?= (int)$r['personas'] ?></strong><br>
-                    <span style="color:#aaa;font-size:11px">personas</span>
+                    <strong style="font-size:18px"><?= (int)$r['personas'] ?></strong>
+                </td>
+                <td style="text-align:center">
+                    <?php if (!empty($r['pagado'])): ?>
+                        <span title="Pagado online" style="font-size:18px;">💳</span><br>
+                        <span style="color:#28a745;font-size:11px;font-weight:700;"><?= !empty($r['monto']) ? number_format((float)$r['monto'],2,',','.').' €' : '' ?></span>
+                    <?php elseif (!empty($r['monto']) && $r['monto'] > 0): ?>
+                        <span title="Pendiente de pago" style="font-size:16px;">⏳</span><br>
+                        <span style="color:#f0a500;font-size:11px;font-weight:700;"><?= number_format((float)$r['monto'],2,',','.').' €' ?></span>
+                    <?php else: ?>
+                        <span style="color:#ccc;font-size:12px;">—</span>
+                    <?php endif; ?>
                 </td>
                 <td>
                     <a href="mailto:<?= htmlspecialchars($r['email']) ?>" style="color:#007bff;font-size:13px;display:block">
@@ -1208,6 +1335,11 @@ table tr:hover td{background:#fafafa}
                             <button type="submit" name="new_status" value="cancelada" class="action_btn btn_cancel" title="Cancelar"><i class="fa fa-times"></i></button>
                         <?php endif; ?>
                     </form>
+                    <a href="descargar_pdf.php?res_id=<?= urlencode($r['id']) ?>" target="_blank"
+                        class="action_btn" title="Descargar PDF"
+                        style="background:#e8f4fd;border:1.5px solid #bee3f8;color:#2b6cb0;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;text-decoration:none;">
+                        <i class="fa fa-file-pdf-o"></i>
+                    </a>
                     <form method="post" action="admin.php<?= $qs ? '?'.$qs : '' ?>" style="display:inline" onsubmit="return confirm('¿Eliminar esta reserva definitivamente?')">
                         <input type="hidden" name="delete_id" value="<?= htmlspecialchars($r['id'], ENT_QUOTES, 'UTF-8') ?>">
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">

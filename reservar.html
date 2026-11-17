@@ -577,12 +577,42 @@
 								</div>
 							</div>
 
-							<button type="submit" class="btn_reservar" id="btnEnviar">
+							<div style="margin-bottom:16px;padding:14px 16px;background:#fffbf0;border:1.5px solid #f0a500;border-radius:8px;">
+								<label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#444;line-height:1.5;">
+									<input type="checkbox" id="aceptar_terminos" style="margin-top:2px;min-width:16px;min-height:16px;accent-color:#f0a500;" required>
+									<span>He leído y acepto los <a href="terminos.html" target="_blank" style="color:#f0a500;font-weight:700;">Términos y Condiciones</a>, incluyendo la <strong>política de cancelación</strong> (cancelaciones con menos de 24h de antelación: reembolso del 50%).</span>
+								</label>
+							</div>
+
+							<button type="submit" class="btn_reservar" id="btnEnviar" disabled style="opacity:0.6;cursor:not-allowed;">
 								<i class="fa fa-check-circle"></i>&nbsp; Confirmar Reserva
 							</button>
-							<p class="form_aviso">Sin cobro previo — pago el día del tour en efectivo o tarjeta. <a href="#">Condiciones de reserva.</a></p>
+							<p class="form_aviso">Puedes pagar online con tarjeta o el día del tour en efectivo. <a href="terminos.html" target="_blank">Condiciones de reserva.</a></p>
 
 						</form>
+
+						<!-- ── Panel de pago (oculto hasta confirmar reserva) ── -->
+						<div id="pago_panel" style="display:none;margin-top:24px;">
+							<div style="background:#fff;border-radius:14px;box-shadow:0 2px 16px rgba(0,0,0,.08);padding:32px;">
+								<div style="font-size:40px;text-align:center;margin-bottom:12px;">✅</div>
+								<h3 style="text-align:center;font-size:20px;font-weight:800;color:#1a1a2e;margin:0 0 6px;">¡Reserva registrada!</h3>
+								<p style="text-align:center;color:#888;margin:0 0 24px;">Confirma tu plaza pagando ahora o paga el día del tour.</p>
+								<div style="background:#f9f9fb;border-radius:10px;padding:20px;margin-bottom:24px;">
+									<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;"><span style="color:#888;">Referencia</span><strong id="pago_id">—</strong></div>
+									<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;"><span style="color:#888;">Tour</span><strong id="pago_tour">—</strong></div>
+									<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;"><span style="color:#888;">Fecha</span><strong id="pago_fecha">—</strong></div>
+									<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:14px;"><span style="color:#888;">Personas</span><strong id="pago_personas">—</strong></div>
+									<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:16px;"><span style="color:#888;">Total</span><strong id="pago_monto" style="color:#f0a500;font-size:20px;">—</strong></div>
+								</div>
+								<a id="btn_pagar" href="#" class="btn_reservar" style="display:block;text-align:center;text-decoration:none;">
+									<i class="fa fa-credit-card"></i>&nbsp; Pagar ahora
+								</a>
+								<p style="text-align:center;margin-top:14px;">
+									<a id="btn_pagar_presencial" href="../index.html" style="color:#aaa;font-size:13px;">Prefiero pagar el día del tour →</a>
+								</p>
+							</div>
+						</div>
+
 					</div>
 				</div>
 
@@ -629,7 +659,7 @@
 								</div>
 								<div class="info_item">
 									<i class="fa fa-times-circle-o"></i>
-									<span><strong>Cancelación:</strong> <span id="info_cancelacion">Gratuita hasta 24h antes</span></span>
+									<span><strong>Cancelación:</strong> <span id="info_cancelacion">Gratuita hasta 24h antes. Menos de 24h: 50% del importe.</span></span>
 								</div>
 							</div>
 						</div>
@@ -663,7 +693,7 @@
 	<script src="assets/js/SmoothScroll.min.js"></script>
 	<script src="assets/js/custom.js"></script>
 	<script>
-		// Load configurable site settings + build tour cards
+		// Load configurable site settings
 		fetch('reservas/settings.php')
 			.then(r => r.json())
 			.then(s => {
@@ -674,33 +704,35 @@
 				document.querySelectorAll('img[data-img-slot="site_logo"]').forEach(function(img){
 					img.style.height = sz + 'px'; img.style.width = 'auto';
 				});
-				// Build tour cards dynamically
+			}).catch(() => {});
+
+		// Load tour cards from tours_api.php
+		fetch('reservas/tours_api.php')
+			.then(r => r.json())
+			.then(tours => {
 				const grid = document.getElementById('tours_grid');
-				if (grid) {
-					let html = '';
-					for (let n = 1; n <= 3; n++) {
-						const emoji    = s['tour'+n+'_emoji']    || '';
-						const nombre   = s['tour'+n+'_nombre']   || 'Tour '+n;
-						const desc     = s['tour'+n+'_desc']     || '';
-						const duracion = s['tour'+n+'_duracion'] || '';
-						const precio   = s['tour'+n+'_precio']   || '';
-						const nomEsc   = nombre.replace(/'/g,"\\'").replace(/"/g,'&quot;');
-						html += `<label class="tour_card" data-tour="${nombre}" onclick="seleccionarTour(this,'${nomEsc}')">
-							<input type="radio" name="tipo_tour" value="${nombre}">
-							<div class="tour_card_check"><i class="fa fa-check"></i></div>
-							<div class="tour_card_icono">${emoji}</div>
-							<div class="tour_card_nombre">${nombre}</div>
-							<div class="tour_card_desc">${desc}</div>
-							<div class="tour_card_meta">
-								<span class="tour_card_duracion">${duracion}</span>
-								<span class="tour_card_precio">${precio}</span>
-							</div>
-						</label>`;
-						const p = parseFloat(precio.replace(/[^0-9.]/g,''));
-						tourPrecios[nombre] = isNaN(p) ? null : p;
-					}
-					grid.innerHTML = html;
-				}
+				if (!grid || !tours.length) return;
+				let html = '';
+				tours.forEach(t => {
+					const nombre  = t.nombre || '';
+					const nomEsc  = nombre.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+					const precioN = parseFloat(t.precio) || 0;
+					const precioLabel = precioN > 0 ? 'Desde ' + precioN.toFixed(0) + '€' : 'A consultar';
+					tourPrecios[nombre] = precioN > 0 ? precioN : null;
+					html += `<label class="tour_card" data-tour="${nombre}" onclick="seleccionarTour(this,'${nomEsc}')">
+						<input type="radio" name="tipo_tour" value="${nombre}">
+						<div class="tour_card_check"><i class="fa fa-check"></i></div>
+						<div class="tour_card_icono">${t.emoji || ''}</div>
+						<div class="tour_card_nombre">${nombre}</div>
+						<div class="tour_card_desc">${t.desc || ''}</div>
+						<div class="tour_card_meta">
+							<span class="tour_card_duracion">${t.duracion || ''}</span>
+							<span class="tour_card_precio">${precioLabel}</span>
+						</div>
+					</label>`;
+				});
+				grid.innerHTML = html;
+				actualizarResumen();
 			}).catch(() => {});
 
 		var fechaEl = document.getElementById('fecha');
@@ -791,6 +823,14 @@
 		if (params.get('personas')) document.getElementById('personas').value = params.get('personas');
 		actualizarResumen();
 
+		// T&C checkbox — habilitar/deshabilitar botón enviar
+		document.getElementById('aceptar_terminos').addEventListener('change', function() {
+			const btn = document.getElementById('btnEnviar');
+			btn.disabled = !this.checked;
+			btn.style.opacity = this.checked ? '1' : '0.6';
+			btn.style.cursor  = this.checked ? 'pointer' : 'not-allowed';
+		});
+
 		// Form submit
 		document.getElementById('reservaForm').addEventListener('submit', function(e) {
 			e.preventDefault();
@@ -808,16 +848,32 @@
 			const formData = new FormData(this);
 			formData.set('tipo_tour', tourEl.value);
 
+			const tourEl2 = document.querySelector('.tour_card.activo input[type="radio"]');
+			const fechaVal = document.getElementById('fecha').value;
+			const horaVal  = document.getElementById('hora').value;
+			const persVal  = document.getElementById('personas').value;
+
 			fetch('reservas/reservar.php', { method: 'POST', body: formData })
 				.then(r => r.json())
 				.then(data => {
 					if (data.success) {
-						document.getElementById('alertaOk').style.display = 'block';
-						document.getElementById('alertaErr').style.display = 'none';
-						this.reset();
-						document.querySelectorAll('.tour_card').forEach(c => c.classList.remove('activo'));
-						actualizarResumen();
-						window.scrollTo({ top: 0, behavior: 'smooth' });
+						// Show payment panel
+						const tourNombre = tourEl2 ? tourEl2.value : '—';
+						const monto = parseFloat(data.monto) || 0;
+						document.getElementById('pago_id').textContent      = data.id || '—';
+						document.getElementById('pago_tour').textContent    = tourNombre;
+						document.getElementById('pago_fecha').textContent   = fechaVal ? new Date(fechaVal+'T00:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}) : '—';
+						document.getElementById('pago_personas').textContent = persVal || '—';
+						document.getElementById('pago_monto').textContent   = monto > 0 ? monto.toFixed(2).replace('.',',') + ' €' : 'A consultar';
+
+						const checkoutUrl = 'reservas/stripe_checkout.php?res_id=' + encodeURIComponent(data.id) + '&monto=' + monto;
+						document.getElementById('btn_pagar').href = checkoutUrl;
+
+						// Hide form, show payment panel
+						document.getElementById('reservaForm').style.display    = 'none';
+						document.getElementById('alertaOk').style.display       = 'none';
+						document.getElementById('pago_panel').style.display     = 'block';
+						window.scrollTo({ top: document.getElementById('pago_panel').offsetTop - 80, behavior: 'smooth' });
 					} else {
 						const err = document.getElementById('alertaErr');
 						err.textContent = 'Error: ' + (data.message || 'No se pudo enviar la reserva.');
@@ -830,7 +886,9 @@
 					document.getElementById('alertaOk').style.display = 'none';
 				})
 				.finally(() => {
-					btn.disabled = false;
+					const checked = document.getElementById('aceptar_terminos').checked;
+					btn.disabled = !checked;
+					btn.style.opacity = checked ? '1' : '0.6';
 					btn.innerHTML = '<i class="fa fa-check-circle"></i>&nbsp; Confirmar Reserva';
 				});
 		});
