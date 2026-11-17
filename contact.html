@@ -97,7 +97,7 @@ Author: PixelNx
 							<ul>
 								<li><a href="index.html">Inicio</a></li>
 								<li><a href="about.html">Nosotros</a></li>
-								<li><a href="services.html">Servicios</a></li>
+								<li><a href="reservar.html" class="nav_btn_reservar">Reservar</a></li>
 								<li class="active"><a href="contact.html">Contacto</a></li>
 							</ul>
 						</div>
@@ -408,8 +408,19 @@ Author: PixelNx
     document.querySelectorAll('img[data-img-slot="site_logo"]').forEach(function(img){
       img.style.height = sz + 'px'; img.style.width = 'auto';
     });
+    if (s.whatsapp) {
+      var wbtn = document.getElementById('whatsapp_btn');
+      if (wbtn) { wbtn.href = 'https://wa.me/' + s.whatsapp; wbtn.style.display = 'flex'; }
+    }
   }).catch(function(){});
 })();
 </script>
+
+<!-- WhatsApp flotante -->
+<a id="whatsapp_btn" href="#" class="whatsapp_float" style="display:none;" target="_blank" rel="noopener">
+	<i class="fa fa-whatsapp" style="font-size:22px;"></i>
+	<span class="wa_label">WhatsApp</span>
+</a>
+
 	</body>
 </html>
