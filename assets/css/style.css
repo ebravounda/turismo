@@ -794,7 +794,7 @@ iframe {
     padding: 320px 0 430px;
     position: relative;
     background-color: var(--main-green-version4);
-    background: linear-gradient(90deg,rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url('/assets/images/uploads/malaga_alcazaba.jpg');
+    background: linear-gradient(90deg,rgba(0,0,0,0.45),rgba(0,0,0,0.45)),url('/images/malaga_alcazaba.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -1047,7 +1047,7 @@ iframe {
 ********************************************************/
 .tor_callToActionSecond_wrapper {
     position: relative;
-    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('/assets/images/uploads/malaga_malagueta.jpg');
+    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('/images/malaga_malagueta.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -1188,7 +1188,7 @@ iframe {
     background: var(--main-gray-version24);
     position: relative;
     padding: 69px 0 41px;
-    background-image: url('/assets/images/uploads/tuktuk_parque.jpg');
+    background-image: url('/images/tuktuk_parque.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: top center;
@@ -1428,7 +1428,7 @@ iframe {
 ********************************************************/
 .tor_booking_wrapper {
     position: relative;
-    background: linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),url('/assets/images/uploads/tuktuk_adoquin.jpg');
+    background: linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),url('/images/tuktuk_adoquin.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -1851,7 +1851,7 @@ iframe {
 *******************************************************/
 .page_title_wrapper {
     position: relative;
-    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('/assets/images/uploads/malaga_alcazaba.jpg');
+    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('/images/malaga_alcazaba.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
