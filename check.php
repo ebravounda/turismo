@@ -1,65 +1,56 @@
 <?php
-// Página de diagnóstico — borra este archivo después de usarlo
+$root = rtrim($_SERVER['DOCUMENT_ROOT'], '/');
+$base = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+
+function listDir($dir, $depth = 0) {
+    if ($depth > 3 || !is_dir($dir)) return;
+    $items = @scandir($dir);
+    if (!$items) return;
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') continue;
+        $full = $dir . '/' . $item;
+        $pad = str_repeat('&nbsp;&nbsp;&nbsp;', $depth);
+        if (is_dir($full)) {
+            echo "<li>$pad<strong>📁 $item/</strong></li>";
+            if ($depth < 2) listDir($full, $depth + 1);
+        } else {
+            $size = round(filesize($full) / 1024) . 'KB';
+            echo "<li>$pad📄 $item <small>($size)</small></li>";
+        }
+    }
+}
+?><!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Check</title>
+<style>body{font-family:monospace;padding:20px;font-size:13px} li{list-style:none;line-height:1.6} .ok{color:green;font-weight:bold} .no{color:red;font-weight:bold}</style>
+</head><body>
+<h2>Diagnóstico del servidor</h2>
+<p><strong>Document root:</strong> <?= htmlspecialchars($root) ?></p>
+<p><strong>URL base:</strong> <?= htmlspecialchars($base) ?></p>
+<p><strong>PHP:</strong> <?= phpversion() ?></p>
+
+<h3>Prueba de rutas:</h3>
+<table border="1" cellpadding="6">
+<tr><th>Ruta</th><th>¿Existe?</th></tr>
+<?php
 $tests = [
     'images/malaga_alcazaba.jpg',
-    'assets/images/uploads/malaga_alcazaba.jpg',
     'images/tuktuk_playa.webp',
+    'assets/images/uploads/malaga_alcazaba.jpg',
     'assets/images/uploads/tuktuk_playa.webp',
+    'upload/malaga_alcazaba.jpg',
+    'uploads/malaga_alcazaba.jpg',
+    'img/malaga_alcazaba.jpg',
+    'fotos/malaga_alcazaba.jpg',
 ];
-$root = $_SERVER['DOCUMENT_ROOT'];
-$base = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-?><!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><title>Diagnóstico TukTuk</title>
-<style>body{font-family:sans-serif;padding:20px} .ok{color:green} .err{color:red} img{max-width:200px;border:2px solid green;margin:5px} .broken{border:2px solid red;width:200px;height:60px;background:#fee;display:flex;align-items:center;justify-content:center;color:red;font-size:12px}</style>
-</head>
-<body>
-<h2>Diagnóstico de imágenes</h2>
-<p><strong>Document root:</strong> <?= htmlspecialchars($root) ?></p>
-<p><strong>Base URL:</strong> <?= htmlspecialchars($base) ?></p>
-<table border="1" cellpadding="8">
-<tr><th>Ruta</th><th>¿Existe?</th><th>Vista previa</th></tr>
-<?php foreach ($tests as $path):
-    $full = rtrim($root, '/') . '/' . $path;
-    $exists = file_exists($full);
+foreach ($tests as $p) {
+    $exists = file_exists($root . '/' . $p);
+    echo "<tr><td>$p</td><td class='" . ($exists ? 'ok' : 'no') . "'>" . ($exists ? '✓ SÍ' : '✗ NO') . "</td></tr>";
+}
 ?>
-<tr>
-  <td><?= htmlspecialchars($path) ?></td>
-  <td class="<?= $exists ? 'ok' : 'err' ?>"><?= $exists ? '✓ SÍ' : '✗ NO' ?></td>
-  <td>
-    <?php if ($exists): ?>
-      <img src="<?= htmlspecialchars($base . '/' . $path) ?>" alt="test">
-    <?php else: ?>
-      <div class="broken">No encontrada</div>
-    <?php endif; ?>
-  </td>
-</tr>
-<?php endforeach; ?>
 </table>
-<h3>Archivos en /images/ (si existe):</h3>
+
+<h3>Contenido completo de <?= htmlspecialchars($root) ?> :</h3>
 <ul>
-<?php
-$imgDir = rtrim($root, '/') . '/images/';
-if (is_dir($imgDir)) {
-    foreach (scandir($imgDir) as $f) {
-        if ($f !== '.' && $f !== '..') echo "<li>$f</li>";
-    }
-} else {
-    echo "<li style='color:red'>La carpeta /images/ NO existe</li>";
-}
-?>
-</ul>
-<h3>Archivos en /assets/images/uploads/ (si existe):</h3>
-<ul>
-<?php
-$uploadDir = rtrim($root, '/') . '/assets/images/uploads/';
-if (is_dir($uploadDir)) {
-    foreach (scandir($uploadDir) as $f) {
-        if ($f !== '.' && $f !== '..') echo "<li>$f</li>";
-    }
-} else {
-    echo "<li style='color:red'>La carpeta /assets/images/uploads/ NO existe</li>";
-}
-?>
+<?php listDir($root); ?>
 </ul>
 </body></html>
